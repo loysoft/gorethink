@@ -31,8 +31,12 @@ func (o *ReconfigureOpts) toMap() map[string]interface{} {
 }
 
 // Reconfigure a table's sharding and replication.
-func (t Term) Reconfigure(opts ReconfigureOpts) Term {
-	return constructMethodTerm(t, "Reconfigure", p.Term_RECONFIGURE, []interface{}{}, opts.toMap())
+func (t Term) Reconfigure(optArgs ...ReconfigureOpts) Term {
+	opts := map[string]interface{}{}
+	if len(optArgs) >= 1 {
+		opts = optArgs[0].toMap()
+	}
+	return constructMethodTerm(t, "Reconfigure", p.Term_RECONFIGURE, []interface{}{}, opts)
 }
 
 // Status return the status of a table

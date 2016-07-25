@@ -28,7 +28,17 @@ func (q *Query) Build() []interface{} {
 	}
 
 	if len(q.Opts) > 0 {
-		res = append(res, q.Opts)
+		// Clone opts and remove custom gorethink options
+		opts := map[string]interface{}{}
+		for k, v := range q.Opts {
+			switch k {
+			case "geometry_format":
+			default:
+				opts[k] = v
+			}
+		}
+
+		res = append(res, opts)
 	}
 
 	return res
