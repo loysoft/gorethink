@@ -8,8 +8,7 @@ import (
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 
-// In order for 'go test' to run this suite, we need to create
-// a normal test function and pass our suite to suite.Run
+// ${description}
 func Test${module_name}Suite(t *testing.T) {
     suite.Run(t, new(${module_name}Suite ))
 }
@@ -21,6 +20,7 @@ type ${module_name}Suite struct {
 }
 
 func (suite *${module_name}Suite) SetupTest() {
+	suite.T().Log("Setting up ${module_name}Suite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -46,6 +46,8 @@ func (suite *${module_name}Suite) SetupTest() {
 }
 
 func (suite *${module_name}Suite) TearDownSuite() {
+	suite.T().Log("Tearing down ${module_name}Suite")
+
 	r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
     %for var_name in table_var_names:
 	 r.DB("test").TableDrop("${var_name}").Exec(suite.session)
@@ -57,6 +59,8 @@ func (suite *${module_name}Suite) TearDownSuite() {
 
 <%rendered_vars = set() %>\
 func (suite *${module_name}Suite) TestCases() {
+	suite.T().Log("Running ${module_name}Suite: ${description}")
+
 	%for var_name in table_var_names:
 	${var_name} := r.DB("test").Table("${var_name}")
 	%endfor
@@ -70,10 +74,24 @@ func (suite *${module_name}Suite) TestCases() {
     suite.T().Log("Possibly executing: ${item.line.go.replace('\\', '\\\\').replace('"', "'")}")
 
     %if item.varname in rendered_vars:
+    %if item.run_if_query:
+    ${item.varname} = maybeRun(${item.value}, nil, r.RunOpts{});
+    %else:
     ${item.varname} = ${item.value}
+    %endif
+    %elif item.run_if_query:
+    ${item.varname} := maybeRun(${item.value}, suite.session, r.RunOpts{
+		%if item.runopts:
+		%for key, val in item.runopts.items():
+		${key}: ${val},
+		%endfor
+		%endif
+	});
+<%rendered_vars.add(item.varname)%>\
     %else:
     var ${item.varname} ${item.vartype} = ${item.value}
-	<%rendered_vars.add(item.varname)%>\
+    _ = ${item.varname} // Prevent any noused variable errors
+<%rendered_vars.add(item.varname)%>\
     %endif
 
     %elif type(item) == GoQuery:
@@ -87,27 +105,19 @@ func (suite *${module_name}Suite) TestCases() {
     	suite.T().Log("About to run line #${item.line_num}: ${item.line.go.replace('"', "'").replace('\\', '\\\\').replace('\n', '\\n')}")
 
     	%if item.line.go.startswith('fetch(') and item.line.go.endswith(')'):
-        fetch(suite.Suite, suite.session, expected_, ${item.line.go[6:-1]}, r.RunOpts{
-			%if item.runopts:
-			%for key, val in item.runopts.items():
-			${key}: ${val},
-			%endfor
-			%endif
-    	})
+        fetchAndAssert(suite.Suite, expected_, ${item.line.go[6:-1]})
 	    %elif item.is_value:
         actual := ${item.line.go}
 
     	assertCompare(suite.T(), expected_, actual)
     	%else:
-        cursor, err := ${item.line.go}.Run(suite.session, r.RunOpts{
+        runAndAssert(suite.Suite, expected_, ${item.line.go}, suite.session, r.RunOpts{
 			%if item.runopts:
 			%for key, val in item.runopts.items():
 			${key}: ${val},
 			%endfor
 			%endif
     	})
-
-    	assertExpected(suite.Suite, expected_, cursor, err)
     	%endif
         suite.T().Log("Finished running line #${item.line_num}")
     }

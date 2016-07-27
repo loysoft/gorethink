@@ -13,17 +13,65 @@ import (
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 
-func fetch(suite suite.Suite, session *r.Session, expected_ interface{}, q r.Term, count int, opts r.RunOpts) {
+func maybeRun(query interface{}, session *r.Session, opts r.RunOpts) interface{} {
+	switch query := query.(type) {
+	case r.Term:
+		cursor, err := query.Run(session, opts)
+		if err != nil {
+			return err
+		}
+
+		return cursor
+	default:
+		return query
+	}
+}
+
+func runAndAssert(suite suite.Suite, expected, v interface{}, session *r.Session, opts r.RunOpts) {
+	var cursor *r.Cursor
+	var err error
+
+	switch v := v.(type) {
+	case r.Term:
+		cursor, err = v.Run(session, opts)
+	case *r.Cursor:
+		cursor = v
+	case error:
+		err = v
+	}
+
+	assertExpected(suite, expected, cursor, err)
+}
+
+func fetchAndAssert(suite suite.Suite, expected, result interface{}, count int) {
 	if count < 0 {
 		count = int(math.MaxInt64)
 	}
-	expected := Expected{
-		Val:        expected_,
-		Fetch:      true,
-		FetchCount: count,
+
+	switch v := expected.(type) {
+	case Expected:
+		v.Fetch = true
+		v.FetchCount = count
+
+		expected = v
+	default:
+		expected = Expected{
+			Val:        v,
+			Fetch:      true,
+			FetchCount: count,
+		}
 	}
 
-	cursor, err := q.Run(session, opts)
+	var cursor *r.Cursor
+	var err error
+
+	switch result := result.(type) {
+	case *r.Cursor:
+		cursor = result
+	case error:
+		err = result
+	}
+
 	assertExpected(suite, expected, cursor, err)
 }
 
@@ -95,7 +143,7 @@ func (expected Expected) assert(suite suite.Suite, obtainedCursor *r.Cursor, obt
 					obtained = append(obtained, v)
 
 					if len(obtained) >= expected.FetchCount {
-						obtainedCursor.Close()
+						break
 					}
 				}
 				suite.NoError(obtainedCursor.Err(), "Error returned when reading query response")
@@ -512,14 +560,14 @@ var Ast = struct {
 	Now           func() time.Time
 }{
 	func(tz string) *time.Location {
-		loc, _ := time.LoadLocation(tz)
+		t, _ := time.Parse("-07:00 UTC", tz+" UTC")
 
-		return loc
+		return t.Location()
 	},
 	func(ts float64, loc *time.Location) time.Time {
 		sec, nsec := math.Modf(ts)
 
-		return time.Unix(int64(sec), int64(nsec*1000)).In(loc)
+		return time.Unix(int64(sec), int64(nsec*1000)*1000000).In(loc)
 	},
 	time.Now,
 }
@@ -529,7 +577,7 @@ func UTCTimeZone() *time.Location {
 }
 
 func PacificTimeZone() *time.Location {
-	return Ast.RqlTzinfo("PST")
+	return Ast.RqlTzinfo("-07:00")
 }
 
 var FloatInfo = struct {

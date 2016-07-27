@@ -118,6 +118,10 @@ def _try_eval(node, context):
     r = context['r']
     try:
         value = eval(compiled_value, context)
+    except r.ReqlError:
+        raise Skip("Java type system prevents static Reql errors")
+    except AttributeError:
+        raise Skip("Java type system prevents attribute errors")
     except Exception as err:
         return type(err), err
     else:
