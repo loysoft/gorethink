@@ -277,8 +277,8 @@ func (suite *JsonSuite) TestCases() {
     	suite.T().Log("About to run line #52: r.Time(2014, 9, 11, 'Z')")
 
         runAndAssert(suite.Suite, expected_, r.Time(2014, 9, 11, "Z"), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			TimeFormat: "raw",
+			GeometryFormat: "raw",
     	})
         suite.T().Log("Finished running line #52")
     }

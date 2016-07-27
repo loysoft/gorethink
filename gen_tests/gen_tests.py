@@ -160,7 +160,7 @@ GO_DECL = re.compile(r'var (?P<var>\w+) (?P<type>.+) = (?P<value>.*)')
 
 
 def evaluate_snippet(snippet):
-    '''Just converts a single expression snippet into go'''
+    '''Just converts a single expression snippet into java'''
     try:
         parsed = ast.parse(snippet, mode='eval').body
     except Exception as e:
@@ -369,6 +369,9 @@ def ast_to_go(sequence, reql_vars):
 def is_reql(t):
     '''Determines if a type is a reql term'''
     # Other options for module: builtins, ?test?, datetime
+    if not hasattr(t, '__module__'):
+        return True
+
     return t.__module__ == 'rethinkdb.ast'
 
 
@@ -685,12 +688,7 @@ class GoVisitor(ast.NodeVisitor):
 
     def visit_Lambda(self, node):
         self.write("func")
-        if len(node.args.args) == 1:
-            self.write("(")
-            self.visit(node.args.args[0])
-            self.write(")")
-        else:
-            self.to_args(node.args.args)
+        self.to_args(node.args.args)
         self.write(" interface{} { return ")
         self.visit(node.body)
         self.write("}")
@@ -966,9 +964,9 @@ class ReQLVisitor(GoVisitor):
 
     def visit_Attribute(self, node, emit_parens=True):
         is_toplevel_constant = False
-        if attr_matches("r.row", node):
-            self.skip("todo: Java driver doesn't support r.row", fatal=True)
-        elif is_name("r", node.value) and node.attr in self.TOPLEVEL_CONSTANTS:
+        # if attr_matches("r.row", node):
+        # elif is_name("r", node.value) and node.attr in self.TOPLEVEL_CONSTANTS:
+        if is_name("r", node.value) and node.attr in self.TOPLEVEL_CONSTANTS:
             # Python has r.minval, r.saturday etc. We need to emit
             # r.minval() and r.saturday()
             is_toplevel_constant = True
@@ -996,6 +994,36 @@ class ReQLVisitor(GoVisitor):
                 raise Unhandled("GetAll only supports 0 or 1 optional arguments")
             node.func.attr = 'get_all_by_index'
             node.args = [node.keywords[0].value] + node.args
+            node.keywords = []
+        if (attr_equals(node.func, "attr", "min") and len(node.keywords) > 0):
+            if len(node.keywords) > 1:
+                raise Unhandled("Min only supports 0 or 1 optional arguments")
+            node.func.attr = 'min_index'
+            node.args = [node.keywords[0].value] + node.args
+            node.keywords = []
+        if (attr_equals(node.func, "attr", "max") and len(node.keywords) > 0):
+            if len(node.keywords) > 1:
+                raise Unhandled("Max only supports 0 or 1 optional arguments")
+            node.func.attr = 'max_index'
+            node.args = [node.keywords[0].value] + node.args
+            node.keywords = []
+        if (attr_equals(node.func, "attr", "group") and len(node.keywords) > 0):
+            index = None
+            multi = None
+            for keyword in node.keywords:
+                if keyword.arg == 'index':
+                    index = keyword.value
+                elif keyword.arg == 'multi' and type(keyword.arg) == ast.NameConstant and arg.value == True:
+                    multi = keyword.value
+
+            if index is not None:
+                node.func.attr = 'group_by_index'
+                node.args = [index] + node.args
+            elif multi is True:
+                node.func.attr = 'multi_group'
+            elif index is not None and multi is True:
+                node.func.attr = 'multi_group_by_index'
+                node.args = [index] + node.args
             node.keywords = []
         if (attr_equals(node.func, "attr", "union") and len(node.keywords) > 0):
             node.func.attr = 'union_with_opts'

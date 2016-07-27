@@ -1325,8 +1325,8 @@ func (suite *DatumBinarySuite) TestCases() {
     	suite.T().Log("About to run line #316: r.Binary(b)")
 
         runAndAssert(suite.Suite, expected_, r.Binary(b), suite.session, r.RunOpts{
-			BinaryFormat: "native",
 			GeometryFormat: "raw",
+			BinaryFormat: "native",
     	})
         suite.T().Log("Finished running line #316")
     }
@@ -1340,8 +1340,8 @@ func (suite *DatumBinarySuite) TestCases() {
     	suite.T().Log("About to run line #320: r.Binary(b)")
 
         runAndAssert(suite.Suite, expected_, r.Binary(b), suite.session, r.RunOpts{
-			BinaryFormat: "raw",
 			GeometryFormat: "raw",
+			BinaryFormat: "raw",
     	})
         suite.T().Log("Finished running line #320")
     }
