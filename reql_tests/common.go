@@ -491,6 +491,10 @@ func arrlen(length int, v interface{}) []interface{} {
 	return arr
 }
 
+func str(v interface{}) string {
+	return fmt.Sprintf("%v", v)
+}
+
 type Err struct {
 	Type    string
 	Message string

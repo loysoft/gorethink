@@ -179,8 +179,8 @@ func (suite *MutationSyncSuite) TestCases() {
     	suite.T().Log("About to run line #23: tbl.Sync()")
 
         runAndAssert(suite.Suite, expected_, tbl.Sync(), suite.session, r.RunOpts{
-			Durability: "soft",
 			GeometryFormat: "raw",
+			Durability: "soft",
     	})
         suite.T().Log("Finished running line #23")
     }
@@ -194,8 +194,8 @@ func (suite *MutationSyncSuite) TestCases() {
     	suite.T().Log("About to run line #27: tbl.Sync()")
 
         runAndAssert(suite.Suite, expected_, tbl.Sync(), suite.session, r.RunOpts{
-			Durability: "hard",
 			GeometryFormat: "raw",
+			Durability: "hard",
     	})
         suite.T().Log("Finished running line #27")
     }

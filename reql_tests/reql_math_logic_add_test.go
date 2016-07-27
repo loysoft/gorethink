@@ -169,20 +169,6 @@ func (suite *MathLogicAddSuite) TestCases() {
     }
 
     {
-        // math_logic/add.yaml line #38
-        /* [1,2,3,4,5,6,7,8] */
-        var expected_ []interface{} = []interface{}{1, 2, 3, 4, 5, 6, 7, 8}
-        /* r.expr([1,2]) + [3] + [4,5] + [6,7,8] */
-
-    	suite.T().Log("About to run line #38: r.Expr([]interface{}{1, 2}).Add([]interface{}{3}).Add([]interface{}{4, 5}).Add([]interface{}{6, 7, 8})")
-
-        runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{1, 2}).Add([]interface{}{3}).Add([]interface{}{4, 5}).Add([]interface{}{6, 7, 8}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #38")
-    }
-
-    {
         // math_logic/add.yaml line #52
         /* err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.", [1]) */
         var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")

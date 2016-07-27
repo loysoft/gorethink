@@ -459,64 +459,78 @@ class GoVisitor(ast.NodeVisitor):
             self.visit(arg)
 
     def to_args(self, args, func='', optargs=[]):
-        optarg_aliases = {
-            'HttpOpts': 'HTTPOpts',
-            'Iso8601Opts': 'ISO8601Opts',
-        }
-        optarg_field_aliases = {
-            'nonvoting_replica_tags': 'NonVotingReplicaTags',
-        }
-
+        optargs_first = False
         if func == 'js':
             self.skip("todo: js does not accept opts")
             return
-
-        if optargs:
-            print(optargs[0].value)
+        if func == 'union_with_opts':
+            optargs_first = True
 
         self.write("(")
+        if optargs and optargs_first:
+            self.to_args_optargs(func, optargs)
+            if args:
+                self.write(', ')
+
         if args:
             self.cast_null(args[0])
         for arg in args[1:]:
             self.write(', ')
             self.cast_null(arg)
-        if optargs:
-            if not func:
-                raise Unhandled("Missing function name")
-
-            optarg_type = camel(func) + 'Opts'
-            optarg_type = optarg_aliases.get(optarg_type, optarg_type)
-            optarg_type = 'r.' + optarg_type
-
+        if optargs and not optargs_first:
             if args:
                 self.write(', ')
 
-            self.write(optarg_type)
-            self.write('{')
-            for optarg in optargs:
-                # Hack to skip tests that check for unknown opt args,
-                # this is not possible in Go due to static types
-                if optarg.arg == 'return_vals':
-                    self.skip("test not required since optargs are statically typed")
-                    return
-                if optarg.arg == 'foo':
-                    self.skip("test not required since optargs are statically typed")
-                    return
-                if optarg.arg == 'replicas':
-                    self.skip("todo: replicas optarg is missing")
-                    return
-                if func == 'table_create' and optarg.arg == 'nonvoting_replica_tags':
-                    self.skip("todo: nonvoting_replica_tags optarg is missing for table_create")
-                    return
+            self.to_args_optargs(func, optargs)
 
-                field_name = optarg_field_aliases.get(optarg.arg, camel(optarg.arg))
-
-                self.write(field_name)
-                self.write(": ")
-                self.cast_null(optarg.value)
-                self.write(', ')
-            self.write('}')
         self.write(")")
+
+    def to_args_optargs(self, func='', optargs=[]):
+        optarg_aliases = {
+            'HttpOpts': 'HTTPOpts',
+            'Iso8601Opts': 'ISO8601Opts',
+            'UnionWithOptsOpts': 'UnionOpts',
+            'IndexCreateFuncOpts': 'IndexCreateOpts'
+        }
+        optarg_field_aliases = {
+            'nonvoting_replica_tags': 'NonVotingReplicaTags',
+        }
+
+        if not func:
+            raise Unhandled("Missing function name")
+
+        optarg_type = camel(func) + 'Opts'
+        optarg_type = optarg_aliases.get(optarg_type, optarg_type)
+        optarg_type = 'r.' + optarg_type
+
+        self.write(optarg_type)
+        self.write('{')
+        for optarg in optargs:
+            # Hack to skip tests that check for unknown opt args,
+            # this is not possible in Go due to static types
+            if optarg.arg == 'return_vals':
+                self.skip("test not required since optargs are statically typed")
+                return
+            if optarg.arg == 'foo':
+                self.skip("test not required since optargs are statically typed")
+                return
+            if optarg.arg == 'replicas':
+                self.skip("todo: replicas optarg is missing")
+                return
+            if optarg.arg == 'final_emit':
+                self.skip("todo: final_emit optarg is broken")
+                return
+            if func == 'table_create' and optarg.arg == 'nonvoting_replica_tags':
+                self.skip("todo: nonvoting_replica_tags optarg is missing for table_create")
+                return
+
+            field_name = optarg_field_aliases.get(optarg.arg, camel(optarg.arg))
+
+            self.write(field_name)
+            self.write(": ")
+            self.cast_null(optarg.value)
+            self.write(', ')
+        self.write('}')
 
     def generic_visit(self, node):
         logger.error("While translating: %s", ast.dump(node))
@@ -548,6 +562,9 @@ class GoVisitor(ast.NodeVisitor):
 
     def visit_Str(self, node):
         # Hack to skip irrelevant tests
+        if node.s == 'ReqlServerCompileError':
+            self.skip('todo: ReqlServerCompileError is broken')
+            return
         if node.s == 'Object keys must be strings.*':
             self.skip('The Go driver automatically converts object keys to strings')
             return
@@ -721,10 +738,11 @@ class GoVisitor(ast.NodeVisitor):
 
         self.write("(func() []interface{} {\n")
         self.write("    res := []interface{}{}\n")
-        self.write("    for i := %s; i < %s; i++ {\n" % (start, end))
-        self.write("        res = append(res, map[interface{}]interface{}{\n")
-        self.write("            \"id\": i,\n")
-        self.write("        })\n")
+        self.write("    for iterator_ := %s; iterator_ < %s; iterator_++ {\n" % (start, end))
+        self.write("        "); self.visit(gen.target); self.write(" := iterator_\n")
+        self.write("        res = append(res, ")
+        self.visit(node.elt)
+        self.write(")\n")
         self.write("    }\n")
         self.write("    return res\n")
         self.write("}())")
@@ -751,6 +769,8 @@ class GoVisitor(ast.NodeVisitor):
             return
         if self.is_array_concat(node):
             return
+        if self.is_byte_array_add(node):
+            return
 
         t = type(node.op)
         if t in opMap.keys():
@@ -764,6 +784,18 @@ class GoVisitor(ast.NodeVisitor):
                 self.visit(node.right)
             else:
                 raise Unhandled("Can't do exponent with non 2 base")
+
+    def is_byte_array_add(self, node):
+        '''Some places we do stuff like b'foo' + b'bar' and byte
+        arrays don't like that much'''
+        if (type(node.left) == ast.Bytes and
+           type(node.right) == ast.Bytes and
+           type(node.op) == ast.Add):
+            self.visit_Bytes(node.left, skip_suffix=True)
+            self.visit_Bytes(node.right, skip_prefix=True)
+            return True
+        else:
+            return False
 
     def is_string_mul(self, node):
         if ((type(node.left) == ast.Str and type(node.right) == ast.Num) and type(node.op) == ast.Mult):
@@ -796,19 +828,11 @@ class ReQLVisitor(GoVisitor):
         'error'
     }
 
-    def is_byte_array_add(self, node):
-        '''Some places we do stuff like b'foo' + b'bar' and byte
-        arrays don't like that much'''
-        if (type(node.left) == ast.Bytes and
-           type(node.right) == ast.Bytes and
-           type(node.op) == ast.Add):
-            self.visit_Bytes(node.left, skip_suffix=True)
-            self.visit_Bytes(node.right, skip_prefix=True)
-            return True
-        else:
-            return False
-
     def visit_BinOp(self, node):
+        if self.is_string_mul(node):
+            return
+        if self.is_array_concat(node):
+            return
         if self.is_byte_array_add(node):
             return
         opMap = {
@@ -978,10 +1002,14 @@ class ReQLVisitor(GoVisitor):
             super(ReQLVisitor, self).visit_UnaryOp(node)
 
     def visit_Call(self, node):
-        if (attr_equals(node.func, "attr", "get_all") and len(node.keywords) == 1):
+        if (attr_equals(node.func, "attr", "get_all") and len(node.keywords) > 0):
+            if len(node.keywords) > 1:
+                raise Unhandled("GetAll only supports 0 or 1 optional arguments")
             node.func.attr = 'get_all_by_index'
-            node.args.append(node.keywords[0].value)
+            node.args = [node.keywords[0].value] + node.args
             node.keywords = []
+        if (attr_equals(node.func, "attr", "union") and len(node.keywords) > 0):
+            node.func.attr = 'union_with_opts'
         if (attr_equals(node.func, "attr", "index_create") and len(node.args) == 2):
             node.func.attr = 'index_create_func'
             node.keywords = []

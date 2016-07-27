@@ -77,14 +77,13 @@ func (suite *PolymorphismSuite) TestCases() {
         var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 3, }
         /* tbl.insert([{'id':i, 'a':i} for i in xrange(3)]) */
 
-    	suite.T().Log("About to run line #7: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for i := 0; i < 3; i++ {\n        res = append(res, map[interface{}]interface{}{\n            'id': i,\n        })\n    }\n    return res\n}()))")
+    	suite.T().Log("About to run line #7: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 0; iterator_ < 3; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': i, 'a': i, })\n    }\n    return res\n}()))")
 
         runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
-    for i := 0; i < 3; i++ {
-        res = append(res, map[interface{}]interface{}{
-            "id": i,
-        })
+    for iterator_ := 0; iterator_ < 3; iterator_++ {
+        i := iterator_
+        res = append(res, map[interface{}]interface{}{"id": i, "a": i, })
     }
     return res
 }())), suite.session, r.RunOpts{

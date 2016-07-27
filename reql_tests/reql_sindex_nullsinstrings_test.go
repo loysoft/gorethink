@@ -111,9 +111,9 @@ func (suite *SindexNullsinstringsSuite) TestCases() {
         var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"id": 2, }}
         /* tbl.get_all(["a\u0000Sb"], index="key").pluck("id") */
 
-    	suite.T().Log("About to run line #13: tbl.GetAllByIndex([]interface{}{'a\\u0000Sb'}, 'key').Pluck('id')")
+    	suite.T().Log("About to run line #13: tbl.GetAllByIndex('key', []interface{}{'a\\u0000Sb'}).Pluck('id')")
 
-        runAndAssert(suite.Suite, expected_, tbl.GetAllByIndex([]interface{}{"a\u0000Sb"}, "key").Pluck("id"), suite.session, r.RunOpts{
+        runAndAssert(suite.Suite, expected_, tbl.GetAllByIndex("key", []interface{}{"a\u0000Sb"}).Pluck("id"), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
     	})
         suite.T().Log("Finished running line #13")
@@ -125,9 +125,9 @@ func (suite *SindexNullsinstringsSuite) TestCases() {
         var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"id": 1, }}
         /* tbl.get_all(["a","b"], index="key").pluck("id") */
 
-    	suite.T().Log("About to run line #18: tbl.GetAllByIndex([]interface{}{'a', 'b'}, 'key').Pluck('id')")
+    	suite.T().Log("About to run line #18: tbl.GetAllByIndex('key', []interface{}{'a', 'b'}).Pluck('id')")
 
-        runAndAssert(suite.Suite, expected_, tbl.GetAllByIndex([]interface{}{"a", "b"}, "key").Pluck("id"), suite.session, r.RunOpts{
+        runAndAssert(suite.Suite, expected_, tbl.GetAllByIndex("key", []interface{}{"a", "b"}).Pluck("id"), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
     	})
         suite.T().Log("Finished running line #18")

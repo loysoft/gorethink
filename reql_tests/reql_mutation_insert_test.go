@@ -574,23 +574,21 @@ func (suite *MutationInsertSuite) TestCases() {
         /* partial({'changes':[{'old_val': None, 'new_val': {'id': 100+i, 'ordered-num': i}} for i in range(1,100)] }) */
         var expected_ Expected = partial(map[interface{}]interface{}{"changes": (func() []interface{} {
     res := []interface{}{}
-    for i := 1; i < 100; i++ {
-        res = append(res, map[interface{}]interface{}{
-            "id": i,
-        })
+    for iterator_ := 1; iterator_ < 100; iterator_++ {
+        i := iterator_
+        res = append(res, map[interface{}]interface{}{"old_val": nil, "new_val": map[interface{}]interface{}{"id": 100 + i, "ordered-num": i, }, })
     }
     return res
 }()), })
         /* tbl.insert([{'id':100+i, 'ordered-num':i} for i in range(1,100)], return_changes="always") */
 
-    	suite.T().Log("About to run line #163: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for i := 1; i < 100; i++ {\n        res = append(res, map[interface{}]interface{}{\n            'id': i,\n        })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
+    	suite.T().Log("About to run line #163: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': r.Add(100, i), 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
 
         runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
-    for i := 1; i < 100; i++ {
-        res = append(res, map[interface{}]interface{}{
-            "id": i,
-        })
+    for iterator_ := 1; iterator_ < 100; iterator_++ {
+        i := iterator_
+        res = append(res, map[interface{}]interface{}{"id": r.Add(100, i), "ordered-num": i, })
     }
     return res
 }()), r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
@@ -604,23 +602,21 @@ func (suite *MutationInsertSuite) TestCases() {
         /* partial({'changes':[{'old_val': None, 'new_val': {'id': [1,"blah", 200+i], 'ordered-num': i}} for i in range(1,100)] }) */
         var expected_ Expected = partial(map[interface{}]interface{}{"changes": (func() []interface{} {
     res := []interface{}{}
-    for i := 1; i < 100; i++ {
-        res = append(res, map[interface{}]interface{}{
-            "id": i,
-        })
+    for iterator_ := 1; iterator_ < 100; iterator_++ {
+        i := iterator_
+        res = append(res, map[interface{}]interface{}{"old_val": nil, "new_val": map[interface{}]interface{}{"id": []interface{}{1, "blah", 200 + i}, "ordered-num": i, }, })
     }
     return res
 }()), })
         /* tbl.insert([{'id':[1, "blah", 200+i], 'ordered-num':i} for i in range(1,100)], return_changes="always") */
 
-    	suite.T().Log("About to run line #167: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for i := 1; i < 100; i++ {\n        res = append(res, map[interface{}]interface{}{\n            'id': i,\n        })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
+    	suite.T().Log("About to run line #167: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': []interface{}{1, 'blah', r.Add(200, i)}, 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
 
         runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
-    for i := 1; i < 100; i++ {
-        res = append(res, map[interface{}]interface{}{
-            "id": i,
-        })
+    for iterator_ := 1; iterator_ < 100; iterator_++ {
+        i := iterator_
+        res = append(res, map[interface{}]interface{}{"id": []interface{}{1, "blah", r.Add(200, i)}, "ordered-num": i, })
     }
     return res
 }()), r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
@@ -634,23 +630,21 @@ func (suite *MutationInsertSuite) TestCases() {
         /* partial({'changes':[{'old_val': None, 'new_val': {'id': [1,"blah", 300+i], 'ordered-num': i}} for i in range(1,100)] }) */
         var expected_ Expected = partial(map[interface{}]interface{}{"changes": (func() []interface{} {
     res := []interface{}{}
-    for i := 1; i < 100; i++ {
-        res = append(res, map[interface{}]interface{}{
-            "id": i,
-        })
+    for iterator_ := 1; iterator_ < 100; iterator_++ {
+        i := iterator_
+        res = append(res, map[interface{}]interface{}{"old_val": nil, "new_val": map[interface{}]interface{}{"id": []interface{}{1, "blah", 300 + i}, "ordered-num": i, }, })
     }
     return res
 }()), })
         /* tbl.insert([{'id':[1, "blah", 300+i], 'ordered-num':i} for i in range(1,100)], return_changes=true) */
 
-    	suite.T().Log("About to run line #171: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for i := 1; i < 100; i++ {\n        res = append(res, map[interface{}]interface{}{\n            'id': i,\n        })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: true, })")
+    	suite.T().Log("About to run line #171: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': []interface{}{1, 'blah', r.Add(300, i)}, 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: true, })")
 
         runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
-    for i := 1; i < 100; i++ {
-        res = append(res, map[interface{}]interface{}{
-            "id": i,
-        })
+    for iterator_ := 1; iterator_ < 100; iterator_++ {
+        i := iterator_
+        res = append(res, map[interface{}]interface{}{"id": []interface{}{1, "blah", r.Add(300, i)}, "ordered-num": i, })
     }
     return res
 }()), r.InsertOpts{ReturnChanges: true, }), suite.session, r.RunOpts{
@@ -664,23 +658,21 @@ func (suite *MutationInsertSuite) TestCases() {
         /* partial({'changes':[{'old_val': {'id':100+i, 'ordered-num':i}, 'new_val': {'id':100+i, 'ordered-num':i}, 'error':'Duplicate primary key `id`:\n{\n\t"id":\t'+str(100+i)+',\n\t"ordered-num":\t'+str(i)+'\n}\n{\n\t"id":\t'+str(100+i)+',\n\t"ordered-num":\t'+str(i)+'\n}'} for i in range(1,100)]}) */
         var expected_ Expected = partial(map[interface{}]interface{}{"changes": (func() []interface{} {
     res := []interface{}{}
-    for i := 1; i < 100; i++ {
-        res = append(res, map[interface{}]interface{}{
-            "id": i,
-        })
+    for iterator_ := 1; iterator_ < 100; iterator_++ {
+        i := iterator_
+        res = append(res, map[interface{}]interface{}{"old_val": map[interface{}]interface{}{"id": 100 + i, "ordered-num": i, }, "new_val": map[interface{}]interface{}{"id": 100 + i, "ordered-num": i, }, "error": "Duplicate primary key `id`:\n{\n\t\"id\":\t" + str(100 + i) + ",\n\t\"ordered-num\":\t" + str(i) + "\n}\n{\n\t\"id\":\t" + str(100 + i) + ",\n\t\"ordered-num\":\t" + str(i) + "\n}", })
     }
     return res
 }()), })
         /* tbl.insert([{'id':100 + i, 'ordered-num':i} for i in range(1,100)], return_changes="always") */
 
-    	suite.T().Log("About to run line #175: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for i := 1; i < 100; i++ {\n        res = append(res, map[interface{}]interface{}{\n            'id': i,\n        })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
+    	suite.T().Log("About to run line #175: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': r.Add(100, i), 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
 
         runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
-    for i := 1; i < 100; i++ {
-        res = append(res, map[interface{}]interface{}{
-            "id": i,
-        })
+    for iterator_ := 1; iterator_ < 100; iterator_++ {
+        i := iterator_
+        res = append(res, map[interface{}]interface{}{"id": r.Add(100, i), "ordered-num": i, })
     }
     return res
 }()), r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
@@ -695,9 +687,9 @@ func (suite *MutationInsertSuite) TestCases() {
         var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"error": "Duplicate primary key `id`:\n{\n\t\"id\":\t123,\n\t\"ordered-num\":\t23\n}\n{\n\t\"id\":\t123\n}", "new_val": map[interface{}]interface{}{"id": 123, "ordered-num": 23, }, "old_val": map[interface{}]interface{}{"id": 123, "ordered-num": 23, }, }, map[interface{}]interface{}{"error": "Primary key too long (max 127 characters): \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"", "new_val": nil, "old_val": nil, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"id": 321, }, "old_val": nil, }}, "deleted": 0, "errors": 2, "first_error": "Primary key too long (max 127 characters): \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"", "inserted": 1, "replaced": 0, "skipped": 0, "unchanged": 0, }
         /* tbl.insert([{'id':123}, {'id':'a'*500}, {'id':321}], return_changes="always") */
 
-    	suite.T().Log("About to run line #179: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 123, }, map[interface{}]interface{}{'id': r.Mul('a', 500), }, map[interface{}]interface{}{'id': 321, }}, r.InsertOpts{ReturnChanges: 'always', })")
+    	suite.T().Log("About to run line #179: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 123, }, map[interface{}]interface{}{'id': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', }, map[interface{}]interface{}{'id': 321, }}, r.InsertOpts{ReturnChanges: 'always', })")
 
-        runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"id": 123, }, map[interface{}]interface{}{"id": r.Mul("a", 500), }, map[interface{}]interface{}{"id": 321, }}, r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
+        runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"id": 123, }, map[interface{}]interface{}{"id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", }, map[interface{}]interface{}{"id": 321, }}, r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
     	})
         suite.T().Log("Finished running line #179")
@@ -709,14 +701,13 @@ func (suite *MutationInsertSuite) TestCases() {
         var expected_ Expected = partial(map[interface{}]interface{}{"changes": []interface{}{}, })
         /* tbl.insert([{'id':100 + i, 'ordered-num':i} for i in range(1,100)], return_changes=true) */
 
-    	suite.T().Log("About to run line #183: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for i := 1; i < 100; i++ {\n        res = append(res, map[interface{}]interface{}{\n            'id': i,\n        })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: true, })")
+    	suite.T().Log("About to run line #183: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': r.Add(100, i), 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: true, })")
 
         runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
-    for i := 1; i < 100; i++ {
-        res = append(res, map[interface{}]interface{}{
-            "id": i,
-        })
+    for iterator_ := 1; iterator_ < 100; iterator_++ {
+        i := iterator_
+        res = append(res, map[interface{}]interface{}{"id": r.Add(100, i), "ordered-num": i, })
     }
     return res
 }()), r.InsertOpts{ReturnChanges: true, }), suite.session, r.RunOpts{
