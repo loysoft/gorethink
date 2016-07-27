@@ -92,6 +92,20 @@ func (suite *TransformFoldSuite) TestCases() {
     }
 
     {
+        // transform/fold.yaml line #23
+        /* 20 */
+        var expected_ int = 20
+        /* r.range(0, 10).fold(0, lambda acc, row: acc.add(1), final_emit=lambda acc: acc.mul(2)) */
+
+    	suite.T().Log("About to run line #23: r.Range(0, 10).Fold(0, func(acc r.Term, row r.Term) interface{} { return acc.Add(1)}, r.FoldOpts{FinalEmit: func(acc r.Term) interface{} { return acc.Mul(2)}, })")
+
+        runAndAssert(suite.Suite, expected_, r.Range(0, 10).Fold(0, func(acc r.Term, row r.Term) interface{} { return acc.Add(1)}, r.FoldOpts{FinalEmit: func(acc r.Term) interface{} { return acc.Mul(2)}, }), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #23")
+    }
+
+    {
         // transform/fold.yaml line #27
         /* [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] */
         var expected_ []interface{} = []interface{}{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
@@ -103,6 +117,20 @@ func (suite *TransformFoldSuite) TestCases() {
 			GeometryFormat: "raw",
     	})
         suite.T().Log("Finished running line #27")
+    }
+
+    {
+        // transform/fold.yaml line #31
+        /* [2, 5, 8, 10] */
+        var expected_ []interface{} = []interface{}{2, 5, 8, 10}
+        /* r.range(0, 10).fold(0, lambda acc, row: acc.add(1), emit=lambda old,row,acc: r.branch(acc.mod(3).eq(0),[row],[]),final_emit=lambda acc: [acc]).coerce_to("array") */
+
+    	suite.T().Log("About to run line #31: r.Range(0, 10).Fold(0, func(acc r.Term, row r.Term) interface{} { return acc.Add(1)}, r.FoldOpts{Emit: func(old r.Term, row r.Term, acc r.Term) interface{} { return r.Branch(acc.Mod(3).Eq(0), []interface{}{row}, []interface{}{})}, FinalEmit: func(acc r.Term) interface{} { return []interface{}{acc}}, }).CoerceTo('array')")
+
+        runAndAssert(suite.Suite, expected_, r.Range(0, 10).Fold(0, func(acc r.Term, row r.Term) interface{} { return acc.Add(1)}, r.FoldOpts{Emit: func(old r.Term, row r.Term, acc r.Term) interface{} { return r.Branch(acc.Mod(3).Eq(0), []interface{}{row}, []interface{}{})}, FinalEmit: func(acc r.Term) interface{} { return []interface{}{acc}}, }).CoerceTo("array"), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #31")
     }
 
     {

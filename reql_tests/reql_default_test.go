@@ -569,6 +569,34 @@ func (suite *DefaultSuite) TestCases() {
     }
 
     {
+        // default.yaml line #131
+        /* [{}, {'a':1}] */
+        var expected_ []interface{} = []interface{}{map[interface{}]interface{}{}, map[interface{}]interface{}{"a": 1, }}
+        /* arr.filter(lambda x:x['a'].eq(1), default=r.js('true')) */
+
+    	suite.T().Log("About to run line #131: arr.Filter(func(x r.Term) interface{} { return x.AtIndex('a').Eq(1)}, r.FilterOpts{Default: r.JS('true'), })")
+
+        runAndAssert(suite.Suite, expected_, arr.Filter(func(x r.Term) interface{} { return x.AtIndex("a").Eq(1)}, r.FilterOpts{Default: r.JS("true"), }), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #131")
+    }
+
+    {
+        // default.yaml line #135
+        /* [{'a':1}] */
+        var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"a": 1, }}
+        /* arr.filter(lambda x:x['a'].eq(1), default=r.js('false')) */
+
+    	suite.T().Log("About to run line #135: arr.Filter(func(x r.Term) interface{} { return x.AtIndex('a').Eq(1)}, r.FilterOpts{Default: r.JS('false'), })")
+
+        runAndAssert(suite.Suite, expected_, arr.Filter(func(x r.Term) interface{} { return x.AtIndex("a").Eq(1)}, r.FilterOpts{Default: r.JS("false"), }), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #135")
+    }
+
+    {
         // default.yaml line #139
         /* err("ReqlNonExistenceError", "No attribute `a` in object:", []) */
         var expected_ Err = err("ReqlNonExistenceError", "No attribute `a` in object:")

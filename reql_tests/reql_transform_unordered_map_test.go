@@ -204,6 +204,20 @@ func (suite *TransformUnorderedMapSuite) TestCases() {
     }
 
     {
+        // transform/unordered_map.yaml line #46
+        /* err("ReqlServerCompileError", "DESC may only be used as an argument to ORDER_BY or UNION.") */
+        var expected_ Err = err("ReqlCompileError", "DESC may only be used as an argument to ORDER_BY or UNION.")
+        /* odd.order_by("num").union(even.order_by("num"), interleave=lambda x: r.desc(x["num"])) */
+
+    	suite.T().Log("About to run line #46: odd.OrderBy('num').UnionWithOpts(r.UnionOpts{Interleave: func(x r.Term) interface{} { return r.Desc(x.AtIndex('num'))}, }, even.OrderBy('num'))")
+
+        runAndAssert(suite.Suite, expected_, odd.OrderBy("num").UnionWithOpts(r.UnionOpts{Interleave: func(x r.Term) interface{} { return r.Desc(x.AtIndex("num"))}, }, even.OrderBy("num")), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #46")
+    }
+
+    {
         // transform/unordered_map.yaml line #50
         /* [{"id":6, "num":6}, {"id":5, "num":5}, {"id":4, "num":4}, {"id":3, "num":3}, {"id":2, "num":2}, {"id":1, "num":1}] */
         var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"id": 6, "num": 6, }, map[interface{}]interface{}{"id": 5, "num": 5, }, map[interface{}]interface{}{"id": 4, "num": 4, }, map[interface{}]interface{}{"id": 3, "num": 3, }, map[interface{}]interface{}{"id": 2, "num": 2, }, map[interface{}]interface{}{"id": 1, "num": 1, }}

@@ -69,4 +69,18 @@ func (suite *DatumTypeofSuite) TestCases() {
     	})
         suite.T().Log("Finished running line #5")
     }
+
+    {
+        // datum/typeof.yaml line #9
+        /* 'NULL' */
+        var expected_ string = "NULL"
+        /* r.type_of(null) */
+
+    	suite.T().Log("About to run line #9: r.TypeOf(nil)")
+
+        runAndAssert(suite.Suite, expected_, r.TypeOf(nil), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #9")
+    }
 }

@@ -460,9 +460,6 @@ class GoVisitor(ast.NodeVisitor):
 
     def to_args(self, args, func='', optargs=[]):
         optargs_first = False
-        if func == 'js':
-            self.skip("todo: js does not accept opts")
-            return
         if func == 'union_with_opts':
             optargs_first = True
 
@@ -487,6 +484,7 @@ class GoVisitor(ast.NodeVisitor):
 
     def to_args_optargs(self, func='', optargs=[]):
         optarg_aliases = {
+            'JsOpts': 'JSOpts',
             'HttpOpts': 'HTTPOpts',
             'Iso8601Opts': 'ISO8601Opts',
             'UnionWithOptsOpts': 'UnionOpts',
@@ -513,15 +511,6 @@ class GoVisitor(ast.NodeVisitor):
                 return
             if optarg.arg == 'foo':
                 self.skip("test not required since optargs are statically typed")
-                return
-            if optarg.arg == 'replicas':
-                self.skip("todo: replicas optarg is missing")
-                return
-            if optarg.arg == 'final_emit':
-                self.skip("todo: final_emit optarg is broken")
-                return
-            if func == 'table_create' and optarg.arg == 'nonvoting_replica_tags':
-                self.skip("todo: nonvoting_replica_tags optarg is missing for table_create")
                 return
 
             field_name = optarg_field_aliases.get(optarg.arg, camel(optarg.arg))
@@ -561,12 +550,14 @@ class GoVisitor(ast.NodeVisitor):
             self.visit(node.value)
 
     def visit_Str(self, node):
-        # Hack to skip irrelevant tests
         if node.s == 'ReqlServerCompileError':
-            self.skip('todo: ReqlServerCompileError is broken')
-            return
+            node.s = 'ReqlCompileError'
+        # Hack to skip irrelevant tests
         if node.s == 'Object keys must be strings.*':
-            self.skip('The Go driver automatically converts object keys to strings')
+            self.skip('the Go driver automatically converts object keys to strings')
+            return
+        if node.s.startswith('\'module\' object has no attribute '):
+            self.skip('test not required since terms are statically typed')
             return
         self.to_str(node.s)
 
@@ -977,8 +968,6 @@ class ReQLVisitor(GoVisitor):
         is_toplevel_constant = False
         if attr_matches("r.row", node):
             self.skip("todo: Java driver doesn't support r.row", fatal=True)
-        if attr_matches("r.type_of", node):        # TODO: Skip broken tests for now
-            self.skip("todo: type_of is currently broken")
         elif is_name("r", node.value) and node.attr in self.TOPLEVEL_CONSTANTS:
             # Python has r.minval, r.saturday etc. We need to emit
             # r.minval() and r.saturday()
@@ -1022,30 +1011,11 @@ class ReQLVisitor(GoVisitor):
         super_result = super(ReQLVisitor, self).visit_Call(node)
 
         # r.expr(v, 1) should be skipped
-        if (attr_equals(node.func, "attr", "rebalance")):
-            self.skip("todo: missing rebalance function")
         if (attr_equals(node.func, "attr", "expr") and len(node.args) > 1):
             self.skip("the go driver only accepts one parameter to expr")
         # r.table_create("a", "b") should be skipped
         if (attr_equals(node.func, "attr", "table_create") and len(node.args) > 1):
             self.skip("the go driver only accepts one parameter to table_create")
-    #     # map(1) should be skipped
-    #     elif attr_equals(node.func, "attr", "map"):
-    #         def check(node):
-    #             if type(node) == ast.Lambda:
-    #                 return True
-    #             elif hasattr(node, "func") and attr_matches("r.js", node.func):
-    #                 return True
-    #             elif type(node) == ast.Dict:
-    #                 return True
-    #             elif type(node) == ast.Name:
-    #                 # The assumption is that if you're passing a
-    #                 # variable to map, it's at least potentially a
-    #                 # function. This may be misguided
-    #                 return True
-    #             else:
-    #                 return False
-    #     else:
         return super_result
 
 class Renderer(object):

@@ -457,4 +457,46 @@ func (suite *TimesTimeArithSuite) TestCases() {
     	})
         suite.T().Log("Finished running line #179")
     }
+
+    {
+        // times/time_arith.yaml line #185
+        /* rt1 */
+        var expected_ float64 = rt1
+        /* r.epoch_time(rt1).do(r.js("(function(data){return data})")).to_epoch_time() */
+
+    	suite.T().Log("About to run line #185: r.EpochTime(rt1).Do(r.JS('(function(data){return data})')).ToEpochTime()")
+
+        runAndAssert(suite.Suite, expected_, r.EpochTime(rt1).Do(r.JS("(function(data){return data})")).ToEpochTime(), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #185")
+    }
+
+    {
+        // times/time_arith.yaml line #190
+        /* ("2012-08-01T00:00:00+00:00") */
+        var expected_ string = "2012-08-01T00:00:00+00:00"
+        /* r.do(r.js("new Date('2012-08-01')")).to_iso8601() */
+
+    	suite.T().Log("About to run line #190: r.Do(r.JS('new Date('2012-08-01')')).ToISO8601()")
+
+        runAndAssert(suite.Suite, expected_, r.Do(r.JS("new Date('2012-08-01')")).ToISO8601(), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #190")
+    }
+
+    {
+        // times/time_arith.yaml line #195
+        /* ("2012-08-01T00:00:00+00:00") */
+        var expected_ string = "2012-08-01T00:00:00+00:00"
+        /* r.do(r.js("(function(x){doc = new Object(); doc.date = new Date('2012-08-01'); return doc;})"))["date"].to_iso8601() */
+
+    	suite.T().Log("About to run line #195: r.Do(r.JS('(function(x){doc = new Object(); doc.date = new Date('2012-08-01'); return doc;})')).AtIndex('date').ToISO8601()")
+
+        runAndAssert(suite.Suite, expected_, r.Do(r.JS("(function(x){doc = new Object(); doc.date = new Date('2012-08-01'); return doc;})")).AtIndex("date").ToISO8601(), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #195")
+    }
 }

@@ -85,6 +85,20 @@ func (suite *DatumUuidSuite) TestCases() {
     }
 
     {
+        // datum/uuid.yaml line #7
+        /* 'STRING' */
+        var expected_ string = "STRING"
+        /* r.type_of(r.uuid()) */
+
+    	suite.T().Log("About to run line #7: r.TypeOf(r.UUID())")
+
+        runAndAssert(suite.Suite, expected_, r.TypeOf(r.UUID()), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #7")
+    }
+
+    {
         // datum/uuid.yaml line #9
         /* true */
         var expected_ bool = true

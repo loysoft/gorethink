@@ -57,6 +57,90 @@ func (suite *TimeoutSuite) TestCases() {
 
 
     {
+        // timeout.yaml line #5
+        /* err("ReqlQueryLogicError", "JavaScript query `while(true) {}` timed out after 5.000 seconds.", [0]) */
+        var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `while(true) {}` timed out after 5.000 seconds.")
+        /* r.js('while(true) {}') */
+
+    	suite.T().Log("About to run line #5: r.JS('while(true) {}')")
+
+        runAndAssert(suite.Suite, expected_, r.JS("while(true) {}"), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #5")
+    }
+
+    {
+        // timeout.yaml line #8
+        /* err("ReqlQueryLogicError", "JavaScript query `while(true) {}` timed out after 1.300 seconds.", [0]) */
+        var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `while(true) {}` timed out after 1.300 seconds.")
+        /* r.js('while(true) {}', timeout=1.3) */
+
+    	suite.T().Log("About to run line #8: r.JS('while(true) {}', r.JSOpts{Timeout: 1.3, })")
+
+        runAndAssert(suite.Suite, expected_, r.JS("while(true) {}", r.JSOpts{Timeout: 1.3, }), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #8")
+    }
+
+    {
+        // timeout.yaml line #13
+        /* err("ReqlQueryLogicError", "JavaScript query `while(true) {}` timed out after 8.000 seconds.", [0]) */
+        var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `while(true) {}` timed out after 8.000 seconds.")
+        /* r.js('while(true) {}', timeout=8) */
+
+    	suite.T().Log("About to run line #13: r.JS('while(true) {}', r.JSOpts{Timeout: 8, })")
+
+        runAndAssert(suite.Suite, expected_, r.JS("while(true) {}", r.JSOpts{Timeout: 8, }), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #13")
+    }
+
+    {
+        // timeout.yaml line #18
+        /* err("ReqlQueryLogicError", "JavaScript query `(function(x) { while(true) {} })` timed out after 5.000 seconds.", [0]) */
+        var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `(function(x) { while(true) {} })` timed out after 5.000 seconds.")
+        /* r.expr('foo').do(r.js('(function(x) { while(true) {} })')) */
+
+    	suite.T().Log("About to run line #18: r.Expr('foo').Do(r.JS('(function(x) { while(true) {} })'))")
+
+        runAndAssert(suite.Suite, expected_, r.Expr("foo").Do(r.JS("(function(x) { while(true) {} })")), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #18")
+    }
+
+    {
+        // timeout.yaml line #21
+        /* err("ReqlQueryLogicError", "JavaScript query `(function(x) { while(true) {} })` timed out after 1.300 seconds.", [0]) */
+        var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `(function(x) { while(true) {} })` timed out after 1.300 seconds.")
+        /* r.expr('foo').do(r.js('(function(x) { while(true) {} })', timeout=1.3)) */
+
+    	suite.T().Log("About to run line #21: r.Expr('foo').Do(r.JS('(function(x) { while(true) {} })', r.JSOpts{Timeout: 1.3, }))")
+
+        runAndAssert(suite.Suite, expected_, r.Expr("foo").Do(r.JS("(function(x) { while(true) {} })", r.JSOpts{Timeout: 1.3, })), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #21")
+    }
+
+    {
+        // timeout.yaml line #26
+        /* err("ReqlQueryLogicError", "JavaScript query `(function(x) { while(true) {} })` timed out after 8.000 seconds.", [0]) */
+        var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `(function(x) { while(true) {} })` timed out after 8.000 seconds.")
+        /* r.expr('foo').do(r.js('(function(x) { while(true) {} })', timeout=8)) */
+
+    	suite.T().Log("About to run line #26: r.Expr('foo').Do(r.JS('(function(x) { while(true) {} })', r.JSOpts{Timeout: 8, }))")
+
+        runAndAssert(suite.Suite, expected_, r.Expr("foo").Do(r.JS("(function(x) { while(true) {} })", r.JSOpts{Timeout: 8, })), suite.session, r.RunOpts{
+			GeometryFormat: "raw",
+    	})
+        suite.T().Log("Finished running line #26")
+    }
+
+    {
         // timeout.yaml line #32
         /* err("ReqlNonExistenceError", "Error in HTTP GET of `httpbin.org/delay/10`:" + " timed out after 0.800 seconds.", []) */
         var expected_ Err = err("ReqlNonExistenceError", "Error in HTTP GET of `httpbin.org/delay/10`:" + " timed out after 0.800 seconds.")
