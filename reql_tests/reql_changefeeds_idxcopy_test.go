@@ -157,9 +157,9 @@ func (suite *ChangefeedsIdxcopySuite) TestCases() {
         var expected_ Expected = bag([]interface{}{map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"a": 5, "id": 0, }, "old_val": nil, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"a": 5, "id": 2, }, "old_val": nil, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"a": 5, "id": 3, }, "old_val": nil, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"a": 5, "id": 4, }, "old_val": nil, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"a": 5, "id": 5, }, "old_val": nil, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"a": 5, "id": 6, }, "old_val": nil, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"a": 5, "id": 7, }, "old_val": nil, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"a": 5, "id": 10, }, "old_val": nil, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"a": 5, "id": 11, }, "old_val": nil, }})
         /* fetch(feed) */
 
-    	suite.T().Log("About to run line #28: fetch(feed)")
+    	suite.T().Log("About to run line #28: fetch(feed, 0)")
 
-        fetchAndAssert(suite.Suite, expected_, feed)
+        fetchAndAssert(suite.Suite, expected_, feed, 0)
         suite.T().Log("Finished running line #28")
     }
 }

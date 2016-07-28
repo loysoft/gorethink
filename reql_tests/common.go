@@ -75,6 +75,19 @@ func fetchAndAssert(suite suite.Suite, expected, result interface{}, count int) 
 	assertExpected(suite, expected, cursor, err)
 }
 
+func maybeLen(v interface{}) interface{} {
+	switch v := v.(type) {
+	case *r.Cursor:
+		result := []interface{}{}
+		v.All(&result)
+		return len(result)
+	case error:
+		return 0
+	default:
+		return v
+	}
+}
+
 func assertExpected(suite suite.Suite, expected interface{}, obtainedCursor *r.Cursor, obtainedErr error) {
 	if expected == AnythingIsFine {
 		suite.Require().NoError(obtainedErr, "Query returned unexpected error")

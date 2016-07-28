@@ -127,34 +127,6 @@ func (suite *ControlSuite) TestCases() {
     }
 
     {
-        // control.yaml line #28
-        /* err("ReqlQueryLogicError", 'Expected function with 2 arguments but found function with 1 argument.', [1]) */
-        var expected_ Err = err("ReqlQueryLogicError", "Expected function with 2 arguments but found function with 1 argument.")
-        /* r.do(1, 2, lambda x: x) */
-
-    	suite.T().Log("About to run line #28: r.Do(1, 2, func(x r.Term) interface{} { return x})")
-
-        runAndAssert(suite.Suite, expected_, r.Do(1, 2, func(x r.Term) interface{} { return x}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #28")
-    }
-
-    {
-        // control.yaml line #33
-        /* err("ReqlQueryLogicError", 'Expected function with 3 arguments but found function with 2 arguments.', [1]) */
-        var expected_ Err = err("ReqlQueryLogicError", "Expected function with 3 arguments but found function with 2 arguments.")
-        /* r.do(1, 2, 3, lambda x, y: x + y) */
-
-    	suite.T().Log("About to run line #33: r.Do(1, 2, 3, func(x r.Term, y r.Term) interface{} { return r.Add(x, y)})")
-
-        runAndAssert(suite.Suite, expected_, r.Do(1, 2, 3, func(x r.Term, y r.Term) interface{} { return r.Add(x, y)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #33")
-    }
-
-    {
         // control.yaml line #38
         /* 1 */
         var expected_ int = 1
@@ -208,34 +180,6 @@ func (suite *ControlSuite) TestCases() {
 			GeometryFormat: "raw",
     	})
         suite.T().Log("Finished running line #63")
-    }
-
-    {
-        // control.yaml line #68
-        /* err("ReqlQueryLogicError", 'Expected function with 1 argument but found function with 2 arguments.', [1]) */
-        var expected_ Err = err("ReqlQueryLogicError", "Expected function with 1 argument but found function with 2 arguments.")
-        /* r.expr(0).do(lambda a,b: a + b) */
-
-    	suite.T().Log("About to run line #68: r.Expr(0).Do(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
-
-        runAndAssert(suite.Suite, expected_, r.Expr(0).Do(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #68")
-    }
-
-    {
-        // control.yaml line #73
-        /* err("ReqlQueryLogicError", 'Expected function with 2 arguments but found function with 1 argument.', [1]) */
-        var expected_ Err = err("ReqlQueryLogicError", "Expected function with 2 arguments but found function with 1 argument.")
-        /* r.do(1, 2, lambda a: a) */
-
-    	suite.T().Log("About to run line #73: r.Do(1, 2, func(a r.Term) interface{} { return a})")
-
-        runAndAssert(suite.Suite, expected_, r.Do(1, 2, func(a r.Term) interface{} { return a}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #73")
     }
 
     {
@@ -502,34 +446,6 @@ func (suite *ControlSuite) TestCases() {
 			GeometryFormat: "raw",
     	})
         suite.T().Log("Finished running line #125")
-    }
-
-    {
-        // control.yaml line #130
-        /* err("ReqlCompileError", "Expected 2 arguments but found 1.", [0]) */
-        var expected_ Err = err("ReqlCompileError", "Expected 2 arguments but found 1.")
-        /* r.expr([1, 2, 3]).filter() */
-
-    	suite.T().Log("About to run line #130: r.Expr([]interface{}{1, 2, 3}).Filter()")
-
-        runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{1, 2, 3}).Filter(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #130")
-    }
-
-    {
-        // control.yaml line #134
-        /* err("ReqlCompileError", "Expected 2 arguments but found 3.", [0]) */
-        var expected_ Err = err("ReqlCompileError", "Expected 2 arguments but found 3.")
-        /* r.expr([1, 2, 3]).filter(1, 2) */
-
-    	suite.T().Log("About to run line #134: r.Expr([]interface{}{1, 2, 3}).Filter(1, 2)")
-
-        runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{1, 2, 3}).Filter(1, 2), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #134")
     }
 
     {
@@ -1123,8 +1039,8 @@ func (suite *ControlSuite) TestCases() {
     	suite.T().Log("About to run line #300: r.Expr([]interface{}{1, 2})")
 
         runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{1, 2}), suite.session, r.RunOpts{
-			ReadMode: []interface{}{"a", "b"},
 			GeometryFormat: "raw",
+			ReadMode: []interface{}{"a", "b"},
     	})
         suite.T().Log("Finished running line #300")
     }

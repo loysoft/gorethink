@@ -267,20 +267,6 @@ func (suite *MutationReplaceSuite) TestCases() {
     }
 
     {
-        // mutation/replace.yaml line #88
-        /* err('ReqlCompileError', 'Expected 2 arguments but found 3.') */
-        var expected_ Err = err("ReqlCompileError", "Expected 2 arguments but found 3.")
-        /* tbl.get(1).replace({}, 'foo') */
-
-    	suite.T().Log("About to run line #88: tbl.Get(1).Replace(map[interface{}]interface{}{}, 'foo')")
-
-        runAndAssert(suite.Suite, expected_, tbl.Get(1).Replace(map[interface{}]interface{}{}, "foo"), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #88")
-    }
-
-    {
         // mutation/replace.yaml line #99
         /* ({'deleted':99,'replaced':0.0,'unchanged':0.0,'errors':0.0,'skipped':0.0,'inserted':0.0}) */
         var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 99, "replaced": 0.0, "unchanged": 0.0, "errors": 0.0, "skipped": 0.0, "inserted": 0.0, }

@@ -183,34 +183,6 @@ func (suite *GeoConstructorsSuite) TestCases() {
     }
 
     {
-        // geo/constructors.yaml line #24
-        /* err('ReqlCompileError', 'Expected 2 or more arguments but found 0.', [0]) */
-        var expected_ Err = err("ReqlCompileError", "Expected 2 or more arguments but found 0.")
-        /* r.line() */
-
-    	suite.T().Log("About to run line #24: r.Line()")
-
-        runAndAssert(suite.Suite, expected_, r.Line(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #24")
-    }
-
-    {
-        // geo/constructors.yaml line #26
-        /* err('ReqlCompileError', 'Expected 2 or more arguments but found 1.', [0]) */
-        var expected_ Err = err("ReqlCompileError", "Expected 2 or more arguments but found 1.")
-        /* r.line([0,0]) */
-
-    	suite.T().Log("About to run line #26: r.Line([]interface{}{0, 0})")
-
-        runAndAssert(suite.Suite, expected_, r.Line([]interface{}{0, 0}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #26")
-    }
-
-    {
         // geo/constructors.yaml line #28
         /* err('ReqlQueryLogicError', 'Invalid LineString.  Are there antipodal or duplicate vertices?', [0]) */
         var expected_ Err = err("ReqlQueryLogicError", "Invalid LineString.  Are there antipodal or duplicate vertices?")
@@ -306,48 +278,6 @@ func (suite *GeoConstructorsSuite) TestCases() {
 			GeometryFormat: "raw",
     	})
         suite.T().Log("Finished running line #40")
-    }
-
-    {
-        // geo/constructors.yaml line #44
-        /* err('ReqlCompileError', 'Expected 3 or more arguments but found 0.', [0]) */
-        var expected_ Err = err("ReqlCompileError", "Expected 3 or more arguments but found 0.")
-        /* r.polygon() */
-
-    	suite.T().Log("About to run line #44: r.Polygon()")
-
-        runAndAssert(suite.Suite, expected_, r.Polygon(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #44")
-    }
-
-    {
-        // geo/constructors.yaml line #46
-        /* err('ReqlCompileError', 'Expected 3 or more arguments but found 1.', [0]) */
-        var expected_ Err = err("ReqlCompileError", "Expected 3 or more arguments but found 1.")
-        /* r.polygon([0,0]) */
-
-    	suite.T().Log("About to run line #46: r.Polygon([]interface{}{0, 0})")
-
-        runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{0, 0}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #46")
-    }
-
-    {
-        // geo/constructors.yaml line #48
-        /* err('ReqlCompileError', 'Expected 3 or more arguments but found 2.', [0]) */
-        var expected_ Err = err("ReqlCompileError", "Expected 3 or more arguments but found 2.")
-        /* r.polygon([0,0], [0,0]) */
-
-    	suite.T().Log("About to run line #48: r.Polygon([]interface{}{0, 0}, []interface{}{0, 0})")
-
-        runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{0, 0}, []interface{}{0, 0}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #48")
     }
 
     {

@@ -169,20 +169,6 @@ func (suite *RangeSuite) TestCases() {
     }
 
     {
-        // range.yaml line #27
-        /* err("ReqlCompileError", "Expected between 0 and 2 arguments but found 3.", []) */
-        var expected_ Err = err("ReqlCompileError", "Expected between 0 and 2 arguments but found 3.")
-        /* r.range(2, 5, 8) */
-
-    	suite.T().Log("About to run line #27: r.Range(2, 5, 8)")
-
-        runAndAssert(suite.Suite, expected_, r.Range(2, 5, 8), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #27")
-    }
-
-    {
         // range.yaml line #30
         /* err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.", []) */
         var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")

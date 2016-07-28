@@ -133,89 +133,89 @@ func (suite *ChangefeedsEdgeSuite) TestCases() {
 
     // changefeeds/edge.yaml line #26
     // pre_changes = tbl.between(r.minval, common_prefix.append('7'), index='sindex').changes(squash=False).limit(len(pre))['new_val']['value']
-    suite.T().Log("Possibly executing: var pre_changes r.Term = tbl.Between(r.MinVal, common_prefix.Append('7'), r.BetweenOpts{Index: 'sindex', }).Changes(r.ChangesOpts{Squash: false, }).Limit(len(pre)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var pre_changes r.Term = tbl.Between(r.MinVal, common_prefix.Append('7'), r.BetweenOpts{Index: 'sindex', }).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(pre)).AtIndex('new_val').AtIndex('value')")
 
-    pre_changes := maybeRun(tbl.Between(r.MinVal, common_prefix.Append("7"), r.BetweenOpts{Index: "sindex", }).Changes(r.ChangesOpts{Squash: false, }).Limit(len(pre)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    pre_changes := maybeRun(tbl.Between(r.MinVal, common_prefix.Append("7"), r.BetweenOpts{Index: "sindex", }).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(pre)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 
     // changefeeds/edge.yaml line #29
     // mid_changes = tbl.between(common_prefix.append('2'), common_prefix.append('9'), index='sindex').changes(squash=False).limit(len(post))['new_val']['value']
-    suite.T().Log("Possibly executing: var mid_changes r.Term = tbl.Between(common_prefix.Append('2'), common_prefix.Append('9'), r.BetweenOpts{Index: 'sindex', }).Changes(r.ChangesOpts{Squash: false, }).Limit(len(post)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var mid_changes r.Term = tbl.Between(common_prefix.Append('2'), common_prefix.Append('9'), r.BetweenOpts{Index: 'sindex', }).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(post)).AtIndex('new_val').AtIndex('value')")
 
-    mid_changes := maybeRun(tbl.Between(common_prefix.Append("2"), common_prefix.Append("9"), r.BetweenOpts{Index: "sindex", }).Changes(r.ChangesOpts{Squash: false, }).Limit(len(post)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    mid_changes := maybeRun(tbl.Between(common_prefix.Append("2"), common_prefix.Append("9"), r.BetweenOpts{Index: "sindex", }).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(post)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 
     // changefeeds/edge.yaml line #32
     // post_changes = tbl.between(common_prefix.append('3'), r.maxval, index='sindex').changes(squash=False).limit(len(mid))['new_val']['value']
-    suite.T().Log("Possibly executing: var post_changes r.Term = tbl.Between(common_prefix.Append('3'), r.MaxVal, r.BetweenOpts{Index: 'sindex', }).Changes(r.ChangesOpts{Squash: false, }).Limit(len(mid)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var post_changes r.Term = tbl.Between(common_prefix.Append('3'), r.MaxVal, r.BetweenOpts{Index: 'sindex', }).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(mid)).AtIndex('new_val').AtIndex('value')")
 
-    post_changes := maybeRun(tbl.Between(common_prefix.Append("3"), r.MaxVal, r.BetweenOpts{Index: "sindex", }).Changes(r.ChangesOpts{Squash: false, }).Limit(len(mid)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    post_changes := maybeRun(tbl.Between(common_prefix.Append("3"), r.MaxVal, r.BetweenOpts{Index: "sindex", }).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(mid)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 
     // changefeeds/edge.yaml line #38
     // premap_changes1 = tbl.map(r.branch(r.row['value'].lt('2'), r.row, r.row["dummy"])).changes(squash=False).limit(len(erroredres))['new_val']['value']
-    suite.T().Log("Possibly executing: var premap_changes1 r.Term = tbl.Map(r.Branch(r.Row.AtIndex('value').Lt('2'), r.Row, r.Row.AtIndex('dummy'))).Changes(r.ChangesOpts{Squash: false, }).Limit(len(erroredres)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var premap_changes1 r.Term = tbl.Map(r.Branch(r.Row.AtIndex('value').Lt('2'), r.Row, r.Row.AtIndex('dummy'))).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(erroredres)).AtIndex('new_val').AtIndex('value')")
 
-    premap_changes1 := maybeRun(tbl.Map(r.Branch(r.Row.AtIndex("value").Lt("2"), r.Row, r.Row.AtIndex("dummy"))).Changes(r.ChangesOpts{Squash: false, }).Limit(len(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    premap_changes1 := maybeRun(tbl.Map(r.Branch(r.Row.AtIndex("value").Lt("2"), r.Row, r.Row.AtIndex("dummy"))).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 
     // changefeeds/edge.yaml line #42
     // postmap_changes1 = tbl.changes(squash=False).map(r.branch(r.row['new_val']['value'].lt('2'), r.row, r.row["dummy"])).limit(len(erroredres))['new_val']['value']
-    suite.T().Log("Possibly executing: var postmap_changes1 r.Term = tbl.Changes(r.ChangesOpts{Squash: false, }).Map(r.Branch(r.Row.AtIndex('new_val').AtIndex('value').Lt('2'), r.Row, r.Row.AtIndex('dummy'))).Limit(len(erroredres)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var postmap_changes1 r.Term = tbl.Changes(r.ChangesOpts{Squash: false, }).Map(r.Branch(r.Row.AtIndex('new_val').AtIndex('value').Lt('2'), r.Row, r.Row.AtIndex('dummy'))).Limit(maybeLen(erroredres)).AtIndex('new_val').AtIndex('value')")
 
-    postmap_changes1 := maybeRun(tbl.Changes(r.ChangesOpts{Squash: false, }).Map(r.Branch(r.Row.AtIndex("new_val").AtIndex("value").Lt("2"), r.Row, r.Row.AtIndex("dummy"))).Limit(len(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    postmap_changes1 := maybeRun(tbl.Changes(r.ChangesOpts{Squash: false, }).Map(r.Branch(r.Row.AtIndex("new_val").AtIndex("value").Lt("2"), r.Row, r.Row.AtIndex("dummy"))).Limit(maybeLen(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 
     // changefeeds/edge.yaml line #46
     // prefilter_changes1 = tbl.filter(r.branch(r.row['value'].lt('2'), True, r.row["dummy"])).changes(squash=False).limit(len(erroredres))['new_val']['value']
-    suite.T().Log("Possibly executing: var prefilter_changes1 r.Term = tbl.Filter(r.Branch(r.Row.AtIndex('value').Lt('2'), true, r.Row.AtIndex('dummy'))).Changes(r.ChangesOpts{Squash: false, }).Limit(len(erroredres)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var prefilter_changes1 r.Term = tbl.Filter(r.Branch(r.Row.AtIndex('value').Lt('2'), true, r.Row.AtIndex('dummy'))).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(erroredres)).AtIndex('new_val').AtIndex('value')")
 
-    prefilter_changes1 := maybeRun(tbl.Filter(r.Branch(r.Row.AtIndex("value").Lt("2"), true, r.Row.AtIndex("dummy"))).Changes(r.ChangesOpts{Squash: false, }).Limit(len(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    prefilter_changes1 := maybeRun(tbl.Filter(r.Branch(r.Row.AtIndex("value").Lt("2"), true, r.Row.AtIndex("dummy"))).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 
     // changefeeds/edge.yaml line #50
     // postfilter_changes1 = tbl.changes(squash=False).filter(r.branch(r.row['new_val']['value'].lt('2'), True, r.row["dummy"])).limit(len(erroredres))['new_val']['value']
-    suite.T().Log("Possibly executing: var postfilter_changes1 r.Term = tbl.Changes(r.ChangesOpts{Squash: false, }).Filter(r.Branch(r.Row.AtIndex('new_val').AtIndex('value').Lt('2'), true, r.Row.AtIndex('dummy'))).Limit(len(erroredres)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var postfilter_changes1 r.Term = tbl.Changes(r.ChangesOpts{Squash: false, }).Filter(r.Branch(r.Row.AtIndex('new_val').AtIndex('value').Lt('2'), true, r.Row.AtIndex('dummy'))).Limit(maybeLen(erroredres)).AtIndex('new_val').AtIndex('value')")
 
-    postfilter_changes1 := maybeRun(tbl.Changes(r.ChangesOpts{Squash: false, }).Filter(r.Branch(r.Row.AtIndex("new_val").AtIndex("value").Lt("2"), true, r.Row.AtIndex("dummy"))).Limit(len(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    postfilter_changes1 := maybeRun(tbl.Changes(r.ChangesOpts{Squash: false, }).Filter(r.Branch(r.Row.AtIndex("new_val").AtIndex("value").Lt("2"), true, r.Row.AtIndex("dummy"))).Limit(maybeLen(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 
     // changefeeds/edge.yaml line #56
     // premap_changes2 = tbl.map(r.branch(r.row['value'].lt('2'), r.row, r.expr([])[1])).changes(squash=False).limit(len(erroredres))['new_val']['value']
-    suite.T().Log("Possibly executing: var premap_changes2 r.Term = tbl.Map(r.Branch(r.Row.AtIndex('value').Lt('2'), r.Row, r.Expr([]interface{}{}).AtIndex(1))).Changes(r.ChangesOpts{Squash: false, }).Limit(len(erroredres)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var premap_changes2 r.Term = tbl.Map(r.Branch(r.Row.AtIndex('value').Lt('2'), r.Row, r.Expr([]interface{}{}).AtIndex(1))).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(erroredres)).AtIndex('new_val').AtIndex('value')")
 
-    premap_changes2 := maybeRun(tbl.Map(r.Branch(r.Row.AtIndex("value").Lt("2"), r.Row, r.Expr([]interface{}{}).AtIndex(1))).Changes(r.ChangesOpts{Squash: false, }).Limit(len(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    premap_changes2 := maybeRun(tbl.Map(r.Branch(r.Row.AtIndex("value").Lt("2"), r.Row, r.Expr([]interface{}{}).AtIndex(1))).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 
     // changefeeds/edge.yaml line #60
     // postmap_changes2 = tbl.changes(squash=False).map(r.branch(r.row['new_val']['value'].lt('2'), r.row, r.expr([])[1])).limit(len(erroredres))['new_val']['value']
-    suite.T().Log("Possibly executing: var postmap_changes2 r.Term = tbl.Changes(r.ChangesOpts{Squash: false, }).Map(r.Branch(r.Row.AtIndex('new_val').AtIndex('value').Lt('2'), r.Row, r.Expr([]interface{}{}).AtIndex(1))).Limit(len(erroredres)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var postmap_changes2 r.Term = tbl.Changes(r.ChangesOpts{Squash: false, }).Map(r.Branch(r.Row.AtIndex('new_val').AtIndex('value').Lt('2'), r.Row, r.Expr([]interface{}{}).AtIndex(1))).Limit(maybeLen(erroredres)).AtIndex('new_val').AtIndex('value')")
 
-    postmap_changes2 := maybeRun(tbl.Changes(r.ChangesOpts{Squash: false, }).Map(r.Branch(r.Row.AtIndex("new_val").AtIndex("value").Lt("2"), r.Row, r.Expr([]interface{}{}).AtIndex(1))).Limit(len(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    postmap_changes2 := maybeRun(tbl.Changes(r.ChangesOpts{Squash: false, }).Map(r.Branch(r.Row.AtIndex("new_val").AtIndex("value").Lt("2"), r.Row, r.Expr([]interface{}{}).AtIndex(1))).Limit(maybeLen(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 
     // changefeeds/edge.yaml line #64
     // prefilter_changes2 = tbl.filter(r.branch(r.row['value'].lt('2'), True, r.expr([])[1])).changes(squash=False).limit(len(erroredres))['new_val']['value']
-    suite.T().Log("Possibly executing: var prefilter_changes2 r.Term = tbl.Filter(r.Branch(r.Row.AtIndex('value').Lt('2'), true, r.Expr([]interface{}{}).AtIndex(1))).Changes(r.ChangesOpts{Squash: false, }).Limit(len(erroredres)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var prefilter_changes2 r.Term = tbl.Filter(r.Branch(r.Row.AtIndex('value').Lt('2'), true, r.Expr([]interface{}{}).AtIndex(1))).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(erroredres)).AtIndex('new_val').AtIndex('value')")
 
-    prefilter_changes2 := maybeRun(tbl.Filter(r.Branch(r.Row.AtIndex("value").Lt("2"), true, r.Expr([]interface{}{}).AtIndex(1))).Changes(r.ChangesOpts{Squash: false, }).Limit(len(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    prefilter_changes2 := maybeRun(tbl.Filter(r.Branch(r.Row.AtIndex("value").Lt("2"), true, r.Expr([]interface{}{}).AtIndex(1))).Changes(r.ChangesOpts{Squash: false, }).Limit(maybeLen(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 
     // changefeeds/edge.yaml line #68
     // postfilter_changes2 = tbl.changes(squash=False).filter(r.branch(r.row['new_val']['value'].lt('2'), True, r.expr([])[1])).limit(len(erroredres))['new_val']['value']
-    suite.T().Log("Possibly executing: var postfilter_changes2 r.Term = tbl.Changes(r.ChangesOpts{Squash: false, }).Filter(r.Branch(r.Row.AtIndex('new_val').AtIndex('value').Lt('2'), true, r.Expr([]interface{}{}).AtIndex(1))).Limit(len(erroredres)).AtIndex('new_val').AtIndex('value')")
+    suite.T().Log("Possibly executing: var postfilter_changes2 r.Term = tbl.Changes(r.ChangesOpts{Squash: false, }).Filter(r.Branch(r.Row.AtIndex('new_val').AtIndex('value').Lt('2'), true, r.Expr([]interface{}{}).AtIndex(1))).Limit(maybeLen(erroredres)).AtIndex('new_val').AtIndex('value')")
 
-    postfilter_changes2 := maybeRun(tbl.Changes(r.ChangesOpts{Squash: false, }).Filter(r.Branch(r.Row.AtIndex("new_val").AtIndex("value").Lt("2"), true, r.Expr([]interface{}{}).AtIndex(1))).Limit(len(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
+    postfilter_changes2 := maybeRun(tbl.Changes(r.ChangesOpts{Squash: false, }).Filter(r.Branch(r.Row.AtIndex("new_val").AtIndex("value").Lt("2"), true, r.Expr([]interface{}{}).AtIndex(1))).Limit(maybeLen(erroredres)).AtIndex("new_val").AtIndex("value"), suite.session, r.RunOpts{
 	});
 
 

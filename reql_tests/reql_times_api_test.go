@@ -599,34 +599,6 @@ func (suite *TimesApiSuite) TestCases() {
     }
 
     {
-        // times/api.yaml line #115
-        /* err("ReqlCompileError", "Expected between 4 and 7 arguments but found 3.", []) */
-        var expected_ Err = err("ReqlCompileError", "Expected between 4 and 7 arguments but found 3.")
-        /* r.time(2013, r.july, 29).to_epoch_time() */
-
-    	suite.T().Log("About to run line #115: r.Time(2013, r.July, 29).ToEpochTime()")
-
-        runAndAssert(suite.Suite, expected_, r.Time(2013, r.July, 29).ToEpochTime(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #115")
-    }
-
-    {
-        // times/api.yaml line #117
-        /* err("ReqlCompileError", "Expected between 4 and 7 arguments but found 3.", []) */
-        var expected_ Err = err("ReqlCompileError", "Expected between 4 and 7 arguments but found 3.")
-        /* r.time(2013, r.july, 29).timezone() */
-
-    	suite.T().Log("About to run line #117: r.Time(2013, r.July, 29).Timezone()")
-
-        runAndAssert(suite.Suite, expected_, r.Time(2013, r.July, 29).Timezone(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #117")
-    }
-
-    {
         // times/api.yaml line #119
         /* 1375242965 */
         var expected_ int = 1375242965

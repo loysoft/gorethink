@@ -415,34 +415,6 @@ func (suite *SelectionSuite) TestCases() {
         suite.T().Log("Finished running line #138")
     }
 
-    {
-        // selection.yaml line #142
-        /* err("ReqlCompileError", 'Expected 2 arguments but found 1.', [1]) */
-        var expected_ Err = err("ReqlCompileError", "Expected 2 arguments but found 1.")
-        /* tbl.get() */
-
-    	suite.T().Log("About to run line #142: tbl.Get()")
-
-        runAndAssert(suite.Suite, expected_, tbl.Get(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #142")
-    }
-
-    {
-        // selection.yaml line #145
-        /* err("ReqlCompileError", 'Expected 2 arguments but found 3.', [1]) */
-        var expected_ Err = err("ReqlCompileError", "Expected 2 arguments but found 3.")
-        /* tbl.get(10, 20) */
-
-    	suite.T().Log("About to run line #145: tbl.Get(10, 20)")
-
-        runAndAssert(suite.Suite, expected_, tbl.Get(10, 20), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #145")
-    }
-
     // selection.yaml line #153
     // tblpkey = r.db('test').table('testpkey')
     suite.T().Log("Possibly executing: var tblpkey r.Term = r.DB('test').Table('testpkey')")
@@ -883,20 +855,6 @@ func (suite *SelectionSuite) TestCases() {
 			GeometryFormat: "raw",
     	})
         suite.T().Log("Finished running line #255")
-    }
-
-    {
-        // selection.yaml line #258
-        /* err('ReqlCompileError', 'Expected 3 arguments but found 2.', '[]') */
-        var expected_ Err = err("ReqlCompileError", "Expected 3 arguments but found 2.")
-        /* tbl.between(2).count() */
-
-    	suite.T().Log("About to run line #258: tbl.Between(2).Count()")
-
-        runAndAssert(suite.Suite, expected_, tbl.Between(2).Count(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #258")
     }
 
     {

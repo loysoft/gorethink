@@ -527,9 +527,9 @@ func (suite *ChangefeedsPointSuite) TestCases() {
         var expected_ Expected = partial([]interface{}{map[interface{}]interface{}{"old_val": partial(map[interface{}]interface{}{"db": "test", }), "new_val": partial(map[interface{}]interface{}{"db": "test", }), }})
         /* fetch(rtblPluck, 1, 2) */
 
-    	suite.T().Log("About to run line #143: fetch(rtblPluck, 1, 2)")
+    	suite.T().Log("About to run line #143: fetch(rtblPluck, 1)")
 
-        fetchAndAssert(suite.Suite, expected_, rtblPluck, 1, 2)
+        fetchAndAssert(suite.Suite, expected_, rtblPluck, 1)
         suite.T().Log("Finished running line #143")
     }
 }

@@ -9,6 +9,7 @@ import os.path
 import re
 import time
 import ast
+from re import sub, match, split, DOTALL
 import argparse
 import codecs
 import logging
@@ -37,8 +38,7 @@ TEST_EXCLUSIONS = [
     'limits',  # pending fix in issue #4965
     # double run
     'changefeeds/squash',
-    # arity checked at compile time
-    # 'arity',
+    'arity',
     '.rb.yaml',
 ]
 
@@ -325,6 +325,7 @@ def query_to_go(item, reql_vars):
             visitor = ReQLVisitor
         else:
             visitor = GoVisitor
+        print(ast.dump(item.query.ast))
         go_expected_line = visitor(
             reql_vars, type_=item.expected.type)\
             .convert(item.expected.ast)
@@ -556,6 +557,11 @@ class GoVisitor(ast.NodeVisitor):
         if node.s == 'ReqlServerCompileError':
             node.s = 'ReqlCompileError'
         # Hack to skip irrelevant tests
+        if match(".*Expected .* argument", node.s):
+            self.skip("argument checks not supported")
+        if match(".*argument .* must", node.s):
+            self.skip("argument checks not supported")
+            return
         if node.s == 'Object keys must be strings.*':
             self.skip('the Go driver automatically converts object keys to strings')
             return
@@ -658,6 +664,16 @@ class GoVisitor(ast.NodeVisitor):
             # Throw away third argument as it is not used by the Go tests
             # and Go does not support function overloading
             node.args = node.args[:2]
+            self.visit(node.func)
+        elif type(node.func) == ast.Name and node.func.id == 'len':
+            node.func.id = 'maybeLen'
+            self.visit(node.func)
+        elif type(node.func) == ast.Name and node.func.id == 'fetch':
+            print(len(node.args))
+            if len(node.args) == 1:
+                node.args.append(ast.Num(0))
+            elif len(node.args) > 2:
+                node.args = node.args[:2]
             self.visit(node.func)
         else:
             self.visit(node.func)

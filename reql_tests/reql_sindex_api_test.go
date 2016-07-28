@@ -665,20 +665,6 @@ func (suite *SindexApiSuite) TestCases() {
     }
 
     {
-        // sindex/api.yaml line #176
-        /* err("ReqlCompileError", "Expected 2 arguments but found 3.", []) */
-        var expected_ Err = err("ReqlCompileError", "Expected 2 arguments but found 3.")
-        /* tbl.get(1, 'ai') */
-
-    	suite.T().Log("About to run line #176: tbl.Get(1, 'ai')")
-
-        runAndAssert(suite.Suite, expected_, tbl.Get(1, "ai"), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #176")
-    }
-
-    {
         // sindex/api.yaml line #180
         /* AnythingIsFine */
         var expected_ string = AnythingIsFine

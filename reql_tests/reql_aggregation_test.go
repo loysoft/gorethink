@@ -683,8 +683,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #185: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
         runAndAssert(suite.Suite, expected_, tbl.Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #185")
     }
@@ -698,8 +698,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #186: tbl.Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
         runAndAssert(suite.Suite, expected_, tbl.Group(r.Row.AtIndex("a")).Map(r.Row.AtIndex("id")).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #186")
     }
@@ -713,8 +713,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #192: r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, }}).Filter(true).Limit(1).Group('a')")
 
         runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{map[interface{}]interface{}{"a": 1, }}).Filter(true).Limit(1).Group("a"), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #192")
     }
@@ -798,8 +798,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #223: tbl.Union(tbl).Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
         runAndAssert(suite.Suite, expected_, tbl.Union(tbl).Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #223")
     }
@@ -813,8 +813,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #224: tbl.Union(tbl).Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
         runAndAssert(suite.Suite, expected_, tbl.Union(tbl).Group(r.Row.AtIndex("a")).Map(r.Row.AtIndex("id")).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #224")
     }
@@ -828,8 +828,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #235: tbl.CoerceTo('array').Union(tbl).Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
         runAndAssert(suite.Suite, expected_, tbl.CoerceTo("array").Union(tbl).Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #235")
     }
@@ -843,8 +843,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #236: tbl.CoerceTo('array').Union(tbl).Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
         runAndAssert(suite.Suite, expected_, tbl.CoerceTo("array").Union(tbl).Group(r.Row.AtIndex("a")).Map(r.Row.AtIndex("id")).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #236")
     }
@@ -858,8 +858,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #247: tbl.Union(tbl.CoerceTo('array')).Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
         runAndAssert(suite.Suite, expected_, tbl.Union(tbl.CoerceTo("array")).Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #247")
     }
@@ -873,8 +873,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #248: tbl.Union(tbl.CoerceTo('array')).Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
         runAndAssert(suite.Suite, expected_, tbl.Union(tbl.CoerceTo("array")).Group(r.Row.AtIndex("a")).Map(r.Row.AtIndex("id")).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #248")
     }
@@ -888,8 +888,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #255: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
         runAndAssert(suite.Suite, expected_, tbl.Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #255")
     }
@@ -903,8 +903,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #256: tbl.Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
         runAndAssert(suite.Suite, expected_, tbl.Group(r.Row.AtIndex("a")).Map(r.Row.AtIndex("id")).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #256")
     }
@@ -918,8 +918,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #286: tbl.Group('a').Count()")
 
         runAndAssert(suite.Suite, expected_, tbl.Group("a").Count(), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #286")
     }
@@ -933,8 +933,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #292: tbl.Group('a').Sum('id')")
 
         runAndAssert(suite.Suite, expected_, tbl.Group("a").Sum("id"), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #292")
     }
@@ -948,8 +948,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #298: tbl.Group('a').Avg('id')")
 
         runAndAssert(suite.Suite, expected_, tbl.Group("a").Avg("id"), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #298")
     }
@@ -963,8 +963,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #305: tbl3.Group(func(row r.Term) interface{} { return row.AtIndex('b').AtIndex('c')}).Count()")
 
         runAndAssert(suite.Suite, expected_, tbl3.Group(func(row r.Term) interface{} { return row.AtIndex("b").AtIndex("c")}).Count(), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #305")
     }
@@ -978,8 +978,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #313: tbl.Group('a', func(row r.Term) interface{} { return row.AtIndex('id').Mod(3)}).Count()")
 
         runAndAssert(suite.Suite, expected_, tbl.Group("a", func(row r.Term) interface{} { return row.AtIndex("id").Mod(3)}).Count(), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #313")
     }
@@ -1161,8 +1161,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #418: tbl.GroupByIndex('id').Count()")
 
         runAndAssert(suite.Suite, expected_, tbl.GroupByIndex("id").Count(), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #418")
     }
@@ -1176,8 +1176,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #425: tbl.GroupByIndex('a').Count()")
 
         runAndAssert(suite.Suite, expected_, tbl.GroupByIndex("a").Count(), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #425")
     }
@@ -1191,8 +1191,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #432: tbl.GroupByIndex('id', 'a').Count()")
 
         runAndAssert(suite.Suite, expected_, tbl.GroupByIndex("id", "a").Count(), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #432")
     }
@@ -1206,8 +1206,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #439: tbl.GroupByIndex('a', 'a').Count()")
 
         runAndAssert(suite.Suite, expected_, tbl.GroupByIndex("a", "a").Count(), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #439")
     }
@@ -1221,8 +1221,8 @@ func (suite *AggregationSuite) TestCases() {
     	suite.T().Log("About to run line #447: tbl.Group('a', func(row r.Term) interface{} { return 'f'}, func(row r.Term) interface{} { return []interface{}{}}, func(row r.Term) interface{} { return []interface{}{map[interface{}]interface{}{}, []interface{}{0}, nil, 0}}).Count()")
 
         runAndAssert(suite.Suite, expected_, tbl.Group("a", func(row r.Term) interface{} { return "f"}, func(row r.Term) interface{} { return []interface{}{}}, func(row r.Term) interface{} { return []interface{}{map[interface{}]interface{}{}, []interface{}{0}, nil, 0}}).Count(), suite.session, r.RunOpts{
-			GroupFormat: "raw",
 			GeometryFormat: "raw",
+			GroupFormat: "raw",
     	})
         suite.T().Log("Finished running line #447")
     }
