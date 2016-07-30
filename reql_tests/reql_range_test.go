@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type RangeSuite struct {
 }
 
 func (suite *RangeSuite) SetupTest() {
-	suite.T().Log("Setting up RangeSuite")
+	fmt.Println("Setting up RangeSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *RangeSuite) SetupTest() {
 }
 
 func (suite *RangeSuite) TearDownSuite() {
-	suite.T().Log("Tearing down RangeSuite")
+	fmt.Println("Tearing down RangeSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *RangeSuite) TearDownSuite() {
 }
 
 func (suite *RangeSuite) TestCases() {
-	suite.T().Log("Running RangeSuite: Tests RQL range generation")
+	fmt.Println("Running RangeSuite: Tests RQL range generation")
 
 
 
@@ -64,12 +65,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ string = "STREAM"
 		/* r.range().type_of() */
 
-		suite.T().Log("About to run line #3: r.Range().TypeOf()")
+		fmt.Println("About to run line #3: r.Range().TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, r.Range().TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #3")
+		fmt.Println("Finished running line #3")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{0, 1, 2, 3}
 		/* r.range().limit(4) */
 
-		suite.T().Log("About to run line #6: r.Range().Limit(4)")
+		fmt.Println("About to run line #6: r.Range().Limit(4)")
 
 		runAndAssert(suite.Suite, expected_, r.Range().Limit(4), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{0, 1, 2, 3}
 		/* r.range(4) */
 
-		suite.T().Log("About to run line #9: r.Range(4)")
+		fmt.Println("About to run line #9: r.Range(4)")
 
 		runAndAssert(suite.Suite, expected_, r.Range(4), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #9")
+		fmt.Println("Finished running line #9")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{2, 3, 4}
 		/* r.range(2, 5) */
 
-		suite.T().Log("About to run line #12: r.Range(2, 5)")
+		fmt.Println("About to run line #12: r.Range(2, 5)")
 
 		runAndAssert(suite.Suite, expected_, r.Range(2, 5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #12")
+		fmt.Println("Finished running line #12")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{}
 		/* r.range(0) */
 
-		suite.T().Log("About to run line #15: r.Range(0)")
+		fmt.Println("About to run line #15: r.Range(0)")
 
 		runAndAssert(suite.Suite, expected_, r.Range(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #15")
+		fmt.Println("Finished running line #15")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{}
 		/* r.range(5, 2) */
 
-		suite.T().Log("About to run line #18: r.Range(5, 2)")
+		fmt.Println("About to run line #18: r.Range(5, 2)")
 
 		runAndAssert(suite.Suite, expected_, r.Range(5, 2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #18")
+		fmt.Println("Finished running line #18")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{-5, -4, -3}
 		/* r.range(-5, -2) */
 
-		suite.T().Log("About to run line #21: r.Range(-5, -2)")
+		fmt.Println("About to run line #21: r.Range(-5, -2)")
 
 		runAndAssert(suite.Suite, expected_, r.Range(-5, -2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #21")
+		fmt.Println("Finished running line #21")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{-5, -4, -3, -2, -1, 0, 1}
 		/* r.range(-5, 2) */
 
-		suite.T().Log("About to run line #24: r.Range(-5, 2)")
+		fmt.Println("About to run line #24: r.Range(-5, 2)")
 
 		runAndAssert(suite.Suite, expected_, r.Range(-5, 2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #24")
+		fmt.Println("Finished running line #24")
 	}
 
 	{
@@ -176,54 +185,58 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")
 		/* r.range("foo") */
 
-		suite.T().Log("About to run line #30: r.Range('foo')")
+		fmt.Println("About to run line #30: r.Range('foo')")
 
 		runAndAssert(suite.Suite, expected_, r.Range("foo"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #30")
+		fmt.Println("Finished running line #30")
 	}
 
 	{
 		// range.yaml line #34
 		/* err_regex("ReqlQueryLogicError", "Number not an integer \\(>2\\^53\\). 9007199254740994", []) */
-		var expected_ ErrRegex = err_regex("ReqlQueryLogicError", "Number not an integer \\(>2\\^53\\). 9007199254740994")
+		var expected_ Err = err_regex("ReqlQueryLogicError", "Number not an integer \\(>2\\^53\\). 9007199254740994")
 		/* r.range(9007199254740994) */
 
-		suite.T().Log("About to run line #34: r.Range(9007199254740994)")
+		fmt.Println("About to run line #34: r.Range(9007199254740994)")
 
 		runAndAssert(suite.Suite, expected_, r.Range(9007199254740994), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #34")
+		fmt.Println("Finished running line #34")
 	}
 
 	{
 		// range.yaml line #37
 		/* err_regex("ReqlQueryLogicError", "Number not an integer \\(<-2\\^53\\). -9007199254740994", []) */
-		var expected_ ErrRegex = err_regex("ReqlQueryLogicError", "Number not an integer \\(<-2\\^53\\). -9007199254740994")
+		var expected_ Err = err_regex("ReqlQueryLogicError", "Number not an integer \\(<-2\\^53\\). -9007199254740994")
 		/* r.range(-9007199254740994) */
 
-		suite.T().Log("About to run line #37: r.Range(-9007199254740994)")
+		fmt.Println("About to run line #37: r.Range(-9007199254740994)")
 
 		runAndAssert(suite.Suite, expected_, r.Range(-9007199254740994), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #37")
+		fmt.Println("Finished running line #37")
 	}
 
 	{
 		// range.yaml line #40
 		/* err_regex("ReqlQueryLogicError", "Number not an integer. 0\\.5", []) */
-		var expected_ ErrRegex = err_regex("ReqlQueryLogicError", "Number not an integer. 0\\.5")
+		var expected_ Err = err_regex("ReqlQueryLogicError", "Number not an integer. 0\\.5")
 		/* r.range(0.5) */
 
-		suite.T().Log("About to run line #40: r.Range(0.5)")
+		fmt.Println("About to run line #40: r.Range(0.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Range(0.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #40")
+		fmt.Println("Finished running line #40")
 	}
 
 	{
@@ -232,12 +245,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot use an infinite stream with an aggregation function (`reduce`, `count`, etc.) or coerce it to an array.")
 		/* r.range().count() */
 
-		suite.T().Log("About to run line #43: r.Range().Count()")
+		fmt.Println("About to run line #43: r.Range().Count()")
 
 		runAndAssert(suite.Suite, expected_, r.Range().Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #43")
+		fmt.Println("Finished running line #43")
 	}
 
 	{
@@ -246,12 +260,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot use an infinite stream with an aggregation function (`reduce`, `count`, etc.) or coerce it to an array.")
 		/* r.range().coerce_to("ARRAY") */
 
-		suite.T().Log("About to run line #46: r.Range().CoerceTo('ARRAY')")
+		fmt.Println("About to run line #46: r.Range().CoerceTo('ARRAY')")
 
 		runAndAssert(suite.Suite, expected_, r.Range().CoerceTo("ARRAY"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #46")
+		fmt.Println("Finished running line #46")
 	}
 
 	{
@@ -260,12 +275,13 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot use an infinite stream with an aggregation function (`reduce`, `count`, etc.) or coerce it to an array.")
 		/* r.range().coerce_to("OBJECT") */
 
-		suite.T().Log("About to run line #49: r.Range().CoerceTo('OBJECT')")
+		fmt.Println("About to run line #49: r.Range().CoerceTo('OBJECT')")
 
 		runAndAssert(suite.Suite, expected_, r.Range().CoerceTo("OBJECT"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #49")
+		fmt.Println("Finished running line #49")
 	}
 
 	{
@@ -274,11 +290,12 @@ func (suite *RangeSuite) TestCases() {
 		var expected_ int = 4
 		/* r.range(4).count() */
 
-		suite.T().Log("About to run line #52: r.Range(4).Count()")
+		fmt.Println("About to run line #52: r.Range(4).Count()")
 
 		runAndAssert(suite.Suite, expected_, r.Range(4).Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #52")
+		fmt.Println("Finished running line #52")
 	}
 }

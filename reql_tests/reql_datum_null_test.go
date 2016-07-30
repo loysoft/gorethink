@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type DatumNullSuite struct {
 }
 
 func (suite *DatumNullSuite) SetupTest() {
-	suite.T().Log("Setting up DatumNullSuite")
+	fmt.Println("Setting up DatumNullSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *DatumNullSuite) SetupTest() {
 }
 
 func (suite *DatumNullSuite) TearDownSuite() {
-	suite.T().Log("Tearing down DatumNullSuite")
+	fmt.Println("Tearing down DatumNullSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *DatumNullSuite) TearDownSuite() {
 }
 
 func (suite *DatumNullSuite) TestCases() {
-	suite.T().Log("Running DatumNullSuite: Tests of conversion to and from the RQL null type")
+	fmt.Println("Running DatumNullSuite: Tests of conversion to and from the RQL null type")
 
 
 
@@ -64,12 +65,13 @@ func (suite *DatumNullSuite) TestCases() {
 		var expected_ interface{} = nil
 		/* r.expr(null) */
 
-		suite.T().Log("About to run line #6: r.Expr(nil)")
+		fmt.Println("About to run line #6: r.Expr(nil)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(nil), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *DatumNullSuite) TestCases() {
 		var expected_ string = "NULL"
 		/* r.expr(null).type_of() */
 
-		suite.T().Log("About to run line #9: r.Expr(nil).TypeOf()")
+		fmt.Println("About to run line #9: r.Expr(nil).TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(nil).TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #9")
+		fmt.Println("Finished running line #9")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *DatumNullSuite) TestCases() {
 		var expected_ string = "null"
 		/* r.expr(null).coerce_to('string') */
 
-		suite.T().Log("About to run line #14: r.Expr(nil).CoerceTo('string')")
+		fmt.Println("About to run line #14: r.Expr(nil).CoerceTo('string')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(nil).CoerceTo("string"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #14")
+		fmt.Println("Finished running line #14")
 	}
 
 	{
@@ -106,11 +110,12 @@ func (suite *DatumNullSuite) TestCases() {
 		var expected_ interface{} = nil
 		/* r.expr(null).coerce_to('null') */
 
-		suite.T().Log("About to run line #17: r.Expr(nil).CoerceTo('null')")
+		fmt.Println("About to run line #17: r.Expr(nil).CoerceTo('null')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(nil).CoerceTo("null"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #17")
+		fmt.Println("Finished running line #17")
 	}
 }

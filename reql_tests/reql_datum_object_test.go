@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type DatumObjectSuite struct {
 }
 
 func (suite *DatumObjectSuite) SetupTest() {
-	suite.T().Log("Setting up DatumObjectSuite")
+	fmt.Println("Setting up DatumObjectSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *DatumObjectSuite) SetupTest() {
 }
 
 func (suite *DatumObjectSuite) TearDownSuite() {
-	suite.T().Log("Tearing down DatumObjectSuite")
+	fmt.Println("Tearing down DatumObjectSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *DatumObjectSuite) TearDownSuite() {
 }
 
 func (suite *DatumObjectSuite) TestCases() {
-	suite.T().Log("Running DatumObjectSuite: Tests conversion to and from the RQL object type")
+	fmt.Println("Running DatumObjectSuite: Tests conversion to and from the RQL object type")
 
 
 
@@ -64,12 +65,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{}
 		/* r.expr({}) */
 
-		suite.T().Log("About to run line #6: r.Expr(map[interface{}]interface{}{})")
+		fmt.Println("About to run line #6: r.Expr(map[interface{}]interface{}{})")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(map[interface{}]interface{}{}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 1, }
 		/* r.expr({'a':1}) */
 
-		suite.T().Log("About to run line #11: r.Expr(map[interface{}]interface{}{'a': 1, })")
+		fmt.Println("About to run line #11: r.Expr(map[interface{}]interface{}{'a': 1, })")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(map[interface{}]interface{}{"a": 1, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #11")
+		fmt.Println("Finished running line #11")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 1, "b": "two", "c": true, }
 		/* r.expr({'a':1, 'b':'two', 'c':True}) */
 
-		suite.T().Log("About to run line #16: r.Expr(map[interface{}]interface{}{'a': 1, 'b': 'two', 'c': true, })")
+		fmt.Println("About to run line #16: r.Expr(map[interface{}]interface{}{'a': 1, 'b': 'two', 'c': true, })")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(map[interface{}]interface{}{"a": 1, "b": "two", "c": true, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #16")
+		fmt.Println("Finished running line #16")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 1, }
 		/* r.expr({'a':r.expr(1)}) */
 
-		suite.T().Log("About to run line #20: r.Expr(map[interface{}]interface{}{'a': r.Expr(1), })")
+		fmt.Println("About to run line #20: r.Expr(map[interface{}]interface{}{'a': r.Expr(1), })")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(map[interface{}]interface{}{"a": r.Expr(1), }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #20")
+		fmt.Println("Finished running line #20")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": map[interface{}]interface{}{"b": []interface{}{map[interface{}]interface{}{"c": 2, }, "a", 4}, }, }
 		/* r.expr({'a':{'b':[{'c':2}, 'a', 4]}}) */
 
-		suite.T().Log("About to run line #23: r.Expr(map[interface{}]interface{}{'a': map[interface{}]interface{}{'b': []interface{}{map[interface{}]interface{}{'c': 2, }, 'a', 4}, }, })")
+		fmt.Println("About to run line #23: r.Expr(map[interface{}]interface{}{'a': map[interface{}]interface{}{'b': []interface{}{map[interface{}]interface{}{'c': 2, }, 'a', 4}, }, })")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(map[interface{}]interface{}{"a": map[interface{}]interface{}{"b": []interface{}{map[interface{}]interface{}{"c": 2, }, "a", 4}, }, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #23")
+		fmt.Println("Finished running line #23")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ string = "OBJECT"
 		/* r.expr({'a':1}).type_of() */
 
-		suite.T().Log("About to run line #26: r.Expr(map[interface{}]interface{}{'a': 1, }).TypeOf()")
+		fmt.Println("About to run line #26: r.Expr(map[interface{}]interface{}{'a': 1, }).TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(map[interface{}]interface{}{"a": 1, }).TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #26")
+		fmt.Println("Finished running line #26")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ string = "{\"a\":1}"
 		/* r.expr({'a':1}).coerce_to('string') */
 
-		suite.T().Log("About to run line #30: r.Expr(map[interface{}]interface{}{'a': 1, }).CoerceTo('string')")
+		fmt.Println("About to run line #30: r.Expr(map[interface{}]interface{}{'a': 1, }).CoerceTo('string')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(map[interface{}]interface{}{"a": 1, }).CoerceTo("string"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #30")
+		fmt.Println("Finished running line #30")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 1, }
 		/* r.expr({'a':1}).coerce_to('object') */
 
-		suite.T().Log("About to run line #34: r.Expr(map[interface{}]interface{}{'a': 1, }).CoerceTo('object')")
+		fmt.Println("About to run line #34: r.Expr(map[interface{}]interface{}{'a': 1, }).CoerceTo('object')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(map[interface{}]interface{}{"a": 1, }).CoerceTo("object"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #34")
+		fmt.Println("Finished running line #34")
 	}
 
 	{
@@ -176,12 +185,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{[]interface{}{"a", 1}}
 		/* r.expr({'a':1}).coerce_to('array') */
 
-		suite.T().Log("About to run line #37: r.Expr(map[interface{}]interface{}{'a': 1, }).CoerceTo('array')")
+		fmt.Println("About to run line #37: r.Expr(map[interface{}]interface{}{'a': 1, }).CoerceTo('array')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(map[interface{}]interface{}{"a": 1, }).CoerceTo("array"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #37")
+		fmt.Println("Finished running line #37")
 	}
 
 	{
@@ -190,12 +200,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{}
 		/* r.object() */
 
-		suite.T().Log("About to run line #66: r.Object()")
+		fmt.Println("About to run line #66: r.Object()")
 
 		runAndAssert(suite.Suite, expected_, r.Object(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #66")
+		fmt.Println("Finished running line #66")
 	}
 
 	{
@@ -204,12 +215,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 1, "b": 2, }
 		/* r.object('a', 1, 'b', 2) */
 
-		suite.T().Log("About to run line #69: r.Object('a', 1, 'b', 2)")
+		fmt.Println("About to run line #69: r.Object('a', 1, 'b', 2)")
 
 		runAndAssert(suite.Suite, expected_, r.Object("a", 1, "b", 2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #69")
+		fmt.Println("Finished running line #69")
 	}
 
 	{
@@ -218,12 +230,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"cd": 3, }
 		/* r.object('c'+'d', 3) */
 
-		suite.T().Log("About to run line #72: r.Object(r.Add('c', 'd'), 3)")
+		fmt.Println("About to run line #72: r.Object(r.Add('c', 'd'), 3)")
 
 		runAndAssert(suite.Suite, expected_, r.Object(r.Add("c", "d"), 3), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #72")
+		fmt.Println("Finished running line #72")
 	}
 
 	{
@@ -232,12 +245,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "OBJECT expects an even number of arguments (but found 3).")
 		/* r.object('o','d','d') */
 
-		suite.T().Log("About to run line #75: r.Object('o', 'd', 'd')")
+		fmt.Println("About to run line #75: r.Object('o', 'd', 'd')")
 
 		runAndAssert(suite.Suite, expected_, r.Object("o", "d", "d"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #75")
+		fmt.Println("Finished running line #75")
 	}
 
 	{
@@ -246,12 +260,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type STRING but found NUMBER.")
 		/* r.object(1, 1) */
 
-		suite.T().Log("About to run line #78: r.Object(1, 1)")
+		fmt.Println("About to run line #78: r.Object(1, 1)")
 
 		runAndAssert(suite.Suite, expected_, r.Object(1, 1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #78")
+		fmt.Println("Finished running line #78")
 	}
 
 	{
@@ -260,12 +275,13 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Duplicate key \"e\" in object.  (got 4 and 5 as values)")
 		/* r.object('e', 4, 'e', 5) */
 
-		suite.T().Log("About to run line #81: r.Object('e', 4, 'e', 5)")
+		fmt.Println("About to run line #81: r.Object('e', 4, 'e', 5)")
 
 		runAndAssert(suite.Suite, expected_, r.Object("e", 4, "e", 5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #81")
+		fmt.Println("Finished running line #81")
 	}
 
 	{
@@ -274,11 +290,12 @@ func (suite *DatumObjectSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type DATUM but found DATABASE:")
 		/* r.object('g', r.db('test')) */
 
-		suite.T().Log("About to run line #84: r.Object('g', r.DB('test'))")
+		fmt.Println("About to run line #84: r.Object('g', r.DB('test'))")
 
 		runAndAssert(suite.Suite, expected_, r.Object("g", r.DB("test")), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #84")
+		fmt.Println("Finished running line #84")
 	}
 }

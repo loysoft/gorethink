@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type MutationAtomicGetSetSuite struct {
 }
 
 func (suite *MutationAtomicGetSetSuite) SetupTest() {
-	suite.T().Log("Setting up MutationAtomicGetSetSuite")
+	fmt.Println("Setting up MutationAtomicGetSetSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -48,7 +49,7 @@ func (suite *MutationAtomicGetSetSuite) SetupTest() {
 }
 
 func (suite *MutationAtomicGetSetSuite) TearDownSuite() {
-	suite.T().Log("Tearing down MutationAtomicGetSetSuite")
+	fmt.Println("Tearing down MutationAtomicGetSetSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -60,7 +61,7 @@ func (suite *MutationAtomicGetSetSuite) TearDownSuite() {
 }
 
 func (suite *MutationAtomicGetSetSuite) TestCases() {
-	suite.T().Log("Running MutationAtomicGetSetSuite: Tests replacement of selections")
+	fmt.Println("Running MutationAtomicGetSetSuite: Tests replacement of selections")
 
 	tbl := r.DB("test").Table("tbl")
 	_ = tbl // Prevent any noused variable errors
@@ -72,12 +73,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"old_val": nil, "new_val": map[interface{}]interface{}{"id": 0, }, }}, }
 		/* tbl.insert({'id':0}, return_changes=True).pluck('changes', 'first_error') */
 
-		suite.T().Log("About to run line #12: tbl.Insert(map[interface{}]interface{}{'id': 0, }, r.InsertOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
+		fmt.Println("About to run line #12: tbl.Insert(map[interface{}]interface{}{'id': 0, }, r.InsertOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 0, }, r.InsertOpts{ReturnChanges: true, }).Pluck("changes", "first_error"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #12")
+		fmt.Println("Finished running line #12")
 	}
 
 	{
@@ -86,12 +88,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{}, "first_error": "Duplicate primary key `id`:\n{\n\t\"id\":\t0\n}\n{\n\t\"id\":\t0\n}", }
 		/* tbl.insert({'id':0}, return_changes=True).pluck('changes', 'first_error') */
 
-		suite.T().Log("About to run line #16: tbl.Insert(map[interface{}]interface{}{'id': 0, }, r.InsertOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
+		fmt.Println("About to run line #16: tbl.Insert(map[interface{}]interface{}{'id': 0, }, r.InsertOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 0, }, r.InsertOpts{ReturnChanges: true, }).Pluck("changes", "first_error"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #16")
+		fmt.Println("Finished running line #16")
 	}
 
 	{
@@ -100,12 +103,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"first_error": "Duplicate primary key `id`:\n{\n\t\"id\":\t0\n}\n{\n\t\"id\":\t0\n}", "changes": []interface{}{map[interface{}]interface{}{"old_val": map[interface{}]interface{}{"id": 0, }, "new_val": map[interface{}]interface{}{"id": 0, }, "error": "Duplicate primary key `id`:\n{\n\t\"id\":\t0\n}\n{\n\t\"id\":\t0\n}", }}, }
 		/* tbl.insert({'id':0}, return_changes='always').pluck('changes', 'first_error') */
 
-		suite.T().Log("About to run line #20: tbl.Insert(map[interface{}]interface{}{'id': 0, }, r.InsertOpts{ReturnChanges: 'always', }).Pluck('changes', 'first_error')")
+		fmt.Println("About to run line #20: tbl.Insert(map[interface{}]interface{}{'id': 0, }, r.InsertOpts{ReturnChanges: 'always', }).Pluck('changes', 'first_error')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 0, }, r.InsertOpts{ReturnChanges: "always", }).Pluck("changes", "first_error"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #20")
+		fmt.Println("Finished running line #20")
 	}
 
 	{
@@ -114,12 +118,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"id": 1, }, "old_val": nil, }}, "errors": 0, "deleted": 0, "unchanged": 0, "skipped": 0, "replaced": 0, "inserted": 1, }
 		/* tbl.insert([{'id':1}], return_changes=True) */
 
-		suite.T().Log("About to run line #24: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 1, }}, r.InsertOpts{ReturnChanges: true, })")
+		fmt.Println("About to run line #24: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 1, }}, r.InsertOpts{ReturnChanges: true, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"id": 1, }}, r.InsertOpts{ReturnChanges: true, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #24")
+		fmt.Println("Finished running line #24")
 	}
 
 	{
@@ -128,12 +133,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{}, "first_error": "Duplicate primary key `id`:\n{\n\t\"id\":\t0\n}\n{\n\t\"id\":\t0\n}", }
 		/* tbl.insert([{'id':0}], return_changes=True).pluck('changes', 'first_error') */
 
-		suite.T().Log("About to run line #28: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 0, }}, r.InsertOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
+		fmt.Println("About to run line #28: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 0, }}, r.InsertOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"id": 0, }}, r.InsertOpts{ReturnChanges: true, }).Pluck("changes", "first_error"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #28")
+		fmt.Println("Finished running line #28")
 	}
 
 	{
@@ -142,12 +148,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"old_val": map[interface{}]interface{}{"id": 0, }, "new_val": map[interface{}]interface{}{"id": 0, "x": 1, }, }}, }
 		/* tbl.get(0).update({'x':1}, return_changes=True).pluck('changes', 'first_error') */
 
-		suite.T().Log("About to run line #33: tbl.Get(0).Update(map[interface{}]interface{}{'x': 1, }, r.UpdateOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
+		fmt.Println("About to run line #33: tbl.Get(0).Update(map[interface{}]interface{}{'x': 1, }, r.UpdateOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(0).Update(map[interface{}]interface{}{"x": 1, }, r.UpdateOpts{ReturnChanges: true, }).Pluck("changes", "first_error"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #33")
+		fmt.Println("Finished running line #33")
 	}
 
 	{
@@ -156,12 +163,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{}, "first_error": "a", }
 		/* tbl.get(0).update({'x':r.error("a")}, return_changes=True).pluck('changes', 'first_error') */
 
-		suite.T().Log("About to run line #37: tbl.Get(0).Update(map[interface{}]interface{}{'x': r.Error('a'), }, r.UpdateOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
+		fmt.Println("About to run line #37: tbl.Get(0).Update(map[interface{}]interface{}{'x': r.Error('a'), }, r.UpdateOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(0).Update(map[interface{}]interface{}{"x": r.Error("a"), }, r.UpdateOpts{ReturnChanges: true, }).Pluck("changes", "first_error"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #37")
+		fmt.Println("Finished running line #37")
 	}
 
 	{
@@ -170,12 +178,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"old_val": map[interface{}]interface{}{"id": 0, "x": 1, }, "new_val": map[interface{}]interface{}{"id": 0, "x": 3, }, }, map[interface{}]interface{}{"old_val": map[interface{}]interface{}{"id": 1, }, "new_val": map[interface{}]interface{}{"id": 1, "x": 3, }, }}, }
 		/* tbl.update({'x':3}, return_changes=True).pluck('changes', 'first_error').do(lambda d:d.merge({'changes':d['changes'].order_by(lambda a:a['old_val']['id'])})) */
 
-		suite.T().Log("About to run line #41: tbl.Update(map[interface{}]interface{}{'x': 3, }, r.UpdateOpts{ReturnChanges: true, }).Pluck('changes', 'first_error').Do(func(d r.Term) interface{} { return d.Merge(map[interface{}]interface{}{'changes': d.AtIndex('changes').OrderBy(func(a r.Term) interface{} { return a.AtIndex('old_val').AtIndex('id')}), })})")
+		fmt.Println("About to run line #41: tbl.Update(map[interface{}]interface{}{'x': 3, }, r.UpdateOpts{ReturnChanges: true, }).Pluck('changes', 'first_error').Do(func(d r.Term) interface{} { return d.Merge(map[interface{}]interface{}{'changes': d.AtIndex('changes').OrderBy(func(a r.Term) interface{} { return a.AtIndex('old_val').AtIndex('id')}), })})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Update(map[interface{}]interface{}{"x": 3, }, r.UpdateOpts{ReturnChanges: true, }).Pluck("changes", "first_error").Do(func(d r.Term) interface{} { return d.Merge(map[interface{}]interface{}{"changes": d.AtIndex("changes").OrderBy(func(a r.Term) interface{} { return a.AtIndex("old_val").AtIndex("id")}), })}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #41")
+		fmt.Println("Finished running line #41")
 	}
 
 	{
@@ -184,12 +193,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"old_val": map[interface{}]interface{}{"id": 0, "x": 3, }, "new_val": map[interface{}]interface{}{"id": 0, "x": 2, }, }}, }
 		/* tbl.get(0).replace({'id':0,'x':2}, return_changes=True).pluck('changes', 'first_error') */
 
-		suite.T().Log("About to run line #46: tbl.Get(0).Replace(map[interface{}]interface{}{'id': 0, 'x': 2, }, r.ReplaceOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
+		fmt.Println("About to run line #46: tbl.Get(0).Replace(map[interface{}]interface{}{'id': 0, 'x': 2, }, r.ReplaceOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(0).Replace(map[interface{}]interface{}{"id": 0, "x": 2, }, r.ReplaceOpts{ReturnChanges: true, }).Pluck("changes", "first_error"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #46")
+		fmt.Println("Finished running line #46")
 	}
 
 	{
@@ -198,12 +208,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{}, "first_error": "a", }
 		/* tbl.get(0).replace(lambda y:{'x':r.error('a')}, return_changes=True).pluck('changes', 'first_error') */
 
-		suite.T().Log("About to run line #50: tbl.Get(0).Replace(func(y r.Term) interface{} { return map[interface{}]interface{}{'x': r.Error('a'), }}, r.ReplaceOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
+		fmt.Println("About to run line #50: tbl.Get(0).Replace(func(y r.Term) interface{} { return map[interface{}]interface{}{'x': r.Error('a'), }}, r.ReplaceOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(0).Replace(func(y r.Term) interface{} { return map[interface{}]interface{}{"x": r.Error("a"), }}, r.ReplaceOpts{ReturnChanges: true, }).Pluck("changes", "first_error"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #50")
+		fmt.Println("Finished running line #50")
 	}
 
 	{
@@ -212,12 +223,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"first_error": "a", "changes": []interface{}{map[interface{}]interface{}{"old_val": map[interface{}]interface{}{"id": 0, "x": 2, }, "new_val": map[interface{}]interface{}{"id": 0, "x": 2, }, "error": "a", }}, }
 		/* tbl.get(0).replace(lambda y:{'x':r.error('a')}, return_changes='always').pluck('changes', 'first_error') */
 
-		suite.T().Log("About to run line #54: tbl.Get(0).Replace(func(y r.Term) interface{} { return map[interface{}]interface{}{'x': r.Error('a'), }}, r.ReplaceOpts{ReturnChanges: 'always', }).Pluck('changes', 'first_error')")
+		fmt.Println("About to run line #54: tbl.Get(0).Replace(func(y r.Term) interface{} { return map[interface{}]interface{}{'x': r.Error('a'), }}, r.ReplaceOpts{ReturnChanges: 'always', }).Pluck('changes', 'first_error')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(0).Replace(func(y r.Term) interface{} { return map[interface{}]interface{}{"x": r.Error("a"), }}, r.ReplaceOpts{ReturnChanges: "always", }).Pluck("changes", "first_error"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #54")
+		fmt.Println("Finished running line #54")
 	}
 
 	{
@@ -226,12 +238,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"id": 0, }, "old_val": map[interface{}]interface{}{"id": 0, "x": 2, }, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"id": 1, }, "old_val": map[interface{}]interface{}{"id": 1, "x": 3, }, }}, }
 		/* tbl.replace(lambda y:y.without('x'), return_changes=True).pluck('changes', 'first_error').do(lambda d:d.merge({'changes':d['changes'].order_by(lambda a:a['old_val']['id'])})) */
 
-		suite.T().Log("About to run line #58: tbl.Replace(func(y r.Term) interface{} { return y.Without('x')}, r.ReplaceOpts{ReturnChanges: true, }).Pluck('changes', 'first_error').Do(func(d r.Term) interface{} { return d.Merge(map[interface{}]interface{}{'changes': d.AtIndex('changes').OrderBy(func(a r.Term) interface{} { return a.AtIndex('old_val').AtIndex('id')}), })})")
+		fmt.Println("About to run line #58: tbl.Replace(func(y r.Term) interface{} { return y.Without('x')}, r.ReplaceOpts{ReturnChanges: true, }).Pluck('changes', 'first_error').Do(func(d r.Term) interface{} { return d.Merge(map[interface{}]interface{}{'changes': d.AtIndex('changes').OrderBy(func(a r.Term) interface{} { return a.AtIndex('old_val').AtIndex('id')}), })})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Replace(func(y r.Term) interface{} { return y.Without("x")}, r.ReplaceOpts{ReturnChanges: true, }).Pluck("changes", "first_error").Do(func(d r.Term) interface{} { return d.Merge(map[interface{}]interface{}{"changes": d.AtIndex("changes").OrderBy(func(a r.Term) interface{} { return a.AtIndex("old_val").AtIndex("id")}), })}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #58")
+		fmt.Println("Finished running line #58")
 	}
 
 	{
@@ -240,12 +253,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"first_error": "Inserted object must have primary key `id`:\n{\n\t\"x\":\t1\n}", "changes": []interface{}{map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"id": 0, }, "old_val": map[interface{}]interface{}{"id": 0, }, "error": "Inserted object must have primary key `id`:\n{\n\t\"x\":\t1\n}", }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"id": 1, }, "old_val": map[interface{}]interface{}{"id": 1, }, "error": "Inserted object must have primary key `id`:\n{\n\t\"x\":\t1\n}", }}, }
 		/* tbl.replace({'x':1}, return_changes='always').pluck('changes', 'first_error').do(lambda d:d.merge({'changes':d['changes'].order_by(lambda a:a['old_val']['id'])})) */
 
-		suite.T().Log("About to run line #62: tbl.Replace(map[interface{}]interface{}{'x': 1, }, r.ReplaceOpts{ReturnChanges: 'always', }).Pluck('changes', 'first_error').Do(func(d r.Term) interface{} { return d.Merge(map[interface{}]interface{}{'changes': d.AtIndex('changes').OrderBy(func(a r.Term) interface{} { return a.AtIndex('old_val').AtIndex('id')}), })})")
+		fmt.Println("About to run line #62: tbl.Replace(map[interface{}]interface{}{'x': 1, }, r.ReplaceOpts{ReturnChanges: 'always', }).Pluck('changes', 'first_error').Do(func(d r.Term) interface{} { return d.Merge(map[interface{}]interface{}{'changes': d.AtIndex('changes').OrderBy(func(a r.Term) interface{} { return a.AtIndex('old_val').AtIndex('id')}), })})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Replace(map[interface{}]interface{}{"x": 1, }, r.ReplaceOpts{ReturnChanges: "always", }).Pluck("changes", "first_error").Do(func(d r.Term) interface{} { return d.Merge(map[interface{}]interface{}{"changes": d.AtIndex("changes").OrderBy(func(a r.Term) interface{} { return a.AtIndex("old_val").AtIndex("id")}), })}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #62")
+		fmt.Println("Finished running line #62")
 	}
 
 	{
@@ -254,12 +268,13 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"old_val": map[interface{}]interface{}{"id": 0, }, "new_val": nil, }}, }
 		/* tbl.get(0).delete(return_changes=True).pluck('changes', 'first_error') */
 
-		suite.T().Log("About to run line #86: tbl.Get(0).Delete(r.DeleteOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
+		fmt.Println("About to run line #86: tbl.Get(0).Delete(r.DeleteOpts{ReturnChanges: true, }).Pluck('changes', 'first_error')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(0).Delete(r.DeleteOpts{ReturnChanges: true, }).Pluck("changes", "first_error"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #86")
+		fmt.Println("Finished running line #86")
 	}
 
 	{
@@ -268,11 +283,12 @@ func (suite *MutationAtomicGetSetSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 1, "errors": 0, "inserted": 0, "replaced": 0, "skipped": 0, "unchanged": 0, "changes": []interface{}{map[interface{}]interface{}{"new_val": nil, "old_val": map[interface{}]interface{}{"id": 1, }, }}, }
 		/* tbl.delete(return_changes=True) */
 
-		suite.T().Log("About to run line #90: tbl.Delete(r.DeleteOpts{ReturnChanges: true, })")
+		fmt.Println("About to run line #90: tbl.Delete(r.DeleteOpts{ReturnChanges: true, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Delete(r.DeleteOpts{ReturnChanges: true, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #90")
+		fmt.Println("Finished running line #90")
 	}
 }

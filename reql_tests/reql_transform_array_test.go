@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type TransformArraySuite struct {
 }
 
 func (suite *TransformArraySuite) SetupTest() {
-	suite.T().Log("Setting up TransformArraySuite")
+	fmt.Println("Setting up TransformArraySuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *TransformArraySuite) SetupTest() {
 }
 
 func (suite *TransformArraySuite) TearDownSuite() {
-	suite.T().Log("Tearing down TransformArraySuite")
+	fmt.Println("Tearing down TransformArraySuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,13 +55,13 @@ func (suite *TransformArraySuite) TearDownSuite() {
 }
 
 func (suite *TransformArraySuite) TestCases() {
-	suite.T().Log("Running TransformArraySuite: Tests manipulation operations on arrays")
+	fmt.Println("Running TransformArraySuite: Tests manipulation operations on arrays")
 
 
 
 	// transform/array.yaml line #5
 	// arr = r.expr([1, 2, 3])
-	suite.T().Log("Possibly executing: var arr r.Term = r.Expr([]interface{}{1, 2, 3})")
+	fmt.Println("Possibly executing: var arr r.Term = r.Expr([]interface{}{1, 2, 3})")
 
 	arr := r.Expr([]interface{}{1, 2, 3})
 	_ = arr // Prevent any noused variable errors
@@ -68,7 +69,7 @@ func (suite *TransformArraySuite) TestCases() {
 
 	// transform/array.yaml line #6
 	// dupe_arr = r.expr([1, 1, 2, 3])
-	suite.T().Log("Possibly executing: var dupe_arr r.Term = r.Expr([]interface{}{1, 1, 2, 3})")
+	fmt.Println("Possibly executing: var dupe_arr r.Term = r.Expr([]interface{}{1, 1, 2, 3})")
 
 	dupe_arr := r.Expr([]interface{}{1, 1, 2, 3})
 	_ = dupe_arr // Prevent any noused variable errors
@@ -76,7 +77,7 @@ func (suite *TransformArraySuite) TestCases() {
 
 	// transform/array.yaml line #7
 	// objArr = r.expr([{'a':1, 'b':'a'}, {'a':2, 'b':'b'}, {'a':3, 'b':'c'}])
-	suite.T().Log("Possibly executing: var objArr r.Term = r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, 'b': 'a', }, map[interface{}]interface{}{'a': 2, 'b': 'b', }, map[interface{}]interface{}{'a': 3, 'b': 'c', }})")
+	fmt.Println("Possibly executing: var objArr r.Term = r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, 'b': 'a', }, map[interface{}]interface{}{'a': 2, 'b': 'b', }, map[interface{}]interface{}{'a': 3, 'b': 'c', }})")
 
 	objArr := r.Expr([]interface{}{map[interface{}]interface{}{"a": 1, "b": "a", }, map[interface{}]interface{}{"a": 2, "b": "b", }, map[interface{}]interface{}{"a": 3, "b": "c", }})
 	_ = objArr // Prevent any noused variable errors
@@ -84,7 +85,7 @@ func (suite *TransformArraySuite) TestCases() {
 
 	// transform/array.yaml line #8
 	// nestedObjArr = r.expr([{'a':1, 'b':{'c':1}}, {'a':2, 'b':{'c':2}}, {'a':3, 'b':{'c':3}}])
-	suite.T().Log("Possibly executing: var nestedObjArr r.Term = r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, 'b': map[interface{}]interface{}{'c': 1, }, }, map[interface{}]interface{}{'a': 2, 'b': map[interface{}]interface{}{'c': 2, }, }, map[interface{}]interface{}{'a': 3, 'b': map[interface{}]interface{}{'c': 3, }, }})")
+	fmt.Println("Possibly executing: var nestedObjArr r.Term = r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, 'b': map[interface{}]interface{}{'c': 1, }, }, map[interface{}]interface{}{'a': 2, 'b': map[interface{}]interface{}{'c': 2, }, }, map[interface{}]interface{}{'a': 3, 'b': map[interface{}]interface{}{'c': 3, }, }})")
 
 	nestedObjArr := r.Expr([]interface{}{map[interface{}]interface{}{"a": 1, "b": map[interface{}]interface{}{"c": 1, }, }, map[interface{}]interface{}{"a": 2, "b": map[interface{}]interface{}{"c": 2, }, }, map[interface{}]interface{}{"a": 3, "b": map[interface{}]interface{}{"c": 3, }, }})
 	_ = nestedObjArr // Prevent any noused variable errors
@@ -96,12 +97,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3, 4}
 		/* arr.append(4) */
 
-		suite.T().Log("About to run line #12: arr.Append(4)")
+		fmt.Println("About to run line #12: arr.Append(4)")
 
 		runAndAssert(suite.Suite, expected_, arr.Append(4), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #12")
+		fmt.Println("Finished running line #12")
 	}
 
 	{
@@ -110,12 +112,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3, "a"}
 		/* arr.append('a') */
 
-		suite.T().Log("About to run line #14: arr.Append('a')")
+		fmt.Println("About to run line #14: arr.Append('a')")
 
 		runAndAssert(suite.Suite, expected_, arr.Append("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #14")
+		fmt.Println("Finished running line #14")
 	}
 
 	{
@@ -124,12 +127,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{0, 1, 2, 3}
 		/* arr.prepend(0) */
 
-		suite.T().Log("About to run line #19: arr.Prepend(0)")
+		fmt.Println("About to run line #19: arr.Prepend(0)")
 
 		runAndAssert(suite.Suite, expected_, arr.Prepend(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #19")
+		fmt.Println("Finished running line #19")
 	}
 
 	{
@@ -138,12 +142,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{"a", 1, 2, 3}
 		/* arr.prepend('a') */
 
-		suite.T().Log("About to run line #21: arr.Prepend('a')")
+		fmt.Println("About to run line #21: arr.Prepend('a')")
 
 		runAndAssert(suite.Suite, expected_, arr.Prepend("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #21")
+		fmt.Println("Finished running line #21")
 	}
 
 	{
@@ -152,12 +157,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{3}
 		/* arr.difference([1,2,2]) */
 
-		suite.T().Log("About to run line #26: arr.Difference([]interface{}{1, 2, 2})")
+		fmt.Println("About to run line #26: arr.Difference([]interface{}{1, 2, 2})")
 
 		runAndAssert(suite.Suite, expected_, arr.Difference([]interface{}{1, 2, 2}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #26")
+		fmt.Println("Finished running line #26")
 	}
 
 	{
@@ -166,12 +172,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3}
 		/* arr.difference([]) */
 
-		suite.T().Log("About to run line #28: arr.Difference([]interface{}{})")
+		fmt.Println("About to run line #28: arr.Difference([]interface{}{})")
 
 		runAndAssert(suite.Suite, expected_, arr.Difference([]interface{}{}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #28")
+		fmt.Println("Finished running line #28")
 	}
 
 	{
@@ -180,12 +187,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3}
 		/* arr.difference(["foo", "bar"]) */
 
-		suite.T().Log("About to run line #30: arr.Difference([]interface{}{'foo', 'bar'})")
+		fmt.Println("About to run line #30: arr.Difference([]interface{}{'foo', 'bar'})")
 
 		runAndAssert(suite.Suite, expected_, arr.Difference([]interface{}{"foo", "bar"}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #30")
+		fmt.Println("Finished running line #30")
 	}
 
 	{
@@ -194,12 +202,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3}
 		/* dupe_arr.set_insert(1) */
 
-		suite.T().Log("About to run line #34: dupe_arr.SetInsert(1)")
+		fmt.Println("About to run line #34: dupe_arr.SetInsert(1)")
 
 		runAndAssert(suite.Suite, expected_, dupe_arr.SetInsert(1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #34")
+		fmt.Println("Finished running line #34")
 	}
 
 	{
@@ -208,12 +217,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3, 4}
 		/* dupe_arr.set_insert(4) */
 
-		suite.T().Log("About to run line #36: dupe_arr.SetInsert(4)")
+		fmt.Println("About to run line #36: dupe_arr.SetInsert(4)")
 
 		runAndAssert(suite.Suite, expected_, dupe_arr.SetInsert(4), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #36")
+		fmt.Println("Finished running line #36")
 	}
 
 	{
@@ -222,12 +232,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3, 4, 5}
 		/* dupe_arr.set_union([3,4,5,5]) */
 
-		suite.T().Log("About to run line #39: dupe_arr.SetUnion([]interface{}{3, 4, 5, 5})")
+		fmt.Println("About to run line #39: dupe_arr.SetUnion([]interface{}{3, 4, 5, 5})")
 
 		runAndAssert(suite.Suite, expected_, dupe_arr.SetUnion([]interface{}{3, 4, 5, 5}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #39")
+		fmt.Println("Finished running line #39")
 	}
 
 	{
@@ -236,12 +247,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3, 5, 6}
 		/* dupe_arr.set_union([5,6]) */
 
-		suite.T().Log("About to run line #41: dupe_arr.SetUnion([]interface{}{5, 6})")
+		fmt.Println("About to run line #41: dupe_arr.SetUnion([]interface{}{5, 6})")
 
 		runAndAssert(suite.Suite, expected_, dupe_arr.SetUnion([]interface{}{5, 6}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #41")
+		fmt.Println("Finished running line #41")
 	}
 
 	{
@@ -250,12 +262,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2}
 		/* dupe_arr.set_intersection([1,1,1,2,2]) */
 
-		suite.T().Log("About to run line #44: dupe_arr.SetIntersection([]interface{}{1, 1, 1, 2, 2})")
+		fmt.Println("About to run line #44: dupe_arr.SetIntersection([]interface{}{1, 1, 1, 2, 2})")
 
 		runAndAssert(suite.Suite, expected_, dupe_arr.SetIntersection([]interface{}{1, 1, 1, 2, 2}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #44")
+		fmt.Println("Finished running line #44")
 	}
 
 	{
@@ -264,12 +277,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{}
 		/* dupe_arr.set_intersection(["foo"]) */
 
-		suite.T().Log("About to run line #46: dupe_arr.SetIntersection([]interface{}{'foo'})")
+		fmt.Println("About to run line #46: dupe_arr.SetIntersection([]interface{}{'foo'})")
 
 		runAndAssert(suite.Suite, expected_, dupe_arr.SetIntersection([]interface{}{"foo"}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #46")
+		fmt.Println("Finished running line #46")
 	}
 
 	{
@@ -278,12 +292,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{2, 3}
 		/* dupe_arr.set_difference([1,1,1,10]) */
 
-		suite.T().Log("About to run line #49: dupe_arr.SetDifference([]interface{}{1, 1, 1, 10})")
+		fmt.Println("About to run line #49: dupe_arr.SetDifference([]interface{}{1, 1, 1, 10})")
 
 		runAndAssert(suite.Suite, expected_, dupe_arr.SetDifference([]interface{}{1, 1, 1, 10}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #49")
+		fmt.Println("Finished running line #49")
 	}
 
 	{
@@ -292,12 +307,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 3}
 		/* dupe_arr.set_difference([2]) */
 
-		suite.T().Log("About to run line #51: dupe_arr.SetDifference([]interface{}{2})")
+		fmt.Println("About to run line #51: dupe_arr.SetDifference([]interface{}{2})")
 
 		runAndAssert(suite.Suite, expected_, dupe_arr.SetDifference([]interface{}{2}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #51")
+		fmt.Println("Finished running line #51")
 	}
 
 	{
@@ -306,12 +322,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{2, 3}
 		/* arr[1:3] */
 
-		suite.T().Log("About to run line #58: arr.Slice(1, 3)")
+		fmt.Println("About to run line #58: arr.Slice(1, 3)")
 
 		runAndAssert(suite.Suite, expected_, arr.Slice(1, 3), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #58")
+		fmt.Println("Finished running line #58")
 	}
 
 	{
@@ -320,12 +337,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{2, 3}
 		/* arr.slice(1, 3) */
 
-		suite.T().Log("About to run line #59: arr.Slice(1, 3)")
+		fmt.Println("About to run line #59: arr.Slice(1, 3)")
 
 		runAndAssert(suite.Suite, expected_, arr.Slice(1, 3), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #59")
+		fmt.Println("Finished running line #59")
 	}
 
 	{
@@ -334,12 +352,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{2, 3}
 		/* arr.slice(1, 2, right_bound='closed') */
 
-		suite.T().Log("About to run line #60: arr.Slice(1, 2, r.SliceOpts{RightBound: 'closed', })")
+		fmt.Println("About to run line #60: arr.Slice(1, 2, r.SliceOpts{RightBound: 'closed', })")
 
 		runAndAssert(suite.Suite, expected_, arr.Slice(1, 2, r.SliceOpts{RightBound: "closed", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #60")
+		fmt.Println("Finished running line #60")
 	}
 
 	{
@@ -348,12 +367,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2}
 		/* arr[:2] */
 
-		suite.T().Log("About to run line #72: arr.Slice(0, 2)")
+		fmt.Println("About to run line #72: arr.Slice(0, 2)")
 
 		runAndAssert(suite.Suite, expected_, arr.Slice(0, 2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #72")
+		fmt.Println("Finished running line #72")
 	}
 
 	{
@@ -362,12 +382,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2}
 		/* arr.slice(0,2) */
 
-		suite.T().Log("About to run line #73: arr.Slice(0, 2)")
+		fmt.Println("About to run line #73: arr.Slice(0, 2)")
 
 		runAndAssert(suite.Suite, expected_, arr.Slice(0, 2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #73")
+		fmt.Println("Finished running line #73")
 	}
 
 	{
@@ -376,12 +397,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{2, 3}
 		/* arr[1:] */
 
-		suite.T().Log("About to run line #81: arr.Slice(1, -1, r.SliceOpts{RightBound: 'closed'})")
+		fmt.Println("About to run line #81: arr.Slice(1, -1, r.SliceOpts{RightBound: 'closed'})")
 
 		runAndAssert(suite.Suite, expected_, arr.Slice(1, -1, r.SliceOpts{RightBound: "closed"}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #81")
+		fmt.Println("Finished running line #81")
 	}
 
 	{
@@ -390,12 +412,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{2, 3}
 		/* arr.slice(1) */
 
-		suite.T().Log("About to run line #82: arr.Slice(1)")
+		fmt.Println("About to run line #82: arr.Slice(1)")
 
 		runAndAssert(suite.Suite, expected_, arr.Slice(1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #82")
+		fmt.Println("Finished running line #82")
 	}
 
 	{
@@ -404,12 +427,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{2}
 		/* arr.slice(-2, -1) */
 
-		suite.T().Log("About to run line #89: arr.Slice(-2, -1)")
+		fmt.Println("About to run line #89: arr.Slice(-2, -1)")
 
 		runAndAssert(suite.Suite, expected_, arr.Slice(-2, -1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #89")
+		fmt.Println("Finished running line #89")
 	}
 
 	{
@@ -418,12 +442,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{2, 3}
 		/* arr.skip(1) */
 
-		suite.T().Log("About to run line #95: arr.Skip(1)")
+		fmt.Println("About to run line #95: arr.Skip(1)")
 
 		runAndAssert(suite.Suite, expected_, arr.Skip(1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #95")
+		fmt.Println("Finished running line #95")
 	}
 
 	{
@@ -432,12 +457,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{3}
 		/* arr.skip(2) */
 
-		suite.T().Log("About to run line #97: arr.Skip(2)")
+		fmt.Println("About to run line #97: arr.Skip(2)")
 
 		runAndAssert(suite.Suite, expected_, arr.Skip(2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #97")
+		fmt.Println("Finished running line #97")
 	}
 
 	{
@@ -446,12 +472,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{}
 		/* arr.skip(12) */
 
-		suite.T().Log("About to run line #99: arr.Skip(12)")
+		fmt.Println("About to run line #99: arr.Skip(12)")
 
 		runAndAssert(suite.Suite, expected_, arr.Skip(12), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #99")
+		fmt.Println("Finished running line #99")
 	}
 
 	{
@@ -460,12 +487,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2}
 		/* arr.limit(2) */
 
-		suite.T().Log("About to run line #104: arr.Limit(2)")
+		fmt.Println("About to run line #104: arr.Limit(2)")
 
 		runAndAssert(suite.Suite, expected_, arr.Limit(2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #104")
+		fmt.Println("Finished running line #104")
 	}
 
 	{
@@ -474,12 +502,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{}
 		/* arr.limit(0) */
 
-		suite.T().Log("About to run line #106: arr.Limit(0)")
+		fmt.Println("About to run line #106: arr.Limit(0)")
 
 		runAndAssert(suite.Suite, expected_, arr.Limit(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #106")
+		fmt.Println("Finished running line #106")
 	}
 
 	{
@@ -488,12 +517,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3}
 		/* arr.limit(12) */
 
-		suite.T().Log("About to run line #108: arr.Limit(12)")
+		fmt.Println("About to run line #108: arr.Limit(12)")
 
 		runAndAssert(suite.Suite, expected_, arr.Limit(12), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #108")
+		fmt.Println("Finished running line #108")
 	}
 
 	{
@@ -502,12 +532,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"a": 1, "b": "a", }, map[interface{}]interface{}{"a": 2, "b": "b", }, map[interface{}]interface{}{"a": 3, "b": "c", }}
 		/* objArr.pluck('a', 'b') */
 
-		suite.T().Log("About to run line #113: objArr.Pluck('a', 'b')")
+		fmt.Println("About to run line #113: objArr.Pluck('a', 'b')")
 
 		runAndAssert(suite.Suite, expected_, objArr.Pluck("a", "b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #113")
+		fmt.Println("Finished running line #113")
 	}
 
 	{
@@ -516,12 +547,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"a": 1, }, map[interface{}]interface{}{"a": 2, }, map[interface{}]interface{}{"a": 3, }}
 		/* objArr.pluck('a') */
 
-		suite.T().Log("About to run line #115: objArr.Pluck('a')")
+		fmt.Println("About to run line #115: objArr.Pluck('a')")
 
 		runAndAssert(suite.Suite, expected_, objArr.Pluck("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #115")
+		fmt.Println("Finished running line #115")
 	}
 
 	{
@@ -530,17 +562,18 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{}, map[interface{}]interface{}{}, map[interface{}]interface{}{}}
 		/* objArr.pluck() */
 
-		suite.T().Log("About to run line #117: objArr.Pluck()")
+		fmt.Println("About to run line #117: objArr.Pluck()")
 
 		runAndAssert(suite.Suite, expected_, objArr.Pluck(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #117")
+		fmt.Println("Finished running line #117")
 	}
 
 	// transform/array.yaml line #121
 	// wftst = objArr.union(objArr.pluck('a')).union(objArr.pluck('b')).union([{'a':null}])
-	suite.T().Log("Possibly executing: var wftst r.Term = objArr.Union(objArr.Pluck('a')).Union(objArr.Pluck('b')).Union([]interface{}{map[interface{}]interface{}{'a': nil, }})")
+	fmt.Println("Possibly executing: var wftst r.Term = objArr.Union(objArr.Pluck('a')).Union(objArr.Pluck('b')).Union([]interface{}{map[interface{}]interface{}{'a': nil, }})")
 
 	wftst := objArr.Union(objArr.Pluck("a")).Union(objArr.Pluck("b")).Union([]interface{}{map[interface{}]interface{}{"a": nil, }})
 	_ = wftst // Prevent any noused variable errors
@@ -552,12 +585,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"a": 1, }, map[interface{}]interface{}{"a": 2, }, map[interface{}]interface{}{"a": 3, }, map[interface{}]interface{}{"a": 1, }, map[interface{}]interface{}{"a": 2, }, map[interface{}]interface{}{"a": 3, }}
 		/* wftst.with_fields('a') */
 
-		suite.T().Log("About to run line #122: wftst.WithFields('a')")
+		fmt.Println("About to run line #122: wftst.WithFields('a')")
 
 		runAndAssert(suite.Suite, expected_, wftst.WithFields("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #122")
+		fmt.Println("Finished running line #122")
 	}
 
 	{
@@ -566,12 +600,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"b": "a", }, map[interface{}]interface{}{"b": "b", }, map[interface{}]interface{}{"b": "c", }, map[interface{}]interface{}{"b": "a", }, map[interface{}]interface{}{"b": "b", }, map[interface{}]interface{}{"b": "c", }}
 		/* wftst.with_fields('b') */
 
-		suite.T().Log("About to run line #124: wftst.WithFields('b')")
+		fmt.Println("About to run line #124: wftst.WithFields('b')")
 
 		runAndAssert(suite.Suite, expected_, wftst.WithFields("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #124")
+		fmt.Println("Finished running line #124")
 	}
 
 	{
@@ -580,12 +615,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"a": 1, "b": "a", }, map[interface{}]interface{}{"a": 2, "b": "b", }, map[interface{}]interface{}{"a": 3, "b": "c", }}
 		/* wftst.with_fields('a', 'b') */
 
-		suite.T().Log("About to run line #126: wftst.WithFields('a', 'b')")
+		fmt.Println("About to run line #126: wftst.WithFields('a', 'b')")
 
 		runAndAssert(suite.Suite, expected_, wftst.WithFields("a", "b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #126")
+		fmt.Println("Finished running line #126")
 	}
 
 	{
@@ -594,17 +630,18 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{}, map[interface{}]interface{}{}, map[interface{}]interface{}{}, map[interface{}]interface{}{}, map[interface{}]interface{}{}, map[interface{}]interface{}{}, map[interface{}]interface{}{}, map[interface{}]interface{}{}, map[interface{}]interface{}{}, map[interface{}]interface{}{}}
 		/* wftst.with_fields() */
 
-		suite.T().Log("About to run line #128: wftst.WithFields()")
+		fmt.Println("About to run line #128: wftst.WithFields()")
 
 		runAndAssert(suite.Suite, expected_, wftst.WithFields(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #128")
+		fmt.Println("Finished running line #128")
 	}
 
 	// transform/array.yaml line #131
 	// wftst2 = nestedObjArr.union(objArr.pluck({'b':'missing'})).union(nestedObjArr.pluck({'b':'c'}))
-	suite.T().Log("Possibly executing: var wftst2 r.Term = nestedObjArr.Union(objArr.Pluck(map[interface{}]interface{}{'b': 'missing', })).Union(nestedObjArr.Pluck(map[interface{}]interface{}{'b': 'c', }))")
+	fmt.Println("Possibly executing: var wftst2 r.Term = nestedObjArr.Union(objArr.Pluck(map[interface{}]interface{}{'b': 'missing', })).Union(nestedObjArr.Pluck(map[interface{}]interface{}{'b': 'c', }))")
 
 	wftst2 := nestedObjArr.Union(objArr.Pluck(map[interface{}]interface{}{"b": "missing", })).Union(nestedObjArr.Pluck(map[interface{}]interface{}{"b": "c", }))
 	_ = wftst2 // Prevent any noused variable errors
@@ -616,12 +653,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"b": map[interface{}]interface{}{"c": 1, }, }, map[interface{}]interface{}{"b": map[interface{}]interface{}{"c": 2, }, }, map[interface{}]interface{}{"b": map[interface{}]interface{}{"c": 3, }, }, map[interface{}]interface{}{"b": map[interface{}]interface{}{"c": 1, }, }, map[interface{}]interface{}{"b": map[interface{}]interface{}{"c": 2, }, }, map[interface{}]interface{}{"b": map[interface{}]interface{}{"c": 3, }, }}
 		/* wftst2.with_fields({'b':'c'}) */
 
-		suite.T().Log("About to run line #132: wftst2.WithFields(map[interface{}]interface{}{'b': 'c', })")
+		fmt.Println("About to run line #132: wftst2.WithFields(map[interface{}]interface{}{'b': 'c', })")
 
 		runAndAssert(suite.Suite, expected_, wftst2.WithFields(map[interface{}]interface{}{"b": "c", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #132")
+		fmt.Println("Finished running line #132")
 	}
 
 	{
@@ -630,12 +668,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Invalid path argument `1`.")
 		/* wftst.with_fields(1) */
 
-		suite.T().Log("About to run line #135: wftst.WithFields(1)")
+		fmt.Println("About to run line #135: wftst.WithFields(1)")
 
 		runAndAssert(suite.Suite, expected_, wftst.WithFields(1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #135")
+		fmt.Println("Finished running line #135")
 	}
 
 	{
@@ -644,12 +683,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot perform has_fields on a non-object non-sequence `1`.")
 		/* r.expr(1).with_fields() */
 
-		suite.T().Log("About to run line #137: r.Expr(1).WithFields()")
+		fmt.Println("About to run line #137: r.Expr(1).WithFields()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).WithFields(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #137")
+		fmt.Println("Finished running line #137")
 	}
 
 	{
@@ -658,12 +698,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{}, map[interface{}]interface{}{}, map[interface{}]interface{}{}}
 		/* objArr.without('a', 'b') */
 
-		suite.T().Log("About to run line #142: objArr.Without('a', 'b')")
+		fmt.Println("About to run line #142: objArr.Without('a', 'b')")
 
 		runAndAssert(suite.Suite, expected_, objArr.Without("a", "b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #142")
+		fmt.Println("Finished running line #142")
 	}
 
 	{
@@ -672,12 +713,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"b": "a", }, map[interface{}]interface{}{"b": "b", }, map[interface{}]interface{}{"b": "c", }}
 		/* objArr.without('a') */
 
-		suite.T().Log("About to run line #144: objArr.Without('a')")
+		fmt.Println("About to run line #144: objArr.Without('a')")
 
 		runAndAssert(suite.Suite, expected_, objArr.Without("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #144")
+		fmt.Println("Finished running line #144")
 	}
 
 	{
@@ -686,12 +728,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"a": 1, "b": "a", }, map[interface{}]interface{}{"a": 2, "b": "b", }, map[interface{}]interface{}{"a": 3, "b": "c", }}
 		/* objArr.without() */
 
-		suite.T().Log("About to run line #146: objArr.Without()")
+		fmt.Println("About to run line #146: objArr.Without()")
 
 		runAndAssert(suite.Suite, expected_, objArr.Without(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #146")
+		fmt.Println("Finished running line #146")
 	}
 
 	{
@@ -700,12 +743,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{2, 3, 4}
 		/* arr.map(lambda v: v + 1) */
 
-		suite.T().Log("About to run line #151: arr.Map(func(v r.Term) interface{} { return r.Add(v, 1)})")
+		fmt.Println("About to run line #151: arr.Map(func(v r.Term) interface{} { return r.Add(v, 1)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Map(func(v r.Term) interface{} { return r.Add(v, 1)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #151")
+		fmt.Println("Finished running line #151")
 	}
 
 	{
@@ -714,12 +758,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ int = 6
 		/* arr.reduce(lambda a, b: a + b) */
 
-		suite.T().Log("About to run line #161: arr.Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #161: arr.Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #161")
+		fmt.Println("Finished running line #161")
 	}
 
 	{
@@ -728,12 +773,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ int = 6
 		/* arr.reduce(lambda a, b:a + b) */
 
-		suite.T().Log("About to run line #166: arr.Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #166: arr.Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #166")
+		fmt.Println("Finished running line #166")
 	}
 
 	{
@@ -742,12 +788,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ int = 12
 		/* arr.union(arr).reduce(lambda a, b: a + b) */
 
-		suite.T().Log("About to run line #171: arr.Union(arr).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #171: arr.Union(arr).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Union(arr).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #171")
+		fmt.Println("Finished running line #171")
 	}
 
 	{
@@ -756,12 +803,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ int = 12
 		/* arr.union(arr).reduce(lambda a, b:a + b) */
 
-		suite.T().Log("About to run line #176: arr.Union(arr).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #176: arr.Union(arr).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Union(arr).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #176")
+		fmt.Println("Finished running line #176")
 	}
 
 	{
@@ -770,12 +818,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"a": 2, "b": "b", }}
 		/* objArr.filter(lambda row: row['b'] == 'b') */
 
-		suite.T().Log("About to run line #183: objArr.Filter(func(row r.Term) interface{} { return row.AtIndex('b').Eq('b')})")
+		fmt.Println("About to run line #183: objArr.Filter(func(row r.Term) interface{} { return row.AtIndex('b').Eq('b')})")
 
 		runAndAssert(suite.Suite, expected_, objArr.Filter(func(row r.Term) interface{} { return row.AtIndex("b").Eq("b")}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #183")
+		fmt.Println("Finished running line #183")
 	}
 
 	{
@@ -784,12 +833,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 1, 2, 1, 2}
 		/* arr.concat_map(lambda v: [1,2]) */
 
-		suite.T().Log("About to run line #190: arr.ConcatMap(func(v r.Term) interface{} { return []interface{}{1, 2}})")
+		fmt.Println("About to run line #190: arr.ConcatMap(func(v r.Term) interface{} { return []interface{}{1, 2}})")
 
 		runAndAssert(suite.Suite, expected_, arr.ConcatMap(func(v r.Term) interface{} { return []interface{}{1, 2}}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #190")
+		fmt.Println("Finished running line #190")
 	}
 
 	{
@@ -798,12 +848,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"v": 1, }, map[interface{}]interface{}{"v2": 2, }, map[interface{}]interface{}{"v": 2, }, map[interface{}]interface{}{"v2": 3, }, map[interface{}]interface{}{"v": 3, }, map[interface{}]interface{}{"v2": 4, }}
 		/* arr.concat_map(lambda v: [{'v':v}, {'v2':v + 1}]) */
 
-		suite.T().Log("About to run line #194: arr.ConcatMap(func(v r.Term) interface{} { return []interface{}{map[interface{}]interface{}{'v': v, }, map[interface{}]interface{}{'v2': r.Add(v, 1), }}})")
+		fmt.Println("About to run line #194: arr.ConcatMap(func(v r.Term) interface{} { return []interface{}{map[interface{}]interface{}{'v': v, }, map[interface{}]interface{}{'v2': r.Add(v, 1), }}})")
 
 		runAndAssert(suite.Suite, expected_, arr.ConcatMap(func(v r.Term) interface{} { return []interface{}{map[interface{}]interface{}{"v": v, }, map[interface{}]interface{}{"v2": r.Add(v, 1), }}}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #194")
+		fmt.Println("Finished running line #194")
 	}
 
 	{
@@ -812,12 +863,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"a": 1, "b": "a", }, map[interface{}]interface{}{"a": 2, "b": "b", }, map[interface{}]interface{}{"a": 3, "b": "c", }}
 		/* objArr.order_by('b') */
 
-		suite.T().Log("About to run line #201: objArr.OrderBy('b')")
+		fmt.Println("About to run line #201: objArr.OrderBy('b')")
 
 		runAndAssert(suite.Suite, expected_, objArr.OrderBy("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #201")
+		fmt.Println("Finished running line #201")
 	}
 
 	{
@@ -826,12 +878,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"a": 3, "b": "c", }, map[interface{}]interface{}{"a": 2, "b": "b", }, map[interface{}]interface{}{"a": 1, "b": "a", }}
 		/* objArr.order_by(r.desc('b')) */
 
-		suite.T().Log("About to run line #205: objArr.OrderBy(r.Desc('b'))")
+		fmt.Println("About to run line #205: objArr.OrderBy(r.Desc('b'))")
 
 		runAndAssert(suite.Suite, expected_, objArr.OrderBy(r.Desc("b")), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #205")
+		fmt.Println("Finished running line #205")
 	}
 
 	{
@@ -840,12 +893,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"-a": 1, }, map[interface{}]interface{}{"-a": 2, }}
 		/* r.expr([{'-a':1},{'-a':2}]).order_by('-a') */
 
-		suite.T().Log("About to run line #208: r.Expr([]interface{}{map[interface{}]interface{}{'-a': 1, }, map[interface{}]interface{}{'-a': 2, }}).OrderBy('-a')")
+		fmt.Println("About to run line #208: r.Expr([]interface{}{map[interface{}]interface{}{'-a': 1, }, map[interface{}]interface{}{'-a': 2, }}).OrderBy('-a')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{map[interface{}]interface{}{"-a": 1, }, map[interface{}]interface{}{"-a": 2, }}).OrderBy("-a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #208")
+		fmt.Println("Finished running line #208")
 	}
 
 	{
@@ -854,12 +908,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3, 4}
 		/* r.expr([1,1,2,2,2,3,4]).distinct() */
 
-		suite.T().Log("About to run line #216: r.Expr([]interface{}{1, 1, 2, 2, 2, 3, 4}).Distinct()")
+		fmt.Println("About to run line #216: r.Expr([]interface{}{1, 1, 2, 2, 2, 3, 4}).Distinct()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{1, 1, 2, 2, 2, 3, 4}).Distinct(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #216")
+		fmt.Println("Finished running line #216")
 	}
 
 	{
@@ -868,12 +923,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ int = 3
 		/* objArr.count() */
 
-		suite.T().Log("About to run line #223: objArr.Count()")
+		fmt.Println("About to run line #223: objArr.Count()")
 
 		runAndAssert(suite.Suite, expected_, objArr.Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #223")
+		fmt.Println("Finished running line #223")
 	}
 
 	{
@@ -882,12 +938,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3, map[interface{}]interface{}{"a": 1, "b": "a", }, map[interface{}]interface{}{"a": 2, "b": "b", }, map[interface{}]interface{}{"a": 3, "b": "c", }}
 		/* arr.union(objArr) */
 
-		suite.T().Log("About to run line #228: arr.Union(objArr)")
+		fmt.Println("About to run line #228: arr.Union(objArr)")
 
 		runAndAssert(suite.Suite, expected_, arr.Union(objArr), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #228")
+		fmt.Println("Finished running line #228")
 	}
 
 	{
@@ -896,12 +953,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ int = 2
 		/* arr[1] */
 
-		suite.T().Log("About to run line #234: arr.AtIndex(1)")
+		fmt.Println("About to run line #234: arr.AtIndex(1)")
 
 		runAndAssert(suite.Suite, expected_, arr.AtIndex(1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #234")
+		fmt.Println("Finished running line #234")
 	}
 
 	{
@@ -910,12 +968,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ int = 2
 		/* arr.nth(1) */
 
-		suite.T().Log("About to run line #235: arr.Nth(1)")
+		fmt.Println("About to run line #235: arr.Nth(1)")
 
 		runAndAssert(suite.Suite, expected_, arr.Nth(1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #235")
+		fmt.Println("Finished running line #235")
 	}
 
 	{
@@ -924,12 +983,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ int = 1
 		/* arr[0] */
 
-		suite.T().Log("About to run line #238: arr.AtIndex(0)")
+		fmt.Println("About to run line #238: arr.AtIndex(0)")
 
 		runAndAssert(suite.Suite, expected_, arr.AtIndex(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #238")
+		fmt.Println("Finished running line #238")
 	}
 
 	{
@@ -938,12 +998,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr([]).is_empty() */
 
-		suite.T().Log("About to run line #245: r.Expr([]interface{}{}).IsEmpty()")
+		fmt.Println("About to run line #245: r.Expr([]interface{}{}).IsEmpty()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{}).IsEmpty(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #245")
+		fmt.Println("Finished running line #245")
 	}
 
 	{
@@ -952,12 +1013,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = false
 		/* arr.is_empty() */
 
-		suite.T().Log("About to run line #247: arr.IsEmpty()")
+		fmt.Println("About to run line #247: arr.IsEmpty()")
 
 		runAndAssert(suite.Suite, expected_, arr.IsEmpty(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #247")
+		fmt.Println("Finished running line #247")
 	}
 
 	{
@@ -966,12 +1028,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = true
 		/* arr.contains(2) */
 
-		suite.T().Log("About to run line #251: arr.Contains(2)")
+		fmt.Println("About to run line #251: arr.Contains(2)")
 
 		runAndAssert(suite.Suite, expected_, arr.Contains(2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #251")
+		fmt.Println("Finished running line #251")
 	}
 
 	{
@@ -980,12 +1043,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = true
 		/* arr.contains(2, 3) */
 
-		suite.T().Log("About to run line #253: arr.Contains(2, 3)")
+		fmt.Println("About to run line #253: arr.Contains(2, 3)")
 
 		runAndAssert(suite.Suite, expected_, arr.Contains(2, 3), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #253")
+		fmt.Println("Finished running line #253")
 	}
 
 	{
@@ -994,12 +1058,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = false
 		/* arr.contains(4) */
 
-		suite.T().Log("About to run line #255: arr.Contains(4)")
+		fmt.Println("About to run line #255: arr.Contains(4)")
 
 		runAndAssert(suite.Suite, expected_, arr.Contains(4), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #255")
+		fmt.Println("Finished running line #255")
 	}
 
 	{
@@ -1008,12 +1073,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = false
 		/* arr.contains(2, 4) */
 
-		suite.T().Log("About to run line #257: arr.Contains(2, 4)")
+		fmt.Println("About to run line #257: arr.Contains(2, 4)")
 
 		runAndAssert(suite.Suite, expected_, arr.Contains(2, 4), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #257")
+		fmt.Println("Finished running line #257")
 	}
 
 	{
@@ -1022,12 +1088,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = false
 		/* arr.contains(2, 2) */
 
-		suite.T().Log("About to run line #259: arr.Contains(2, 2)")
+		fmt.Println("About to run line #259: arr.Contains(2, 2)")
 
 		runAndAssert(suite.Suite, expected_, arr.Contains(2, 2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #259")
+		fmt.Println("Finished running line #259")
 	}
 
 	{
@@ -1036,12 +1103,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = true
 		/* arr.union(arr).contains(2, 2) */
 
-		suite.T().Log("About to run line #261: arr.Union(arr).Contains(2, 2)")
+		fmt.Println("About to run line #261: arr.Union(arr).Contains(2, 2)")
 
 		runAndAssert(suite.Suite, expected_, arr.Union(arr).Contains(2, 2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #261")
+		fmt.Println("Finished running line #261")
 	}
 
 	{
@@ -1050,12 +1118,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = true
 		/* arr.contains(lambda x:x == 2) */
 
-		suite.T().Log("About to run line #265: arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)})")
+		fmt.Println("About to run line #265: arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #265")
+		fmt.Println("Finished running line #265")
 	}
 
 	{
@@ -1064,12 +1133,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = true
 		/* arr.contains(lambda x:x == 2, lambda x:x==3) */
 
-		suite.T().Log("About to run line #269: arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 3)})")
+		fmt.Println("About to run line #269: arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 3)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 3)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #269")
+		fmt.Println("Finished running line #269")
 	}
 
 	{
@@ -1078,12 +1148,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = false
 		/* arr.contains(lambda x:x == 4) */
 
-		suite.T().Log("About to run line #273: arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 4)})")
+		fmt.Println("About to run line #273: arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 4)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 4)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #273")
+		fmt.Println("Finished running line #273")
 	}
 
 	{
@@ -1092,12 +1163,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = false
 		/* arr.contains(lambda x:x == 2, lambda x:x==4) */
 
-		suite.T().Log("About to run line #277: arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 4)})")
+		fmt.Println("About to run line #277: arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 4)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 4)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #277")
+		fmt.Println("Finished running line #277")
 	}
 
 	{
@@ -1106,12 +1178,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = false
 		/* arr.contains(lambda x:x == 2, lambda x:x==2) */
 
-		suite.T().Log("About to run line #281: arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 2)})")
+		fmt.Println("About to run line #281: arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 2)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 2)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #281")
+		fmt.Println("Finished running line #281")
 	}
 
 	{
@@ -1120,12 +1193,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ bool = true
 		/* arr.union(arr).contains(lambda x:x == 2, lambda x:x==2) */
 
-		suite.T().Log("About to run line #285: arr.Union(arr).Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 2)})")
+		fmt.Println("About to run line #285: arr.Union(arr).Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 2)})")
 
 		runAndAssert(suite.Suite, expected_, arr.Union(arr).Contains(func(x r.Term) interface{} { return r.Eq(x, 2)}, func(x r.Term) interface{} { return r.Eq(x, 2)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #285")
+		fmt.Println("Finished running line #285")
 	}
 
 	{
@@ -1134,12 +1208,13 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 3}
 		/* r.expr([{'a':1},{'b':2},{'a':3,'c':4}])['a'] */
 
-		suite.T().Log("About to run line #290: r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, }, map[interface{}]interface{}{'b': 2, }, map[interface{}]interface{}{'a': 3, 'c': 4, }}).AtIndex('a')")
+		fmt.Println("About to run line #290: r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, }, map[interface{}]interface{}{'b': 2, }, map[interface{}]interface{}{'a': 3, 'c': 4, }}).AtIndex('a')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{map[interface{}]interface{}{"a": 1, }, map[interface{}]interface{}{"b": 2, }, map[interface{}]interface{}{"a": 3, "c": 4, }}).AtIndex("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #290")
+		fmt.Println("Finished running line #290")
 	}
 
 	{
@@ -1148,11 +1223,12 @@ func (suite *TransformArraySuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot perform bracket on a non-object non-sequence `\"a\"`.")
 		/* r.expr([{'a':1},'a',{'b':2},{'a':3,'c':4}])['a'] */
 
-		suite.T().Log("About to run line #293: r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, }, 'a', map[interface{}]interface{}{'b': 2, }, map[interface{}]interface{}{'a': 3, 'c': 4, }}).AtIndex('a')")
+		fmt.Println("About to run line #293: r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, }, 'a', map[interface{}]interface{}{'b': 2, }, map[interface{}]interface{}{'a': 3, 'c': 4, }}).AtIndex('a')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{map[interface{}]interface{}{"a": 1, }, "a", map[interface{}]interface{}{"b": 2, }, map[interface{}]interface{}{"a": 3, "c": 4, }}).AtIndex("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #293")
+		fmt.Println("Finished running line #293")
 	}
 }

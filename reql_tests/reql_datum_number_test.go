@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type DatumNumberSuite struct {
 }
 
 func (suite *DatumNumberSuite) SetupTest() {
-	suite.T().Log("Setting up DatumNumberSuite")
+	fmt.Println("Setting up DatumNumberSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *DatumNumberSuite) SetupTest() {
 }
 
 func (suite *DatumNumberSuite) TearDownSuite() {
-	suite.T().Log("Tearing down DatumNumberSuite")
+	fmt.Println("Tearing down DatumNumberSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *DatumNumberSuite) TearDownSuite() {
 }
 
 func (suite *DatumNumberSuite) TestCases() {
-	suite.T().Log("Running DatumNumberSuite: Tests of conversion to and from the RQL number type")
+	fmt.Println("Running DatumNumberSuite: Tests of conversion to and from the RQL number type")
 
 
 
@@ -64,12 +65,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ int = 1
 		/* r.expr(1) */
 
-		suite.T().Log("About to run line #6: r.Expr(1)")
+		fmt.Println("About to run line #6: r.Expr(1)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ int = -1
 		/* r.expr(-1) */
 
-		suite.T().Log("About to run line #15: r.Expr(-1)")
+		fmt.Println("About to run line #15: r.Expr(-1)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(-1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #15")
+		fmt.Println("Finished running line #15")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ int = 0
 		/* r.expr(0) */
 
-		suite.T().Log("About to run line #24: r.Expr(0)")
+		fmt.Println("About to run line #24: r.Expr(0)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #24")
+		fmt.Println("Finished running line #24")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.expr(1.0) */
 
-		suite.T().Log("About to run line #35: r.Expr(1.0)")
+		fmt.Println("About to run line #35: r.Expr(1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #35")
+		fmt.Println("Finished running line #35")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ float64 = 1.5
 		/* r.expr(1.5) */
 
-		suite.T().Log("About to run line #44: r.Expr(1.5)")
+		fmt.Println("About to run line #44: r.Expr(1.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #44")
+		fmt.Println("Finished running line #44")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ float64 = -0.5
 		/* r.expr(-0.5) */
 
-		suite.T().Log("About to run line #53: r.Expr(-0.5)")
+		fmt.Println("About to run line #53: r.Expr(-0.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(-0.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #53")
+		fmt.Println("Finished running line #53")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ float64 = 67498.89278
 		/* r.expr(67498.89278) */
 
-		suite.T().Log("About to run line #62: r.Expr(67498.89278)")
+		fmt.Println("About to run line #62: r.Expr(67498.89278)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(67498.89278), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #62")
+		fmt.Println("Finished running line #62")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ int = 1234567890
 		/* r.expr(1234567890) */
 
-		suite.T().Log("About to run line #73: r.Expr(1234567890)")
+		fmt.Println("About to run line #73: r.Expr(1234567890)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1234567890), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #73")
+		fmt.Println("Finished running line #73")
 	}
 
 	{
@@ -176,12 +185,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ int = -73850380122423
 		/* r.expr(-73850380122423) */
 
-		suite.T().Log("About to run line #83: r.Expr(-73850380122423)")
+		fmt.Println("About to run line #83: r.Expr(-73850380122423)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(-73850380122423), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #83")
+		fmt.Println("Finished running line #83")
 	}
 
 	{
@@ -190,12 +200,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ float64 = float64(1234567890123456789012345678901234567890.0)
 		/* r.expr(1234567890123456789012345678901234567890) */
 
-		suite.T().Log("About to run line #95: r.Expr(1234567890123456789012345678901234567890.0)")
+		fmt.Println("About to run line #95: r.Expr(1234567890123456789012345678901234567890.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1234567890123456789012345678901234567890.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #95")
+		fmt.Println("Finished running line #95")
 	}
 
 	{
@@ -204,12 +215,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ float64 = 123.45678901234568
 		/* r.expr(123.4567890123456789012345678901234567890) */
 
-		suite.T().Log("About to run line #100: r.Expr(123.45678901234568)")
+		fmt.Println("About to run line #100: r.Expr(123.45678901234568)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(123.45678901234568), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #100")
+		fmt.Println("Finished running line #100")
 	}
 
 	{
@@ -218,12 +230,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ string = "NUMBER"
 		/* r.expr(1).type_of() */
 
-		suite.T().Log("About to run line #103: r.Expr(1).TypeOf()")
+		fmt.Println("About to run line #103: r.Expr(1).TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #103")
+		fmt.Println("Finished running line #103")
 	}
 
 	{
@@ -232,12 +245,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ string = "1"
 		/* r.expr(1).coerce_to('string') */
 
-		suite.T().Log("About to run line #107: r.Expr(1).CoerceTo('string')")
+		fmt.Println("About to run line #107: r.Expr(1).CoerceTo('string')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).CoerceTo("string"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #107")
+		fmt.Println("Finished running line #107")
 	}
 
 	{
@@ -246,12 +260,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ int = 1
 		/* r.expr(1).coerce_to('number') */
 
-		suite.T().Log("About to run line #110: r.Expr(1).CoerceTo('number')")
+		fmt.Println("About to run line #110: r.Expr(1).CoerceTo('number')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).CoerceTo("number"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #110")
+		fmt.Println("Finished running line #110")
 	}
 
 	{
@@ -260,12 +275,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ int = int_cmp(1)
 		/* r.expr(1.0) */
 
-		suite.T().Log("About to run line #115: r.Expr(1.0)")
+		fmt.Println("About to run line #115: r.Expr(1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #115")
+		fmt.Println("Finished running line #115")
 	}
 
 	{
@@ -274,12 +290,13 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ int = int_cmp(45)
 		/* r.expr(45) */
 
-		suite.T().Log("About to run line #119: r.Expr(45)")
+		fmt.Println("About to run line #119: r.Expr(45)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(45), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #119")
+		fmt.Println("Finished running line #119")
 	}
 
 	{
@@ -288,11 +305,12 @@ func (suite *DatumNumberSuite) TestCases() {
 		var expected_ float64 = float_cmp(1.2)
 		/* r.expr(1.2) */
 
-		suite.T().Log("About to run line #123: r.Expr(1.2)")
+		fmt.Println("About to run line #123: r.Expr(1.2)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1.2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #123")
+		fmt.Println("Finished running line #123")
 	}
 }

@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type DatumBoolSuite struct {
 }
 
 func (suite *DatumBoolSuite) SetupTest() {
-	suite.T().Log("Setting up DatumBoolSuite")
+	fmt.Println("Setting up DatumBoolSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *DatumBoolSuite) SetupTest() {
 }
 
 func (suite *DatumBoolSuite) TearDownSuite() {
-	suite.T().Log("Tearing down DatumBoolSuite")
+	fmt.Println("Tearing down DatumBoolSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *DatumBoolSuite) TearDownSuite() {
 }
 
 func (suite *DatumBoolSuite) TestCases() {
-	suite.T().Log("Running DatumBoolSuite: Tests of conversion to and from the RQL bool type")
+	fmt.Println("Running DatumBoolSuite: Tests of conversion to and from the RQL bool type")
 
 
 
@@ -64,12 +65,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(True) */
 
-		suite.T().Log("About to run line #3: r.Expr(true)")
+		fmt.Println("About to run line #3: r.Expr(true)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #3")
+		fmt.Println("Finished running line #3")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(False) */
 
-		suite.T().Log("About to run line #10: r.Expr(false)")
+		fmt.Println("About to run line #10: r.Expr(false)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #10")
+		fmt.Println("Finished running line #10")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ string = "BOOL"
 		/* r.expr(False).type_of() */
 
-		suite.T().Log("About to run line #17: r.Expr(false).TypeOf()")
+		fmt.Println("About to run line #17: r.Expr(false).TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(false).TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #17")
+		fmt.Println("Finished running line #17")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ string = "true"
 		/* r.expr(True).coerce_to('string') */
 
-		suite.T().Log("About to run line #21: r.Expr(true).CoerceTo('string')")
+		fmt.Println("About to run line #21: r.Expr(true).CoerceTo('string')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).CoerceTo("string"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #21")
+		fmt.Println("Finished running line #21")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(True).coerce_to('bool') */
 
-		suite.T().Log("About to run line #24: r.Expr(true).CoerceTo('bool')")
+		fmt.Println("About to run line #24: r.Expr(true).CoerceTo('bool')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).CoerceTo("bool"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #24")
+		fmt.Println("Finished running line #24")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(False).coerce_to('bool') */
 
-		suite.T().Log("About to run line #27: r.Expr(false).CoerceTo('bool')")
+		fmt.Println("About to run line #27: r.Expr(false).CoerceTo('bool')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(false).CoerceTo("bool"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #27")
+		fmt.Println("Finished running line #27")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(null).coerce_to('bool') */
 
-		suite.T().Log("About to run line #30: r.Expr(nil).CoerceTo('bool')")
+		fmt.Println("About to run line #30: r.Expr(nil).CoerceTo('bool')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(nil).CoerceTo("bool"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #30")
+		fmt.Println("Finished running line #30")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(0).coerce_to('bool') */
 
-		suite.T().Log("About to run line #33: r.Expr(0).CoerceTo('bool')")
+		fmt.Println("About to run line #33: r.Expr(0).CoerceTo('bool')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(0).CoerceTo("bool"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #33")
+		fmt.Println("Finished running line #33")
 	}
 
 	{
@@ -176,12 +185,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr('false').coerce_to('bool') */
 
-		suite.T().Log("About to run line #36: r.Expr('false').CoerceTo('bool')")
+		fmt.Println("About to run line #36: r.Expr('false').CoerceTo('bool')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("false").CoerceTo("bool"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #36")
+		fmt.Println("Finished running line #36")
 	}
 
 	{
@@ -190,12 +200,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr('foo').coerce_to('bool') */
 
-		suite.T().Log("About to run line #39: r.Expr('foo').CoerceTo('bool')")
+		fmt.Println("About to run line #39: r.Expr('foo').CoerceTo('bool')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("foo").CoerceTo("bool"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #39")
+		fmt.Println("Finished running line #39")
 	}
 
 	{
@@ -204,12 +215,13 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr([]).coerce_to('bool') */
 
-		suite.T().Log("About to run line #42: r.Expr([]interface{}{}).CoerceTo('bool')")
+		fmt.Println("About to run line #42: r.Expr([]interface{}{}).CoerceTo('bool')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{}).CoerceTo("bool"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #42")
+		fmt.Println("Finished running line #42")
 	}
 
 	{
@@ -218,11 +230,12 @@ func (suite *DatumBoolSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr({}).coerce_to('bool') */
 
-		suite.T().Log("About to run line #45: r.Expr(map[interface{}]interface{}{}).CoerceTo('bool')")
+		fmt.Println("About to run line #45: r.Expr(map[interface{}]interface{}{}).CoerceTo('bool')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(map[interface{}]interface{}{}).CoerceTo("bool"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #45")
+		fmt.Println("Finished running line #45")
 	}
 }

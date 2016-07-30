@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type MathLogicFloorCeilRoundSuite struct {
 }
 
 func (suite *MathLogicFloorCeilRoundSuite) SetupTest() {
-	suite.T().Log("Setting up MathLogicFloorCeilRoundSuite")
+	fmt.Println("Setting up MathLogicFloorCeilRoundSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *MathLogicFloorCeilRoundSuite) SetupTest() {
 }
 
 func (suite *MathLogicFloorCeilRoundSuite) TearDownSuite() {
-	suite.T().Log("Tearing down MathLogicFloorCeilRoundSuite")
+	fmt.Println("Tearing down MathLogicFloorCeilRoundSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *MathLogicFloorCeilRoundSuite) TearDownSuite() {
 }
 
 func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
-	suite.T().Log("Running MathLogicFloorCeilRoundSuite: tests for `floor`, `ceil`, and `round`, tests inspired by the Python test suite")
+	fmt.Println("Running MathLogicFloorCeilRoundSuite: tests for `floor`, `ceil`, and `round`, tests inspired by the Python test suite")
 
 
 
@@ -64,12 +65,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ string = "NUMBER"
 		/* r.floor(1.0).type_of() */
 
-		suite.T().Log("About to run line #3: r.Floor(1.0).TypeOf()")
+		fmt.Println("About to run line #3: r.Floor(1.0).TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, r.Floor(1.0).TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #3")
+		fmt.Println("Finished running line #3")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.floor(1.0) */
 
-		suite.T().Log("About to run line #5: r.Floor(1.0)")
+		fmt.Println("About to run line #5: r.Floor(1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Floor(1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #5")
+		fmt.Println("Finished running line #5")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.expr(1.0).floor() */
 
-		suite.T().Log("About to run line #7: r.Expr(1.0).Floor()")
+		fmt.Println("About to run line #7: r.Expr(1.0).Floor()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1.0).Floor(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #7")
+		fmt.Println("Finished running line #7")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 0.0
 		/* r.floor(0.5) */
 
-		suite.T().Log("About to run line #10: r.Floor(0.5)")
+		fmt.Println("About to run line #10: r.Floor(0.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Floor(0.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #10")
+		fmt.Println("Finished running line #10")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.floor(1.0) */
 
-		suite.T().Log("About to run line #12: r.Floor(1.0)")
+		fmt.Println("About to run line #12: r.Floor(1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Floor(1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #12")
+		fmt.Println("Finished running line #12")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.floor(1.5) */
 
-		suite.T().Log("About to run line #14: r.Floor(1.5)")
+		fmt.Println("About to run line #14: r.Floor(1.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Floor(1.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #14")
+		fmt.Println("Finished running line #14")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1.0
 		/* r.floor(-0.5) */
 
-		suite.T().Log("About to run line #16: r.Floor(-0.5)")
+		fmt.Println("About to run line #16: r.Floor(-0.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Floor(-0.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #16")
+		fmt.Println("Finished running line #16")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1.0
 		/* r.floor(-1.0) */
 
-		suite.T().Log("About to run line #18: r.Floor(-1.0)")
+		fmt.Println("About to run line #18: r.Floor(-1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Floor(-1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #18")
+		fmt.Println("Finished running line #18")
 	}
 
 	{
@@ -176,12 +185,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -2.0
 		/* r.floor(-1.5) */
 
-		suite.T().Log("About to run line #20: r.Floor(-1.5)")
+		fmt.Println("About to run line #20: r.Floor(-1.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Floor(-1.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #20")
+		fmt.Println("Finished running line #20")
 	}
 
 	{
@@ -190,12 +200,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")
 		/* r.expr('X').floor() */
 
-		suite.T().Log("About to run line #23: r.Expr('X').Floor()")
+		fmt.Println("About to run line #23: r.Expr('X').Floor()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("X").Floor(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #23")
+		fmt.Println("Finished running line #23")
 	}
 
 	{
@@ -204,12 +215,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ string = "NUMBER"
 		/* r.ceil(1.0).type_of() */
 
-		suite.T().Log("About to run line #27: r.Ceil(1.0).TypeOf()")
+		fmt.Println("About to run line #27: r.Ceil(1.0).TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, r.Ceil(1.0).TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #27")
+		fmt.Println("Finished running line #27")
 	}
 
 	{
@@ -218,12 +230,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.ceil(1.0) */
 
-		suite.T().Log("About to run line #29: r.Ceil(1.0)")
+		fmt.Println("About to run line #29: r.Ceil(1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Ceil(1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #29")
+		fmt.Println("Finished running line #29")
 	}
 
 	{
@@ -232,12 +245,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.expr(1.0).ceil() */
 
-		suite.T().Log("About to run line #31: r.Expr(1.0).Ceil()")
+		fmt.Println("About to run line #31: r.Expr(1.0).Ceil()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1.0).Ceil(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #31")
+		fmt.Println("Finished running line #31")
 	}
 
 	{
@@ -246,12 +260,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.ceil(0.5) */
 
-		suite.T().Log("About to run line #34: r.Ceil(0.5)")
+		fmt.Println("About to run line #34: r.Ceil(0.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Ceil(0.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #34")
+		fmt.Println("Finished running line #34")
 	}
 
 	{
@@ -260,12 +275,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.ceil(1.0) */
 
-		suite.T().Log("About to run line #36: r.Ceil(1.0)")
+		fmt.Println("About to run line #36: r.Ceil(1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Ceil(1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #36")
+		fmt.Println("Finished running line #36")
 	}
 
 	{
@@ -274,12 +290,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 2.0
 		/* r.ceil(1.5) */
 
-		suite.T().Log("About to run line #38: r.Ceil(1.5)")
+		fmt.Println("About to run line #38: r.Ceil(1.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Ceil(1.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #38")
+		fmt.Println("Finished running line #38")
 	}
 
 	{
@@ -288,12 +305,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 0.0
 		/* r.ceil(-0.5) */
 
-		suite.T().Log("About to run line #40: r.Ceil(-0.5)")
+		fmt.Println("About to run line #40: r.Ceil(-0.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Ceil(-0.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #40")
+		fmt.Println("Finished running line #40")
 	}
 
 	{
@@ -302,12 +320,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1.0
 		/* r.ceil(-1.0) */
 
-		suite.T().Log("About to run line #42: r.Ceil(-1.0)")
+		fmt.Println("About to run line #42: r.Ceil(-1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Ceil(-1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #42")
+		fmt.Println("Finished running line #42")
 	}
 
 	{
@@ -316,12 +335,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1.0
 		/* r.ceil(-1.5) */
 
-		suite.T().Log("About to run line #44: r.Ceil(-1.5)")
+		fmt.Println("About to run line #44: r.Ceil(-1.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Ceil(-1.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #44")
+		fmt.Println("Finished running line #44")
 	}
 
 	{
@@ -330,12 +350,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")
 		/* r.expr('X').ceil() */
 
-		suite.T().Log("About to run line #47: r.Expr('X').Ceil()")
+		fmt.Println("About to run line #47: r.Expr('X').Ceil()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("X").Ceil(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #47")
+		fmt.Println("Finished running line #47")
 	}
 
 	{
@@ -344,12 +365,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ string = "NUMBER"
 		/* r.round(1.0).type_of() */
 
-		suite.T().Log("About to run line #51: r.Round(1.0).TypeOf()")
+		fmt.Println("About to run line #51: r.Round(1.0).TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, r.Round(1.0).TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #51")
+		fmt.Println("Finished running line #51")
 	}
 
 	{
@@ -358,12 +380,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.round(1.0) */
 
-		suite.T().Log("About to run line #53: r.Round(1.0)")
+		fmt.Println("About to run line #53: r.Round(1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #53")
+		fmt.Println("Finished running line #53")
 	}
 
 	{
@@ -372,12 +395,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.expr(1.0).round() */
 
-		suite.T().Log("About to run line #55: r.Expr(1.0).Round()")
+		fmt.Println("About to run line #55: r.Expr(1.0).Round()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1.0).Round(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #55")
+		fmt.Println("Finished running line #55")
 	}
 
 	{
@@ -386,12 +410,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.round(0.5) */
 
-		suite.T().Log("About to run line #58: r.Round(0.5)")
+		fmt.Println("About to run line #58: r.Round(0.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(0.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #58")
+		fmt.Println("Finished running line #58")
 	}
 
 	{
@@ -400,12 +425,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1.0
 		/* r.round(-0.5) */
 
-		suite.T().Log("About to run line #60: r.Round(-0.5)")
+		fmt.Println("About to run line #60: r.Round(-0.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-0.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #60")
+		fmt.Println("Finished running line #60")
 	}
 
 	{
@@ -414,12 +440,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 0.0
 		/* r.round(0.0) */
 
-		suite.T().Log("About to run line #63: r.Round(0.0)")
+		fmt.Println("About to run line #63: r.Round(0.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(0.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #63")
+		fmt.Println("Finished running line #63")
 	}
 
 	{
@@ -428,12 +455,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.round(1.0) */
 
-		suite.T().Log("About to run line #65: r.Round(1.0)")
+		fmt.Println("About to run line #65: r.Round(1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #65")
+		fmt.Println("Finished running line #65")
 	}
 
 	{
@@ -442,12 +470,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 10.0
 		/* r.round(10.0) */
 
-		suite.T().Log("About to run line #67: r.Round(10.0)")
+		fmt.Println("About to run line #67: r.Round(10.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(10.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #67")
+		fmt.Println("Finished running line #67")
 	}
 
 	{
@@ -456,12 +485,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1000000000.0
 		/* r.round(1000000000.0) */
 
-		suite.T().Log("About to run line #69: r.Round(1000000000.0)")
+		fmt.Println("About to run line #69: r.Round(1000000000.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(1000000000.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #69")
+		fmt.Println("Finished running line #69")
 	}
 
 	{
@@ -470,12 +500,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1e+20
 		/* r.round(1e20) */
 
-		suite.T().Log("About to run line #71: r.Round(1e+20)")
+		fmt.Println("About to run line #71: r.Round(1e+20)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(1e+20), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #71")
+		fmt.Println("Finished running line #71")
 	}
 
 	{
@@ -484,12 +515,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1.0
 		/* r.round(-1.0) */
 
-		suite.T().Log("About to run line #74: r.Round(-1.0)")
+		fmt.Println("About to run line #74: r.Round(-1.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-1.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #74")
+		fmt.Println("Finished running line #74")
 	}
 
 	{
@@ -498,12 +530,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -10.0
 		/* r.round(-10.0) */
 
-		suite.T().Log("About to run line #76: r.Round(-10.0)")
+		fmt.Println("About to run line #76: r.Round(-10.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-10.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #76")
+		fmt.Println("Finished running line #76")
 	}
 
 	{
@@ -512,12 +545,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1000000000.0
 		/* r.round(-1000000000.0) */
 
-		suite.T().Log("About to run line #78: r.Round(-1000000000.0)")
+		fmt.Println("About to run line #78: r.Round(-1000000000.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-1000000000.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #78")
+		fmt.Println("Finished running line #78")
 	}
 
 	{
@@ -526,12 +560,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1e+20
 		/* r.round(-1e20) */
 
-		suite.T().Log("About to run line #80: r.Round(-1e+20)")
+		fmt.Println("About to run line #80: r.Round(-1e+20)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-1e+20), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #80")
+		fmt.Println("Finished running line #80")
 	}
 
 	{
@@ -540,12 +575,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 0.0
 		/* r.round(0.1) */
 
-		suite.T().Log("About to run line #83: r.Round(0.1)")
+		fmt.Println("About to run line #83: r.Round(0.1)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(0.1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #83")
+		fmt.Println("Finished running line #83")
 	}
 
 	{
@@ -554,12 +590,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.round(1.1) */
 
-		suite.T().Log("About to run line #85: r.Round(1.1)")
+		fmt.Println("About to run line #85: r.Round(1.1)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(1.1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #85")
+		fmt.Println("Finished running line #85")
 	}
 
 	{
@@ -568,12 +605,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 10.0
 		/* r.round(10.1) */
 
-		suite.T().Log("About to run line #87: r.Round(10.1)")
+		fmt.Println("About to run line #87: r.Round(10.1)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(10.1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #87")
+		fmt.Println("Finished running line #87")
 	}
 
 	{
@@ -582,12 +620,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1000000000.0
 		/* r.round(1000000000.1) */
 
-		suite.T().Log("About to run line #89: r.Round(1000000000.1)")
+		fmt.Println("About to run line #89: r.Round(1000000000.1)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(1000000000.1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #89")
+		fmt.Println("Finished running line #89")
 	}
 
 	{
@@ -596,12 +635,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1.0
 		/* r.round(-1.1) */
 
-		suite.T().Log("About to run line #92: r.Round(-1.1)")
+		fmt.Println("About to run line #92: r.Round(-1.1)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-1.1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #92")
+		fmt.Println("Finished running line #92")
 	}
 
 	{
@@ -610,12 +650,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -10.0
 		/* r.round(-10.1) */
 
-		suite.T().Log("About to run line #94: r.Round(-10.1)")
+		fmt.Println("About to run line #94: r.Round(-10.1)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-10.1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #94")
+		fmt.Println("Finished running line #94")
 	}
 
 	{
@@ -624,12 +665,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1000000000.0
 		/* r.round(-1000000000.1) */
 
-		suite.T().Log("About to run line #96: r.Round(-1000000000.1)")
+		fmt.Println("About to run line #96: r.Round(-1000000000.1)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-1000000000.1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #96")
+		fmt.Println("Finished running line #96")
 	}
 
 	{
@@ -638,12 +680,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1.0
 		/* r.round(0.9) */
 
-		suite.T().Log("About to run line #99: r.Round(0.9)")
+		fmt.Println("About to run line #99: r.Round(0.9)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(0.9), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #99")
+		fmt.Println("Finished running line #99")
 	}
 
 	{
@@ -652,12 +695,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 10.0
 		/* r.round(9.9) */
 
-		suite.T().Log("About to run line #101: r.Round(9.9)")
+		fmt.Println("About to run line #101: r.Round(9.9)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(9.9), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #101")
+		fmt.Println("Finished running line #101")
 	}
 
 	{
@@ -666,12 +710,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = 1000000000.0
 		/* r.round(999999999.9) */
 
-		suite.T().Log("About to run line #103: r.Round(999999999.9)")
+		fmt.Println("About to run line #103: r.Round(999999999.9)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(999999999.9), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #103")
+		fmt.Println("Finished running line #103")
 	}
 
 	{
@@ -680,12 +725,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1.0
 		/* r.round(-0.9) */
 
-		suite.T().Log("About to run line #106: r.Round(-0.9)")
+		fmt.Println("About to run line #106: r.Round(-0.9)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-0.9), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #106")
+		fmt.Println("Finished running line #106")
 	}
 
 	{
@@ -694,12 +740,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -10.0
 		/* r.round(-9.9) */
 
-		suite.T().Log("About to run line #108: r.Round(-9.9)")
+		fmt.Println("About to run line #108: r.Round(-9.9)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-9.9), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #108")
+		fmt.Println("Finished running line #108")
 	}
 
 	{
@@ -708,12 +755,13 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ float64 = -1000000000.0
 		/* r.round(-999999999.9) */
 
-		suite.T().Log("About to run line #110: r.Round(-999999999.9)")
+		fmt.Println("About to run line #110: r.Round(-999999999.9)")
 
 		runAndAssert(suite.Suite, expected_, r.Round(-999999999.9), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #110")
+		fmt.Println("Finished running line #110")
 	}
 
 	{
@@ -722,11 +770,12 @@ func (suite *MathLogicFloorCeilRoundSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")
 		/* r.expr('X').round() */
 
-		suite.T().Log("About to run line #113: r.Expr('X').Round()")
+		fmt.Println("About to run line #113: r.Expr('X').Round()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("X").Round(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #113")
+		fmt.Println("Finished running line #113")
 	}
 }

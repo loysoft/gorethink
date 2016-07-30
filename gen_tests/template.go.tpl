@@ -1,6 +1,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 

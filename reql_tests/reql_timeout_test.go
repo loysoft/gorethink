@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type TimeoutSuite struct {
 }
 
 func (suite *TimeoutSuite) SetupTest() {
-	suite.T().Log("Setting up TimeoutSuite")
+	fmt.Println("Setting up TimeoutSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *TimeoutSuite) SetupTest() {
 }
 
 func (suite *TimeoutSuite) TearDownSuite() {
-	suite.T().Log("Tearing down TimeoutSuite")
+	fmt.Println("Tearing down TimeoutSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *TimeoutSuite) TearDownSuite() {
 }
 
 func (suite *TimeoutSuite) TestCases() {
-	suite.T().Log("Running TimeoutSuite: Tests timeouts.")
+	fmt.Println("Running TimeoutSuite: Tests timeouts.")
 
 
 
@@ -64,12 +65,13 @@ func (suite *TimeoutSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `while(true) {}` timed out after 5.000 seconds.")
 		/* r.js('while(true) {}') */
 
-		suite.T().Log("About to run line #5: r.JS('while(true) {}')")
+		fmt.Println("About to run line #5: r.JS('while(true) {}')")
 
 		runAndAssert(suite.Suite, expected_, r.JS("while(true) {}"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #5")
+		fmt.Println("Finished running line #5")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *TimeoutSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `while(true) {}` timed out after 1.300 seconds.")
 		/* r.js('while(true) {}', timeout=1.3) */
 
-		suite.T().Log("About to run line #8: r.JS('while(true) {}', r.JSOpts{Timeout: 1.3, })")
+		fmt.Println("About to run line #8: r.JS('while(true) {}', r.JSOpts{Timeout: 1.3, })")
 
 		runAndAssert(suite.Suite, expected_, r.JS("while(true) {}", r.JSOpts{Timeout: 1.3, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #8")
+		fmt.Println("Finished running line #8")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *TimeoutSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `while(true) {}` timed out after 8.000 seconds.")
 		/* r.js('while(true) {}', timeout=8) */
 
-		suite.T().Log("About to run line #13: r.JS('while(true) {}', r.JSOpts{Timeout: 8, })")
+		fmt.Println("About to run line #13: r.JS('while(true) {}', r.JSOpts{Timeout: 8, })")
 
 		runAndAssert(suite.Suite, expected_, r.JS("while(true) {}", r.JSOpts{Timeout: 8, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #13")
+		fmt.Println("Finished running line #13")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *TimeoutSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `(function(x) { while(true) {} })` timed out after 5.000 seconds.")
 		/* r.expr('foo').do(r.js('(function(x) { while(true) {} })')) */
 
-		suite.T().Log("About to run line #18: r.Expr('foo').Do(r.JS('(function(x) { while(true) {} })'))")
+		fmt.Println("About to run line #18: r.Expr('foo').Do(r.JS('(function(x) { while(true) {} })'))")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("foo").Do(r.JS("(function(x) { while(true) {} })")), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #18")
+		fmt.Println("Finished running line #18")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *TimeoutSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `(function(x) { while(true) {} })` timed out after 1.300 seconds.")
 		/* r.expr('foo').do(r.js('(function(x) { while(true) {} })', timeout=1.3)) */
 
-		suite.T().Log("About to run line #21: r.Expr('foo').Do(r.JS('(function(x) { while(true) {} })', r.JSOpts{Timeout: 1.3, }))")
+		fmt.Println("About to run line #21: r.Expr('foo').Do(r.JS('(function(x) { while(true) {} })', r.JSOpts{Timeout: 1.3, }))")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("foo").Do(r.JS("(function(x) { while(true) {} })", r.JSOpts{Timeout: 1.3, })), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #21")
+		fmt.Println("Finished running line #21")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *TimeoutSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "JavaScript query `(function(x) { while(true) {} })` timed out after 8.000 seconds.")
 		/* r.expr('foo').do(r.js('(function(x) { while(true) {} })', timeout=8)) */
 
-		suite.T().Log("About to run line #26: r.Expr('foo').Do(r.JS('(function(x) { while(true) {} })', r.JSOpts{Timeout: 8, }))")
+		fmt.Println("About to run line #26: r.Expr('foo').Do(r.JS('(function(x) { while(true) {} })', r.JSOpts{Timeout: 8, }))")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("foo").Do(r.JS("(function(x) { while(true) {} })", r.JSOpts{Timeout: 8, })), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #26")
+		fmt.Println("Finished running line #26")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *TimeoutSuite) TestCases() {
 		var expected_ Err = err("ReqlNonExistenceError", "Error in HTTP GET of `httpbin.org/delay/10`:" + " timed out after 0.800 seconds.")
 		/* r.http('httpbin.org/delay/10', timeout=0.8) */
 
-		suite.T().Log("About to run line #32: r.HTTP('httpbin.org/delay/10', r.HTTPOpts{Timeout: 0.8, })")
+		fmt.Println("About to run line #32: r.HTTP('httpbin.org/delay/10', r.HTTPOpts{Timeout: 0.8, })")
 
 		runAndAssert(suite.Suite, expected_, r.HTTP("httpbin.org/delay/10", r.HTTPOpts{Timeout: 0.8, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #32")
+		fmt.Println("Finished running line #32")
 	}
 
 	{
@@ -162,11 +170,12 @@ func (suite *TimeoutSuite) TestCases() {
 		var expected_ Err = err("ReqlNonExistenceError", "Error in HTTP PUT of `httpbin.org/delay/10`:" + " timed out after 0.000 seconds.")
 		/* r.http('httpbin.org/delay/10', method='PUT', timeout=0.0) */
 
-		suite.T().Log("About to run line #36: r.HTTP('httpbin.org/delay/10', r.HTTPOpts{Method: 'PUT', Timeout: 0.0, })")
+		fmt.Println("About to run line #36: r.HTTP('httpbin.org/delay/10', r.HTTPOpts{Method: 'PUT', Timeout: 0.0, })")
 
 		runAndAssert(suite.Suite, expected_, r.HTTP("httpbin.org/delay/10", r.HTTPOpts{Method: "PUT", Timeout: 0.0, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #36")
+		fmt.Println("Finished running line #36")
 	}
 }

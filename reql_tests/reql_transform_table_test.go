@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type TransformTableSuite struct {
 }
 
 func (suite *TransformTableSuite) SetupTest() {
-	suite.T().Log("Setting up TransformTableSuite")
+	fmt.Println("Setting up TransformTableSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -48,7 +49,7 @@ func (suite *TransformTableSuite) SetupTest() {
 }
 
 func (suite *TransformTableSuite) TearDownSuite() {
-	suite.T().Log("Tearing down TransformTableSuite")
+	fmt.Println("Tearing down TransformTableSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -60,7 +61,7 @@ func (suite *TransformTableSuite) TearDownSuite() {
 }
 
 func (suite *TransformTableSuite) TestCases() {
-	suite.T().Log("Running TransformTableSuite: Tests manipulation operations on tables")
+	fmt.Println("Running TransformTableSuite: Tests manipulation operations on tables")
 
 	tbl := r.DB("test").Table("tbl")
 	_ = tbl // Prevent any noused variable errors
@@ -72,12 +73,13 @@ func (suite *TransformTableSuite) TestCases() {
 		var expected_ string = AnythingIsFine
 		/* tbl.insert([{"a":["k1","v1"]},{"a":["k2","v2"]}]) */
 
-		suite.T().Log("About to run line #5: tbl.Insert([]interface{}{map[interface{}]interface{}{'a': []interface{}{'k1', 'v1'}, }, map[interface{}]interface{}{'a': []interface{}{'k2', 'v2'}, }})")
+		fmt.Println("About to run line #5: tbl.Insert([]interface{}{map[interface{}]interface{}{'a': []interface{}{'k1', 'v1'}, }, map[interface{}]interface{}{'a': []interface{}{'k2', 'v2'}, }})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"a": []interface{}{"k1", "v1"}, }, map[interface{}]interface{}{"a": []interface{}{"k2", "v2"}, }}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #5")
+		fmt.Println("Finished running line #5")
 	}
 
 	{
@@ -86,12 +88,13 @@ func (suite *TransformTableSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"k1": "v1", "k2": "v2", }
 		/* tbl.map(r.row["a"]).coerce_to("object") */
 
-		suite.T().Log("About to run line #10: tbl.Map(r.Row.AtIndex('a')).CoerceTo('object')")
+		fmt.Println("About to run line #10: tbl.Map(r.Row.AtIndex('a')).CoerceTo('object')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Map(r.Row.AtIndex("a")).CoerceTo("object"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #10")
+		fmt.Println("Finished running line #10")
 	}
 
 	{
@@ -100,12 +103,13 @@ func (suite *TransformTableSuite) TestCases() {
 		var expected_ string = "SELECTION<STREAM>"
 		/* tbl.limit(1).type_of() */
 
-		suite.T().Log("About to run line #14: tbl.Limit(1).TypeOf()")
+		fmt.Println("About to run line #14: tbl.Limit(1).TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Limit(1).TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #14")
+		fmt.Println("Finished running line #14")
 	}
 
 	{
@@ -114,11 +118,12 @@ func (suite *TransformTableSuite) TestCases() {
 		var expected_ string = "ARRAY"
 		/* tbl.limit(1).coerce_to('array').type_of() */
 
-		suite.T().Log("About to run line #17: tbl.Limit(1).CoerceTo('array').TypeOf()")
+		fmt.Println("About to run line #17: tbl.Limit(1).CoerceTo('array').TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Limit(1).CoerceTo("array").TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #17")
+		fmt.Println("Finished running line #17")
 	}
 }

@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type GeoGeojsonSuite struct {
 }
 
 func (suite *GeoGeojsonSuite) SetupTest() {
-	suite.T().Log("Setting up GeoGeojsonSuite")
+	fmt.Println("Setting up GeoGeojsonSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *GeoGeojsonSuite) SetupTest() {
 }
 
 func (suite *GeoGeojsonSuite) TearDownSuite() {
-	suite.T().Log("Tearing down GeoGeojsonSuite")
+	fmt.Println("Tearing down GeoGeojsonSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *GeoGeojsonSuite) TearDownSuite() {
 }
 
 func (suite *GeoGeojsonSuite) TestCases() {
-	suite.T().Log("Running GeoGeojsonSuite: Test geoJSON conversion")
+	fmt.Println("Running GeoGeojsonSuite: Test geoJSON conversion")
 
 
 
@@ -64,12 +65,13 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GEOMETRY", "coordinates": []interface{}{0, 0}, "type": "Point", }
 		/* r.geojson({'coordinates':[0, 0], 'type':'Point'}) */
 
-		suite.T().Log("About to run line #4: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, 'type': 'Point', })")
+		fmt.Println("About to run line #4: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, 'type': 'Point', })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"coordinates": []interface{}{0, 0}, "type": "Point", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #4")
+		fmt.Println("Finished running line #4")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GEOMETRY", "coordinates": []interface{}{[]interface{}{0, 0}, []interface{}{0, 1}}, "type": "LineString", }
 		/* r.geojson({'coordinates':[[0,0], [0,1]], 'type':'LineString'}) */
 
-		suite.T().Log("About to run line #6: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{[]interface{}{0, 0}, []interface{}{0, 1}}, 'type': 'LineString', })")
+		fmt.Println("About to run line #6: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{[]interface{}{0, 0}, []interface{}{0, 1}}, 'type': 'LineString', })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"coordinates": []interface{}{[]interface{}{0, 0}, []interface{}{0, 1}}, "type": "LineString", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GEOMETRY", "coordinates": []interface{}{[]interface{}{[]interface{}{0, 0}, []interface{}{0, 1}, []interface{}{1, 0}, []interface{}{0, 0}}}, "type": "Polygon", }
 		/* r.geojson({'coordinates':[[[0,0], [0,1], [1,0], [0,0]]], 'type':'Polygon'}) */
 
-		suite.T().Log("About to run line #8: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{[]interface{}{[]interface{}{0, 0}, []interface{}{0, 1}, []interface{}{1, 0}, []interface{}{0, 0}}}, 'type': 'Polygon', })")
+		fmt.Println("About to run line #8: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{[]interface{}{[]interface{}{0, 0}, []interface{}{0, 1}, []interface{}{1, 0}, []interface{}{0, 0}}}, 'type': 'Polygon', })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"coordinates": []interface{}{[]interface{}{[]interface{}{0, 0}, []interface{}{0, 1}, []interface{}{1, 0}, []interface{}{0, 0}}}, "type": "Polygon", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #8")
+		fmt.Println("Finished running line #8")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found ARRAY.")
 		/* r.geojson({'coordinates':[[], 0], 'type':'Point'}) */
 
-		suite.T().Log("About to run line #12: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{[]interface{}{}, 0}, 'type': 'Point', })")
+		fmt.Println("About to run line #12: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{[]interface{}{}, 0}, 'type': 'Point', })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"coordinates": []interface{}{[]interface{}{}, 0}, "type": "Point", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #12")
+		fmt.Println("Finished running line #12")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type ARRAY but found BOOL.")
 		/* r.geojson({'coordinates':true, 'type':'Point'}) */
 
-		suite.T().Log("About to run line #14: r.GeoJSON(map[interface{}]interface{}{'coordinates': true, 'type': 'Point', })")
+		fmt.Println("About to run line #14: r.GeoJSON(map[interface{}]interface{}{'coordinates': true, 'type': 'Point', })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"coordinates": true, "type": "Point", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #14")
+		fmt.Println("Finished running line #14")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ Err = err("ReqlNonExistenceError", "No attribute `coordinates` in object:")
 		/* r.geojson({'type':'Point'}) */
 
-		suite.T().Log("About to run line #16: r.GeoJSON(map[interface{}]interface{}{'type': 'Point', })")
+		fmt.Println("About to run line #16: r.GeoJSON(map[interface{}]interface{}{'type': 'Point', })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"type": "Point", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #16")
+		fmt.Println("Finished running line #16")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ Err = err("ReqlNonExistenceError", "No attribute `type` in object:")
 		/* r.geojson({'coordinates':[0, 0]}) */
 
-		suite.T().Log("About to run line #18: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, })")
+		fmt.Println("About to run line #18: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"coordinates": []interface{}{0, 0}, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #18")
+		fmt.Println("Finished running line #18")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Unrecognized GeoJSON type `foo`.")
 		/* r.geojson({'coordinates':[0, 0], 'type':'foo'}) */
 
-		suite.T().Log("About to run line #20: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, 'type': 'foo', })")
+		fmt.Println("About to run line #20: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, 'type': 'foo', })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"coordinates": []interface{}{0, 0}, "type": "foo", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #20")
+		fmt.Println("Finished running line #20")
 	}
 
 	{
@@ -176,12 +185,13 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Unrecognized field `foo` found in geometry object.")
 		/* r.geojson({'coordinates':[0, 0], 'type':'Point', 'foo':'wrong'}) */
 
-		suite.T().Log("About to run line #22: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, 'type': 'Point', 'foo': 'wrong', })")
+		fmt.Println("About to run line #22: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, 'type': 'Point', 'foo': 'wrong', })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"coordinates": []interface{}{0, 0}, "type": "Point", "foo": "wrong", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #22")
+		fmt.Println("Finished running line #22")
 	}
 
 	{
@@ -190,12 +200,13 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GEOMETRY", "coordinates": []interface{}{0, 0}, "type": "Point", "crs": nil, }
 		/* r.geojson({'coordinates':[0, 0], 'type':'Point', 'crs':null}) */
 
-		suite.T().Log("About to run line #26: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, 'type': 'Point', 'crs': nil, })")
+		fmt.Println("About to run line #26: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, 'type': 'Point', 'crs': nil, })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"coordinates": []interface{}{0, 0}, "type": "Point", "crs": nil, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #26")
+		fmt.Println("Finished running line #26")
 	}
 
 	{
@@ -204,11 +215,12 @@ func (suite *GeoGeojsonSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "GeoJSON type `MultiPoint` is not supported.")
 		/* r.geojson({'coordinates':[0, 0], 'type':'MultiPoint'}) */
 
-		suite.T().Log("About to run line #30: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, 'type': 'MultiPoint', })")
+		fmt.Println("About to run line #30: r.GeoJSON(map[interface{}]interface{}{'coordinates': []interface{}{0, 0}, 'type': 'MultiPoint', })")
 
 		runAndAssert(suite.Suite, expected_, r.GeoJSON(map[interface{}]interface{}{"coordinates": []interface{}{0, 0}, "type": "MultiPoint", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #30")
+		fmt.Println("Finished running line #30")
 	}
 }

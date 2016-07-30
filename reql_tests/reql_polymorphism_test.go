@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type PolymorphismSuite struct {
 }
 
 func (suite *PolymorphismSuite) SetupTest() {
-	suite.T().Log("Setting up PolymorphismSuite")
+	fmt.Println("Setting up PolymorphismSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -48,7 +49,7 @@ func (suite *PolymorphismSuite) SetupTest() {
 }
 
 func (suite *PolymorphismSuite) TearDownSuite() {
-	suite.T().Log("Tearing down PolymorphismSuite")
+	fmt.Println("Tearing down PolymorphismSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -60,7 +61,7 @@ func (suite *PolymorphismSuite) TearDownSuite() {
 }
 
 func (suite *PolymorphismSuite) TestCases() {
-	suite.T().Log("Running PolymorphismSuite: Tests that manipulation data in tables")
+	fmt.Println("Running PolymorphismSuite: Tests that manipulation data in tables")
 
 	tbl := r.DB("test").Table("tbl")
 	_ = tbl // Prevent any noused variable errors
@@ -68,7 +69,7 @@ func (suite *PolymorphismSuite) TestCases() {
 
 	// polymorphism.yaml line #5
 	// obj = r.expr({'id':0,'a':0})
-	suite.T().Log("Possibly executing: var obj r.Term = r.Expr(map[interface{}]interface{}{'id': 0, 'a': 0, })")
+	fmt.Println("Possibly executing: var obj r.Term = r.Expr(map[interface{}]interface{}{'id': 0, 'a': 0, })")
 
 	obj := r.Expr(map[interface{}]interface{}{"id": 0, "a": 0, })
 	_ = obj // Prevent any noused variable errors
@@ -80,7 +81,7 @@ func (suite *PolymorphismSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 3, }
 		/* tbl.insert([{'id':i, 'a':i} for i in xrange(3)]) */
 
-		suite.T().Log("About to run line #7: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 0; iterator_ < 3; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': i, 'a': i, })\n    }\n    return res\n}()))")
+		fmt.Println("About to run line #7: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 0; iterator_ < 3; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': i, 'a': i, })\n    }\n    return res\n}()))")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
@@ -90,9 +91,10 @@ func (suite *PolymorphismSuite) TestCases() {
     }
     return res
 }())), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #7")
+		fmt.Println("Finished running line #7")
 	}
 
 	{
@@ -101,12 +103,13 @@ func (suite *PolymorphismSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 0, "c": 1, "a": 0, }
 		/* tbl.merge({'c':1}).nth(0) */
 
-		suite.T().Log("About to run line #21: tbl.Merge(map[interface{}]interface{}{'c': 1, }).Nth(0)")
+		fmt.Println("About to run line #21: tbl.Merge(map[interface{}]interface{}{'c': 1, }).Nth(0)")
 
 		runAndAssert(suite.Suite, expected_, tbl.Merge(map[interface{}]interface{}{"c": 1, }).Nth(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #21")
+		fmt.Println("Finished running line #21")
 	}
 
 	{
@@ -115,12 +118,13 @@ func (suite *PolymorphismSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 0, "c": 1, "a": 0, }
 		/* obj.merge({'c':1}) */
 
-		suite.T().Log("About to run line #22: obj.Merge(map[interface{}]interface{}{'c': 1, })")
+		fmt.Println("About to run line #22: obj.Merge(map[interface{}]interface{}{'c': 1, })")
 
 		runAndAssert(suite.Suite, expected_, obj.Merge(map[interface{}]interface{}{"c": 1, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #22")
+		fmt.Println("Finished running line #22")
 	}
 
 	{
@@ -129,12 +133,13 @@ func (suite *PolymorphismSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 0, }
 		/* tbl.without('a').nth(0) */
 
-		suite.T().Log("About to run line #26: tbl.Without('a').Nth(0)")
+		fmt.Println("About to run line #26: tbl.Without('a').Nth(0)")
 
 		runAndAssert(suite.Suite, expected_, tbl.Without("a").Nth(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #26")
+		fmt.Println("Finished running line #26")
 	}
 
 	{
@@ -143,12 +148,13 @@ func (suite *PolymorphismSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 0, }
 		/* obj.without('a') */
 
-		suite.T().Log("About to run line #27: obj.Without('a')")
+		fmt.Println("About to run line #27: obj.Without('a')")
 
 		runAndAssert(suite.Suite, expected_, obj.Without("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #27")
+		fmt.Println("Finished running line #27")
 	}
 
 	{
@@ -157,12 +163,13 @@ func (suite *PolymorphismSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 0, }
 		/* tbl.pluck('a').nth(0) */
 
-		suite.T().Log("About to run line #31: tbl.Pluck('a').Nth(0)")
+		fmt.Println("About to run line #31: tbl.Pluck('a').Nth(0)")
 
 		runAndAssert(suite.Suite, expected_, tbl.Pluck("a").Nth(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #31")
+		fmt.Println("Finished running line #31")
 	}
 
 	{
@@ -171,11 +178,12 @@ func (suite *PolymorphismSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 0, }
 		/* obj.pluck('a') */
 
-		suite.T().Log("About to run line #32: obj.Pluck('a')")
+		fmt.Println("About to run line #32: obj.Pluck('a')")
 
 		runAndAssert(suite.Suite, expected_, obj.Pluck("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #32")
+		fmt.Println("Finished running line #32")
 	}
 }

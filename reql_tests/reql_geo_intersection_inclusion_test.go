@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type GeoIntersectionInclusionSuite struct {
 }
 
 func (suite *GeoIntersectionInclusionSuite) SetupTest() {
-	suite.T().Log("Setting up GeoIntersectionInclusionSuite")
+	fmt.Println("Setting up GeoIntersectionInclusionSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *GeoIntersectionInclusionSuite) SetupTest() {
 }
 
 func (suite *GeoIntersectionInclusionSuite) TearDownSuite() {
-	suite.T().Log("Tearing down GeoIntersectionInclusionSuite")
+	fmt.Println("Tearing down GeoIntersectionInclusionSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *GeoIntersectionInclusionSuite) TearDownSuite() {
 }
 
 func (suite *GeoIntersectionInclusionSuite) TestCases() {
-	suite.T().Log("Running GeoIntersectionInclusionSuite: Test intersects and includes semantics")
+	fmt.Println("Running GeoIntersectionInclusionSuite: Test intersects and includes semantics")
 
 
 
@@ -64,12 +65,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.point(1.5,1.5)) */
 
-		suite.T().Log("About to run line #4: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(1.5, 1.5))")
+		fmt.Println("About to run line #4: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(1.5, 1.5))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(1.5, 1.5)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #4")
+		fmt.Println("Finished running line #4")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.point(2.5,2.5)) */
 
-		suite.T().Log("About to run line #6: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(2.5, 2.5))")
+		fmt.Println("About to run line #6: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(2.5, 2.5))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(2.5, 2.5)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).intersects(r.point(1.5,1.5)) */
 
-		suite.T().Log("About to run line #8: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.5, 1.5))")
+		fmt.Println("About to run line #8: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.5, 1.5))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.5, 1.5)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #8")
+		fmt.Println("Finished running line #8")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).intersects(r.point(1.05,1.05)) */
 
-		suite.T().Log("About to run line #10: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.05, 1.05))")
+		fmt.Println("About to run line #10: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.05, 1.05))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.05, 1.05)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #10")
+		fmt.Println("Finished running line #10")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.point(2,2)) */
 
-		suite.T().Log("About to run line #13: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(2, 2))")
+		fmt.Println("About to run line #13: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(2, 2))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(2, 2)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #13")
+		fmt.Println("Finished running line #13")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.point(2,1.5)) */
 
-		suite.T().Log("About to run line #15: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(2, 1.5))")
+		fmt.Println("About to run line #15: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(2, 1.5))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Point(2, 1.5)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #15")
+		fmt.Println("Finished running line #15")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.line([1.5,1.5], [2,2])) */
 
-		suite.T().Log("About to run line #17: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 2}))")
+		fmt.Println("About to run line #17: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 2}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 2})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #17")
+		fmt.Println("Finished running line #17")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.line([1.5,1.5], [2,1.5])) */
 
-		suite.T().Log("About to run line #19: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 1.5}))")
+		fmt.Println("About to run line #19: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 1.5}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 1.5})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #19")
+		fmt.Println("Finished running line #19")
 	}
 
 	{
@@ -176,12 +185,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).intersects(r.point(1.1,1.1)) */
 
-		suite.T().Log("About to run line #22: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.1, 1.1))")
+		fmt.Println("About to run line #22: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.1, 1.1))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.1, 1.1)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #22")
+		fmt.Println("Finished running line #22")
 	}
 
 	{
@@ -190,12 +200,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).intersects(r.point(1.5,1.1)) */
 
-		suite.T().Log("About to run line #24: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.5, 1.1))")
+		fmt.Println("About to run line #24: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.5, 1.1))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Point(1.5, 1.1)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #24")
+		fmt.Println("Finished running line #24")
 	}
 
 	{
@@ -204,12 +215,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.line([2,2], [3,3])) */
 
-		suite.T().Log("About to run line #27: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{2, 2}, []interface{}{3, 3}))")
+		fmt.Println("About to run line #27: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{2, 2}, []interface{}{3, 3}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{2, 2}, []interface{}{3, 3})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #27")
+		fmt.Println("Finished running line #27")
 	}
 
 	{
@@ -218,12 +230,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.line([2,1.5], [3,3])) */
 
-		suite.T().Log("About to run line #29: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{2, 1.5}, []interface{}{3, 3}))")
+		fmt.Println("About to run line #29: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{2, 1.5}, []interface{}{3, 3}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{2, 1.5}, []interface{}{3, 3})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #29")
+		fmt.Println("Finished running line #29")
 	}
 
 	{
@@ -232,12 +245,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.line([1.5,1.5], [3,3])) */
 
-		suite.T().Log("About to run line #31: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{1.5, 1.5}, []interface{}{3, 3}))")
+		fmt.Println("About to run line #31: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{1.5, 1.5}, []interface{}{3, 3}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Line([]interface{}{1.5, 1.5}, []interface{}{3, 3})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #31")
+		fmt.Println("Finished running line #31")
 	}
 
 	{
@@ -246,12 +260,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.polygon([1.2,1.2], [1.8,1.2], [1.8,1.8], [1.2,1.8])) */
 
-		suite.T().Log("About to run line #33: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8}))")
+		fmt.Println("About to run line #33: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #33")
+		fmt.Println("Finished running line #33")
 	}
 
 	{
@@ -260,12 +275,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.polygon([1.5,1.5], [2.5,1.5], [2.5,2.5], [1.5,2.5])) */
 
-		suite.T().Log("About to run line #35: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{1.5, 1.5}, []interface{}{2.5, 1.5}, []interface{}{2.5, 2.5}, []interface{}{1.5, 2.5}))")
+		fmt.Println("About to run line #35: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{1.5, 1.5}, []interface{}{2.5, 1.5}, []interface{}{2.5, 2.5}, []interface{}{1.5, 2.5}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{1.5, 1.5}, []interface{}{2.5, 1.5}, []interface{}{2.5, 2.5}, []interface{}{1.5, 2.5})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #35")
+		fmt.Println("Finished running line #35")
 	}
 
 	{
@@ -274,12 +290,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).intersects(r.polygon([1.2,1.2], [1.8,1.2], [1.8,1.8], [1.2,1.8])) */
 
-		suite.T().Log("About to run line #37: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8}))")
+		fmt.Println("About to run line #37: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #37")
+		fmt.Println("Finished running line #37")
 	}
 
 	{
@@ -288,12 +305,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).intersects(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])) */
 
-		suite.T().Log("About to run line #39: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9}))")
+		fmt.Println("About to run line #39: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Intersects(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #39")
+		fmt.Println("Finished running line #39")
 	}
 
 	{
@@ -302,12 +320,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.polygon([2,1.1], [3,1.1], [3,1.9], [2,1.9])) */
 
-		suite.T().Log("About to run line #42: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{2, 1.1}, []interface{}{3, 1.1}, []interface{}{3, 1.9}, []interface{}{2, 1.9}))")
+		fmt.Println("About to run line #42: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{2, 1.1}, []interface{}{3, 1.1}, []interface{}{3, 1.9}, []interface{}{2, 1.9}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{2, 1.1}, []interface{}{3, 1.1}, []interface{}{3, 1.9}, []interface{}{2, 1.9})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #42")
+		fmt.Println("Finished running line #42")
 	}
 
 	{
@@ -316,12 +335,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).intersects(r.polygon([2,2], [3,2], [3,3], [2,3])) */
 
-		suite.T().Log("About to run line #44: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{2, 2}, []interface{}{3, 2}, []interface{}{3, 3}, []interface{}{2, 3}))")
+		fmt.Println("About to run line #44: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{2, 2}, []interface{}{3, 2}, []interface{}{3, 3}, []interface{}{2, 3}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Intersects(r.Polygon([]interface{}{2, 2}, []interface{}{3, 2}, []interface{}{3, 3}, []interface{}{2, 3})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #44")
+		fmt.Println("Finished running line #44")
 	}
 
 	{
@@ -330,12 +350,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.point(1,1).intersects(r.point(1.5,1.5)) */
 
-		suite.T().Log("About to run line #46: r.Point(1, 1).Intersects(r.Point(1.5, 1.5))")
+		fmt.Println("About to run line #46: r.Point(1, 1).Intersects(r.Point(1.5, 1.5))")
 
 		runAndAssert(suite.Suite, expected_, r.Point(1, 1).Intersects(r.Point(1.5, 1.5)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #46")
+		fmt.Println("Finished running line #46")
 	}
 
 	{
@@ -344,12 +365,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.point(1,1).intersects(r.point(1,1)) */
 
-		suite.T().Log("About to run line #48: r.Point(1, 1).Intersects(r.Point(1, 1))")
+		fmt.Println("About to run line #48: r.Point(1, 1).Intersects(r.Point(1, 1))")
 
 		runAndAssert(suite.Suite, expected_, r.Point(1, 1).Intersects(r.Point(1, 1)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #48")
+		fmt.Println("Finished running line #48")
 	}
 
 	{
@@ -358,12 +380,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.line([1,1], [2,1]).intersects(r.point(1,1)) */
 
-		suite.T().Log("About to run line #50: r.Line([]interface{}{1, 1}, []interface{}{2, 1}).Intersects(r.Point(1, 1))")
+		fmt.Println("About to run line #50: r.Line([]interface{}{1, 1}, []interface{}{2, 1}).Intersects(r.Point(1, 1))")
 
 		runAndAssert(suite.Suite, expected_, r.Line([]interface{}{1, 1}, []interface{}{2, 1}).Intersects(r.Point(1, 1)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #50")
+		fmt.Println("Finished running line #50")
 	}
 
 	{
@@ -372,12 +395,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.line([1,1], [1,2]).intersects(r.point(1,1.8)) */
 
-		suite.T().Log("About to run line #55: r.Line([]interface{}{1, 1}, []interface{}{1, 2}).Intersects(r.Point(1, 1.8))")
+		fmt.Println("About to run line #55: r.Line([]interface{}{1, 1}, []interface{}{1, 2}).Intersects(r.Point(1, 1.8))")
 
 		runAndAssert(suite.Suite, expected_, r.Line([]interface{}{1, 1}, []interface{}{1, 2}).Intersects(r.Point(1, 1.8)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #55")
+		fmt.Println("Finished running line #55")
 	}
 
 	{
@@ -386,12 +410,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.line([1,0], [2,0]).intersects(r.point(1.8,0)) */
 
-		suite.T().Log("About to run line #57: r.Line([]interface{}{1, 0}, []interface{}{2, 0}).Intersects(r.Point(1.8, 0))")
+		fmt.Println("About to run line #57: r.Line([]interface{}{1, 0}, []interface{}{2, 0}).Intersects(r.Point(1.8, 0))")
 
 		runAndAssert(suite.Suite, expected_, r.Line([]interface{}{1, 0}, []interface{}{2, 0}).Intersects(r.Point(1.8, 0)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #57")
+		fmt.Println("Finished running line #57")
 	}
 
 	{
@@ -400,12 +425,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.line([1,1], [2,1]).intersects(r.point(1.5,1.5)) */
 
-		suite.T().Log("About to run line #59: r.Line([]interface{}{1, 1}, []interface{}{2, 1}).Intersects(r.Point(1.5, 1.5))")
+		fmt.Println("About to run line #59: r.Line([]interface{}{1, 1}, []interface{}{2, 1}).Intersects(r.Point(1.5, 1.5))")
 
 		runAndAssert(suite.Suite, expected_, r.Line([]interface{}{1, 1}, []interface{}{2, 1}).Intersects(r.Point(1.5, 1.5)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #59")
+		fmt.Println("Finished running line #59")
 	}
 
 	{
@@ -414,12 +440,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.line([1,1], [2,1]).intersects(r.line([2,1], [3,1])) */
 
-		suite.T().Log("About to run line #61: r.Line([]interface{}{1, 1}, []interface{}{2, 1}).Intersects(r.Line([]interface{}{2, 1}, []interface{}{3, 1}))")
+		fmt.Println("About to run line #61: r.Line([]interface{}{1, 1}, []interface{}{2, 1}).Intersects(r.Line([]interface{}{2, 1}, []interface{}{3, 1}))")
 
 		runAndAssert(suite.Suite, expected_, r.Line([]interface{}{1, 1}, []interface{}{2, 1}).Intersects(r.Line([]interface{}{2, 1}, []interface{}{3, 1})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #61")
+		fmt.Println("Finished running line #61")
 	}
 
 	{
@@ -428,12 +455,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ int = 2
 		/* r.expr([r.point(1, 0), r.point(3,0), r.point(2, 0)]).intersects(r.line([0,0], [2, 0])).count() */
 
-		suite.T().Log("About to run line #64: r.Expr([]interface{}{r.Point(1, 0), r.Point(3, 0), r.Point(2, 0)}).Intersects(r.Line([]interface{}{0, 0}, []interface{}{2, 0})).Count()")
+		fmt.Println("About to run line #64: r.Expr([]interface{}{r.Point(1, 0), r.Point(3, 0), r.Point(2, 0)}).Intersects(r.Line([]interface{}{0, 0}, []interface{}{2, 0})).Count()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{r.Point(1, 0), r.Point(3, 0), r.Point(2, 0)}).Intersects(r.Line([]interface{}{0, 0}, []interface{}{2, 0})).Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #64")
+		fmt.Println("Finished running line #64")
 	}
 
 	{
@@ -442,12 +470,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.point(1.5,1.5)) */
 
-		suite.T().Log("About to run line #68: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(1.5, 1.5))")
+		fmt.Println("About to run line #68: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(1.5, 1.5))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(1.5, 1.5)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #68")
+		fmt.Println("Finished running line #68")
 	}
 
 	{
@@ -456,12 +485,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.point(2.5,2.5)) */
 
-		suite.T().Log("About to run line #70: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(2.5, 2.5))")
+		fmt.Println("About to run line #70: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(2.5, 2.5))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(2.5, 2.5)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #70")
+		fmt.Println("Finished running line #70")
 	}
 
 	{
@@ -470,12 +500,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).includes(r.point(1.5,1.5)) */
 
-		suite.T().Log("About to run line #72: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.5, 1.5))")
+		fmt.Println("About to run line #72: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.5, 1.5))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.5, 1.5)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #72")
+		fmt.Println("Finished running line #72")
 	}
 
 	{
@@ -484,12 +515,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).includes(r.point(1.05,1.05)) */
 
-		suite.T().Log("About to run line #74: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.05, 1.05))")
+		fmt.Println("About to run line #74: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.05, 1.05))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.05, 1.05)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #74")
+		fmt.Println("Finished running line #74")
 	}
 
 	{
@@ -498,12 +530,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.point(2,2)) */
 
-		suite.T().Log("About to run line #76: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(2, 2))")
+		fmt.Println("About to run line #76: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(2, 2))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(2, 2)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #76")
+		fmt.Println("Finished running line #76")
 	}
 
 	{
@@ -512,12 +545,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.point(2,1.5)) */
 
-		suite.T().Log("About to run line #78: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(2, 1.5))")
+		fmt.Println("About to run line #78: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(2, 1.5))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Point(2, 1.5)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #78")
+		fmt.Println("Finished running line #78")
 	}
 
 	{
@@ -526,12 +560,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.line([1.5,1.5], [2,2])) */
 
-		suite.T().Log("About to run line #80: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 2}))")
+		fmt.Println("About to run line #80: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 2}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 2})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #80")
+		fmt.Println("Finished running line #80")
 	}
 
 	{
@@ -540,12 +575,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.line([1.5,1.5], [2,1.5])) */
 
-		suite.T().Log("About to run line #82: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 1.5}))")
+		fmt.Println("About to run line #82: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 1.5}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{1.5, 1.5}, []interface{}{2, 1.5})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #82")
+		fmt.Println("Finished running line #82")
 	}
 
 	{
@@ -554,12 +590,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).includes(r.point(1.1,1.1)) */
 
-		suite.T().Log("About to run line #84: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.1, 1.1))")
+		fmt.Println("About to run line #84: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.1, 1.1))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.1, 1.1)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #84")
+		fmt.Println("Finished running line #84")
 	}
 
 	{
@@ -568,12 +605,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).includes(r.point(1.5,1.1)) */
 
-		suite.T().Log("About to run line #86: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.5, 1.1))")
+		fmt.Println("About to run line #86: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.5, 1.1))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Point(1.5, 1.1)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #86")
+		fmt.Println("Finished running line #86")
 	}
 
 	{
@@ -582,12 +620,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.line([2,2], [3,3])) */
 
-		suite.T().Log("About to run line #88: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{2, 2}, []interface{}{3, 3}))")
+		fmt.Println("About to run line #88: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{2, 2}, []interface{}{3, 3}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{2, 2}, []interface{}{3, 3})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #88")
+		fmt.Println("Finished running line #88")
 	}
 
 	{
@@ -596,12 +635,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.line([2,1.5], [2,2])) */
 
-		suite.T().Log("About to run line #90: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{2, 1.5}, []interface{}{2, 2}))")
+		fmt.Println("About to run line #90: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{2, 1.5}, []interface{}{2, 2}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{2, 1.5}, []interface{}{2, 2})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #90")
+		fmt.Println("Finished running line #90")
 	}
 
 	{
@@ -610,12 +650,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.line([2,1], [2,2])) */
 
-		suite.T().Log("About to run line #92: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{2, 1}, []interface{}{2, 2}))")
+		fmt.Println("About to run line #92: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{2, 1}, []interface{}{2, 2}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{2, 1}, []interface{}{2, 2})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #92")
+		fmt.Println("Finished running line #92")
 	}
 
 	{
@@ -624,12 +665,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.line([1.5,1.5], [3,3])) */
 
-		suite.T().Log("About to run line #94: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{1.5, 1.5}, []interface{}{3, 3}))")
+		fmt.Println("About to run line #94: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{1.5, 1.5}, []interface{}{3, 3}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Line([]interface{}{1.5, 1.5}, []interface{}{3, 3})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #94")
+		fmt.Println("Finished running line #94")
 	}
 
 	{
@@ -638,12 +680,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.polygon([1,1], [2,1], [2,2], [1,2])) */
 
-		suite.T().Log("About to run line #96: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}))")
+		fmt.Println("About to run line #96: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #96")
+		fmt.Println("Finished running line #96")
 	}
 
 	{
@@ -652,12 +695,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.polygon([1.2,1.2], [1.8,1.2], [1.8,1.8], [1.2,1.8])) */
 
-		suite.T().Log("About to run line #98: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8}))")
+		fmt.Println("About to run line #98: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #98")
+		fmt.Println("Finished running line #98")
 	}
 
 	{
@@ -666,12 +710,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = true
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.polygon([1.5,1.5], [2,1.5], [2,2], [1.5,2])) */
 
-		suite.T().Log("About to run line #100: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1.5, 1.5}, []interface{}{2, 1.5}, []interface{}{2, 2}, []interface{}{1.5, 2}))")
+		fmt.Println("About to run line #100: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1.5, 1.5}, []interface{}{2, 1.5}, []interface{}{2, 2}, []interface{}{1.5, 2}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1.5, 1.5}, []interface{}{2, 1.5}, []interface{}{2, 2}, []interface{}{1.5, 2})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #100")
+		fmt.Println("Finished running line #100")
 	}
 
 	{
@@ -680,12 +725,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.polygon([1.5,1.5], [2.5,1.5], [2.5,2.5], [1.5,2.5])) */
 
-		suite.T().Log("About to run line #102: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1.5, 1.5}, []interface{}{2.5, 1.5}, []interface{}{2.5, 2.5}, []interface{}{1.5, 2.5}))")
+		fmt.Println("About to run line #102: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1.5, 1.5}, []interface{}{2.5, 1.5}, []interface{}{2.5, 2.5}, []interface{}{1.5, 2.5}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{1.5, 1.5}, []interface{}{2.5, 1.5}, []interface{}{2.5, 2.5}, []interface{}{1.5, 2.5})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #102")
+		fmt.Println("Finished running line #102")
 	}
 
 	{
@@ -694,12 +740,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).includes(r.polygon([1.2,1.2], [1.8,1.2], [1.8,1.8], [1.2,1.8])) */
 
-		suite.T().Log("About to run line #104: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8}))")
+		fmt.Println("About to run line #104: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Polygon([]interface{}{1.2, 1.2}, []interface{}{1.8, 1.2}, []interface{}{1.8, 1.8}, []interface{}{1.2, 1.8})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #104")
+		fmt.Println("Finished running line #104")
 	}
 
 	{
@@ -708,12 +755,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).polygon_sub(r.polygon([1.1,1.1], [1.9,1.1], [1.9,1.9], [1.1,1.9])).includes(r.polygon([1.1,1.1], [2,1.1], [2,2], [1.1,2])) */
 
-		suite.T().Log("About to run line #106: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{2, 1.1}, []interface{}{2, 2}, []interface{}{1.1, 2}))")
+		fmt.Println("About to run line #106: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{2, 1.1}, []interface{}{2, 2}, []interface{}{1.1, 2}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).PolygonSub(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{1.9, 1.1}, []interface{}{1.9, 1.9}, []interface{}{1.1, 1.9})).Includes(r.Polygon([]interface{}{1.1, 1.1}, []interface{}{2, 1.1}, []interface{}{2, 2}, []interface{}{1.1, 2})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #106")
+		fmt.Println("Finished running line #106")
 	}
 
 	{
@@ -722,12 +770,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.polygon([2,1.1], [3,1.1], [3,1.9], [2,1.9])) */
 
-		suite.T().Log("About to run line #108: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{2, 1.1}, []interface{}{3, 1.1}, []interface{}{3, 1.9}, []interface{}{2, 1.9}))")
+		fmt.Println("About to run line #108: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{2, 1.1}, []interface{}{3, 1.1}, []interface{}{3, 1.9}, []interface{}{2, 1.9}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{2, 1.1}, []interface{}{3, 1.1}, []interface{}{3, 1.9}, []interface{}{2, 1.9})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #108")
+		fmt.Println("Finished running line #108")
 	}
 
 	{
@@ -736,12 +785,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ bool = false
 		/* r.polygon([1,1], [2,1], [2,2], [1,2]).includes(r.polygon([2,2], [3,2], [3,3], [2,3])) */
 
-		suite.T().Log("About to run line #110: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{2, 2}, []interface{}{3, 2}, []interface{}{3, 3}, []interface{}{2, 3}))")
+		fmt.Println("About to run line #110: r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{2, 2}, []interface{}{3, 2}, []interface{}{3, 3}, []interface{}{2, 3}))")
 
 		runAndAssert(suite.Suite, expected_, r.Polygon([]interface{}{1, 1}, []interface{}{2, 1}, []interface{}{2, 2}, []interface{}{1, 2}).Includes(r.Polygon([]interface{}{2, 2}, []interface{}{3, 2}, []interface{}{3, 3}, []interface{}{2, 3})), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #110")
+		fmt.Println("Finished running line #110")
 	}
 
 	{
@@ -750,12 +800,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ int = 1
 		/* r.expr([r.polygon([0,0], [1,1], [1,0]), r.polygon([0,1], [1,2], [1,1])]).includes(r.point(0,0)).count() */
 
-		suite.T().Log("About to run line #113: r.Expr([]interface{}{r.Polygon([]interface{}{0, 0}, []interface{}{1, 1}, []interface{}{1, 0}), r.Polygon([]interface{}{0, 1}, []interface{}{1, 2}, []interface{}{1, 1})}).Includes(r.Point(0, 0)).Count()")
+		fmt.Println("About to run line #113: r.Expr([]interface{}{r.Polygon([]interface{}{0, 0}, []interface{}{1, 1}, []interface{}{1, 0}), r.Polygon([]interface{}{0, 1}, []interface{}{1, 2}, []interface{}{1, 1})}).Includes(r.Point(0, 0)).Count()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{r.Polygon([]interface{}{0, 0}, []interface{}{1, 1}, []interface{}{1, 0}), r.Polygon([]interface{}{0, 1}, []interface{}{1, 2}, []interface{}{1, 1})}).Includes(r.Point(0, 0)).Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #113")
+		fmt.Println("Finished running line #113")
 	}
 
 	{
@@ -764,12 +815,13 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected geometry of type `Polygon` but found `Point`.")
 		/* r.point(0,0).includes(r.point(0,0)) */
 
-		suite.T().Log("About to run line #116: r.Point(0, 0).Includes(r.Point(0, 0))")
+		fmt.Println("About to run line #116: r.Point(0, 0).Includes(r.Point(0, 0))")
 
 		runAndAssert(suite.Suite, expected_, r.Point(0, 0).Includes(r.Point(0, 0)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #116")
+		fmt.Println("Finished running line #116")
 	}
 
 	{
@@ -778,11 +830,12 @@ func (suite *GeoIntersectionInclusionSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected geometry of type `Polygon` but found `LineString`.")
 		/* r.line([0,0], [0,1]).includes(r.point(0,0)) */
 
-		suite.T().Log("About to run line #118: r.Line([]interface{}{0, 0}, []interface{}{0, 1}).Includes(r.Point(0, 0))")
+		fmt.Println("About to run line #118: r.Line([]interface{}{0, 0}, []interface{}{0, 1}).Includes(r.Point(0, 0))")
 
 		runAndAssert(suite.Suite, expected_, r.Line([]interface{}{0, 0}, []interface{}{0, 1}).Includes(r.Point(0, 0)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #118")
+		fmt.Println("Finished running line #118")
 	}
 }

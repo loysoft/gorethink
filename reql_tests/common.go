@@ -5,6 +5,8 @@ import (
 	"math"
 	"reflect"
 	"regexp"
+	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -21,7 +23,26 @@ func maybeRun(query interface{}, session *r.Session, opts r.RunOpts) interface{}
 			return err
 		}
 
-		return cursor
+		switch cursor.Type() {
+		case "Cursor":
+			if cursor.IsSingleValue() {
+				var result interface{}
+				if err := cursor.One(&result); err != nil {
+					return err
+				}
+				return result
+			} else {
+				var results []interface{}
+				if err := cursor.All(&results); err != nil {
+					return err
+				}
+				return results
+			}
+		default:
+			// If this is a changefeed then return the cursor without attempting
+			// to read any documents
+			return cursor
+		}
 	default:
 		return query
 	}
@@ -44,10 +65,6 @@ func runAndAssert(suite suite.Suite, expected, v interface{}, session *r.Session
 }
 
 func fetchAndAssert(suite suite.Suite, expected, result interface{}, count int) {
-	if count < 0 {
-		count = int(math.MaxInt64)
-	}
-
 	switch v := expected.(type) {
 	case Expected:
 		v.Fetch = true
@@ -78,11 +95,11 @@ func fetchAndAssert(suite suite.Suite, expected, result interface{}, count int) 
 func maybeLen(v interface{}) interface{} {
 	switch v := v.(type) {
 	case *r.Cursor:
-		result := []interface{}{}
-		v.All(&result)
-		return len(result)
-	case error:
-		return 0
+		results := []interface{}{}
+		v.All(&results)
+		return len(results)
+	case []interface{}:
+		return len(v)
 	default:
 		return v
 	}
@@ -90,15 +107,13 @@ func maybeLen(v interface{}) interface{} {
 
 func assertExpected(suite suite.Suite, expected interface{}, obtainedCursor *r.Cursor, obtainedErr error) {
 	if expected == AnythingIsFine {
-		suite.Require().NoError(obtainedErr, "Query returned unexpected error")
+		suite.NoError(obtainedErr, "Query returned unexpected error")
 		return
 	}
 
 	switch expected := expected.(type) {
 	case Err:
-		expected.assert(suite, obtainedErr)
-	case ErrRegex:
-		expected.assert(suite, obtainedErr)
+		expected.assert(suite, obtainedCursor, obtainedErr)
 	case Expected:
 		expected.assert(suite, obtainedCursor, obtainedErr)
 	default:
@@ -127,7 +142,9 @@ func (expected Expected) SetPartial(partial bool) Expected {
 }
 
 func (expected Expected) assert(suite suite.Suite, obtainedCursor *r.Cursor, obtainedErr error) {
-	suite.Require().NoError(obtainedErr, "Query returned unexpected error")
+	if suite.NoError(obtainedErr, "Query returned unexpected error") {
+		return
+	}
 
 	expectedVal := reflect.ValueOf(expected.Val)
 
@@ -155,7 +172,7 @@ func (expected Expected) assert(suite suite.Suite, obtainedCursor *r.Cursor, obt
 				for obtainedCursor.Next(&v) {
 					obtained = append(obtained, v)
 
-					if len(obtained) >= expected.FetchCount {
+					if expected.FetchCount != 0 && len(obtained) >= expected.FetchCount {
 						break
 					}
 				}
@@ -181,23 +198,51 @@ func (expected Expected) assert(suite suite.Suite, obtainedCursor *r.Cursor, obt
 }
 
 func assertCompare(t *testing.T, expected, actual interface{}) {
+	expectedVal := expected
+	if e, ok := expected.(Expected); ok {
+		expectedVal = e.Val
+	}
+
 	ok, msg := compare(expected, actual)
-	assert.True(t, ok, msg)
+	if !ok {
+		assert.Fail(t, fmt.Sprintf("Not equal: %#v (expected)\n           != %#v (actual)", expectedVal, actual), msg)
+	}
 }
 
 func assertCompareFalse(t *testing.T, expected, actual interface{}) {
+	expectedVal := expected
+	if e, ok := expected.(Expected); ok {
+		expectedVal = e.Val
+	}
+
 	ok, msg := compare(expected, actual)
-	assert.False(t, ok, msg)
+	if ok {
+		assert.Fail(t, fmt.Sprintf("Should not be equal: %#v (expected)\n           == %#v (actual)", expectedVal, actual), msg)
+	}
 }
 
 func assertComparePrecision(t *testing.T, expected, actual interface{}, precision float64) {
+	expectedVal := expected
+	if e, ok := expected.(Expected); ok {
+		expectedVal = e.Val
+	}
+
 	ok, msg := comparePrecision(expected, actual, precision)
-	assert.True(t, ok, msg)
+	if !ok {
+		assert.Fail(t, fmt.Sprintf("Not equal: %#v (expected)\n           != %#v (actual)", expectedVal, actual), msg)
+	}
 }
 
 func assertComparePrecisionFalse(t *testing.T, expected, actual interface{}, precision float64) {
+	expectedVal := expected
+	if e, ok := expected.(Expected); ok {
+		expectedVal = e.Val
+	}
+
 	ok, msg := comparePrecision(expected, actual, precision)
-	assert.False(t, ok, msg)
+	if ok {
+		assert.Fail(t, fmt.Sprintf("Should not be equal: %#v (expected)\n           == %#v (actual)", expectedVal, actual), msg)
+	}
 }
 
 func compare(expected, actual interface{}) (bool, string) {
@@ -220,17 +265,26 @@ func compareOpts(expected, actual interface{}, ordered, partial bool, precision 
 		return true, ""
 	}
 
-	// Nil
-	if expected == nil {
-		if actual != nil {
-			return false, fmt.Sprintf("Expected nil but got %v", actual)
-		}
-
-		return true, ""
-	}
-
 	expectedVal := reflect.ValueOf(expected)
 	actualVal := reflect.ValueOf(actual)
+
+	// Nil
+	if expected == nil {
+		switch actualVal.Kind() {
+		case reflect.Bool:
+			expected = false
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
+			reflect.Float32, reflect.Float64:
+			expected = 0.0
+		case reflect.String:
+			expected = ""
+		}
+
+		if expected == actual {
+			return true, ""
+		}
+	}
 
 	// Regex
 	if expr, ok := expected.(Regex); ok {
@@ -251,6 +305,7 @@ func compareOpts(expected, actual interface{}, ordered, partial bool, precision 
 	}
 
 	switch expectedVal.Kind() {
+
 	// Bool
 	case reflect.Bool:
 		if expected == actual {
@@ -263,7 +318,7 @@ func compareOpts(expected, actual interface{}, ordered, partial bool, precision 
 		switch actualVal.Kind() {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
-			reflect.Float32, reflect.Float64:
+			reflect.Float32, reflect.Float64, reflect.String:
 			diff := math.Abs(reflectNumber(expectedVal) - reflectNumber(actualVal))
 			if diff <= precision {
 				return true, ""
@@ -278,7 +333,8 @@ func compareOpts(expected, actual interface{}, ordered, partial bool, precision 
 
 	// String
 	case reflect.String:
-		if expected == actual {
+		actualStr := fmt.Sprintf("%v", actual)
+		if expected == actualStr {
 			return true, ""
 		}
 	// Struct
@@ -404,6 +460,9 @@ func reflectNumber(v reflect.Value) float64 {
 		return float64(v.Uint())
 	case reflect.Float32, reflect.Float64:
 		return v.Float()
+	case reflect.String:
+		f, _ := strconv.ParseFloat(v.String(), 64)
+		return f
 	default:
 		return float64(0)
 	}
@@ -428,7 +487,10 @@ func reflectMap(v reflect.Value) map[interface{}]interface{} {
 	case reflect.Map:
 		m := map[interface{}]interface{}{}
 		for _, mk := range v.MapKeys() {
-			k := mk.Interface()
+			k := ""
+			if mk.Interface() != nil {
+				k = fmt.Sprintf("%v", mk.Interface())
+			}
 			v := v.MapIndex(mk).Interface()
 
 			m[k] = v
@@ -522,19 +584,32 @@ func wait(s int) interface{} {
 type Err struct {
 	Type    string
 	Message string
+	Regex   string
 }
 
-var exceptionRegex = regexp.MustCompile("^gorethink: (?P<message>[^\n]*?)((?: in:)?\n|\nFailed assertion:)(?s).*$")
+var exceptionRegex = regexp.MustCompile("^(?P<message>[^\n]*?)((?: in:)?\n|\nFailed assertion:)(?s).*$")
 
-func (expected Err) assert(suite suite.Suite, obtained error) {
-	suite.Require().Error(obtained)
-	obtainedType := reflect.TypeOf(obtained).String()
-	obtainedMessage := obtained.Error()
+func (expected Err) assert(suite suite.Suite, obtainerCursor *r.Cursor, obtainedErr error) {
+	// If the error is nil then attempt to read from the cursor and see if an
+	// error is returned
+	if obtainedErr == nil {
+		var res []interface{}
+		obtainedErr = obtainerCursor.All(&res)
+	}
+
+	if suite.Error(obtainedErr) {
+		return
+	}
+
+	obtainedType := reflect.TypeOf(obtainedErr).String()
+	obtainedMessage := strings.TrimPrefix(obtainedErr.Error(), "gorethink: ")
+	obtainedMessage = exceptionRegex.ReplaceAllString(obtainedMessage, "${message}")
 
 	suite.Equal(expected.Type, obtainedType)
-
+	if expected.Regex != "" {
+		suite.Regexp(expected.Regex, obtainedMessage)
+	}
 	if expected.Message != "" {
-		obtainedMessage = exceptionRegex.ReplaceAllString(obtainedMessage, "${message}")
 		suite.Equal(expected.Message, obtainedMessage)
 	}
 }
@@ -546,27 +621,10 @@ func err(errType, message string) Err {
 	}
 }
 
-type ErrRegex struct {
-	Type string
-	Expr string
-}
-
-func (expected ErrRegex) assert(suite suite.Suite, obtained error) {
-	suite.Require().Error(obtained)
-	obtainedType := reflect.TypeOf(obtained).String()
-	obtainedMessage := obtained.Error()
-
-	suite.Equal(expected.Type, obtainedType)
-
-	if expected.Expr != "" {
-		suite.Regexp(expected.Expr, obtainedMessage)
-	}
-}
-
-func err_regex(errType, expr string) ErrRegex {
-	return ErrRegex{
-		Type: "gorethink.RQL" + errType[4:],
-		Expr: expr,
+func err_regex(errType, expr string) Err {
+	return Err{
+		Type:  "gorethink.RQL" + errType[4:],
+		Regex: expr,
 	}
 }
 

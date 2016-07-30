@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type MetaDbsSuite struct {
 }
 
 func (suite *MetaDbsSuite) SetupTest() {
-	suite.T().Log("Setting up MetaDbsSuite")
+	fmt.Println("Setting up MetaDbsSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *MetaDbsSuite) SetupTest() {
 }
 
 func (suite *MetaDbsSuite) TearDownSuite() {
-	suite.T().Log("Tearing down MetaDbsSuite")
+	fmt.Println("Tearing down MetaDbsSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *MetaDbsSuite) TearDownSuite() {
 }
 
 func (suite *MetaDbsSuite) TestCases() {
-	suite.T().Log("Running MetaDbsSuite: Tests meta queries for databases")
+	fmt.Println("Running MetaDbsSuite: Tests meta queries for databases")
 
 
 
@@ -64,12 +65,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Expected = bag([]interface{}{"rethinkdb", "test"})
 		/* r.db_list() */
 
-		suite.T().Log("About to run line #6: r.DBList()")
+		fmt.Println("About to run line #6: r.DBList()")
 
 		runAndAssert(suite.Suite, expected_, r.DBList(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"dbs_created": 1, })
 		/* r.db_create('a') */
 
-		suite.T().Log("About to run line #11: r.DBCreate('a')")
+		fmt.Println("About to run line #11: r.DBCreate('a')")
 
 		runAndAssert(suite.Suite, expected_, r.DBCreate("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #11")
+		fmt.Println("Finished running line #11")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"dbs_created": 1, })
 		/* r.db_create('b') */
 
-		suite.T().Log("About to run line #13: r.DBCreate('b')")
+		fmt.Println("About to run line #13: r.DBCreate('b')")
 
 		runAndAssert(suite.Suite, expected_, r.DBCreate("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #13")
+		fmt.Println("Finished running line #13")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Expected = bag([]interface{}{"rethinkdb", "a", "b", "test"})
 		/* r.db_list() */
 
-		suite.T().Log("About to run line #18: r.DBList()")
+		fmt.Println("About to run line #18: r.DBList()")
 
 		runAndAssert(suite.Suite, expected_, r.DBList(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #18")
+		fmt.Println("Finished running line #18")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"name": "a", "id": uuid(), }
 		/* r.db('a').config() */
 
-		suite.T().Log("About to run line #23: r.DB('a').Config()")
+		fmt.Println("About to run line #23: r.DB('a').Config()")
 
 		runAndAssert(suite.Suite, expected_, r.DB("a").Config(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #23")
+		fmt.Println("Finished running line #23")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"dbs_dropped": 1, })
 		/* r.db_drop('b') */
 
-		suite.T().Log("About to run line #28: r.DBDrop('b')")
+		fmt.Println("About to run line #28: r.DBDrop('b')")
 
 		runAndAssert(suite.Suite, expected_, r.DBDrop("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #28")
+		fmt.Println("Finished running line #28")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Expected = bag([]interface{}{"rethinkdb", "a", "test"})
 		/* r.db_list() */
 
-		suite.T().Log("About to run line #31: r.DBList()")
+		fmt.Println("About to run line #31: r.DBList()")
 
 		runAndAssert(suite.Suite, expected_, r.DBList(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #31")
+		fmt.Println("Finished running line #31")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"dbs_dropped": 1, })
 		/* r.db_drop('a') */
 
-		suite.T().Log("About to run line #34: r.DBDrop('a')")
+		fmt.Println("About to run line #34: r.DBDrop('a')")
 
 		runAndAssert(suite.Suite, expected_, r.DBDrop("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #34")
+		fmt.Println("Finished running line #34")
 	}
 
 	{
@@ -176,12 +185,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Expected = bag([]interface{}{"rethinkdb", "test"})
 		/* r.db_list() */
 
-		suite.T().Log("About to run line #37: r.DBList()")
+		fmt.Println("About to run line #37: r.DBList()")
 
 		runAndAssert(suite.Suite, expected_, r.DBList(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #37")
+		fmt.Println("Finished running line #37")
 	}
 
 	{
@@ -190,12 +200,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"dbs_created": 1, })
 		/* r.db_create('bar') */
 
-		suite.T().Log("About to run line #41: r.DBCreate('bar')")
+		fmt.Println("About to run line #41: r.DBCreate('bar')")
 
 		runAndAssert(suite.Suite, expected_, r.DBCreate("bar"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #41")
+		fmt.Println("Finished running line #41")
 	}
 
 	{
@@ -204,12 +215,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Err = err("ReqlOpFailedError", "Database `bar` already exists.")
 		/* r.db_create('bar') */
 
-		suite.T().Log("About to run line #44: r.DBCreate('bar')")
+		fmt.Println("About to run line #44: r.DBCreate('bar')")
 
 		runAndAssert(suite.Suite, expected_, r.DBCreate("bar"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #44")
+		fmt.Println("Finished running line #44")
 	}
 
 	{
@@ -218,12 +230,13 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"dbs_dropped": 1, })
 		/* r.db_drop('bar') */
 
-		suite.T().Log("About to run line #47: r.DBDrop('bar')")
+		fmt.Println("About to run line #47: r.DBDrop('bar')")
 
 		runAndAssert(suite.Suite, expected_, r.DBDrop("bar"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #47")
+		fmt.Println("Finished running line #47")
 	}
 
 	{
@@ -232,11 +245,12 @@ func (suite *MetaDbsSuite) TestCases() {
 		var expected_ Err = err("ReqlOpFailedError", "Database `bar` does not exist.")
 		/* r.db_drop('bar') */
 
-		suite.T().Log("About to run line #50: r.DBDrop('bar')")
+		fmt.Println("About to run line #50: r.DBDrop('bar')")
 
 		runAndAssert(suite.Suite, expected_, r.DBDrop("bar"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #50")
+		fmt.Println("Finished running line #50")
 	}
 }

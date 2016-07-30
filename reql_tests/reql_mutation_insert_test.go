@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type MutationInsertSuite struct {
 }
 
 func (suite *MutationInsertSuite) SetupTest() {
-	suite.T().Log("Setting up MutationInsertSuite")
+	fmt.Println("Setting up MutationInsertSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -48,7 +49,7 @@ func (suite *MutationInsertSuite) SetupTest() {
 }
 
 func (suite *MutationInsertSuite) TearDownSuite() {
-	suite.T().Log("Tearing down MutationInsertSuite")
+	fmt.Println("Tearing down MutationInsertSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -60,7 +61,7 @@ func (suite *MutationInsertSuite) TearDownSuite() {
 }
 
 func (suite *MutationInsertSuite) TestCases() {
-	suite.T().Log("Running MutationInsertSuite: Tests insertion into tables")
+	fmt.Println("Running MutationInsertSuite: Tests insertion into tables")
 
 	tbl := r.DB("test").Table("tbl")
 	_ = tbl // Prevent any noused variable errors
@@ -72,17 +73,18 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"tables_created": 1, })
 		/* r.db('test').table_create('test2') */
 
-		suite.T().Log("About to run line #6: r.DB('test').TableCreate('test2')")
+		fmt.Println("About to run line #6: r.DB('test').TableCreate('test2')")
 
 		runAndAssert(suite.Suite, expected_, r.DB("test").TableCreate("test2"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	// mutation/insert.yaml line #9
 	// tbl2 = r.db('test').table('test2')
-	suite.T().Log("Possibly executing: var tbl2 r.Term = r.DB('test').Table('test2')")
+	fmt.Println("Possibly executing: var tbl2 r.Term = r.DB('test').Table('test2')")
 
 	tbl2 := r.DB("test").Table("test2")
 	_ = tbl2 // Prevent any noused variable errors
@@ -94,12 +96,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 1, }
 		/* tbl.insert({'id':0,'a':0}) */
 
-		suite.T().Log("About to run line #12: tbl.Insert(map[interface{}]interface{}{'id': 0, 'a': 0, })")
+		fmt.Println("About to run line #12: tbl.Insert(map[interface{}]interface{}{'id': 0, 'a': 0, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 0, "a": 0, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #12")
+		fmt.Println("Finished running line #12")
 	}
 
 	{
@@ -108,12 +111,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ int = 1
 		/* tbl.count() */
 
-		suite.T().Log("About to run line #14: tbl.Count()")
+		fmt.Println("About to run line #14: tbl.Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #14")
+		fmt.Println("Finished running line #14")
 	}
 
 	{
@@ -122,12 +126,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 1, }
 		/* tbl.insert({'id':1, 'a':1}, durability='hard') */
 
-		suite.T().Log("About to run line #18: tbl.Insert(map[interface{}]interface{}{'id': 1, 'a': 1, }, r.InsertOpts{Durability: 'hard', })")
+		fmt.Println("About to run line #18: tbl.Insert(map[interface{}]interface{}{'id': 1, 'a': 1, }, r.InsertOpts{Durability: 'hard', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 1, "a": 1, }, r.InsertOpts{Durability: "hard", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #18")
+		fmt.Println("Finished running line #18")
 	}
 
 	{
@@ -136,12 +141,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ int = 2
 		/* tbl.count() */
 
-		suite.T().Log("About to run line #22: tbl.Count()")
+		fmt.Println("About to run line #22: tbl.Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #22")
+		fmt.Println("Finished running line #22")
 	}
 
 	{
@@ -150,12 +156,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 1, }
 		/* tbl.insert({'id':2, 'a':2}, durability='soft') */
 
-		suite.T().Log("About to run line #26: tbl.Insert(map[interface{}]interface{}{'id': 2, 'a': 2, }, r.InsertOpts{Durability: 'soft', })")
+		fmt.Println("About to run line #26: tbl.Insert(map[interface{}]interface{}{'id': 2, 'a': 2, }, r.InsertOpts{Durability: 'soft', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 2, "a": 2, }, r.InsertOpts{Durability: "soft", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #26")
+		fmt.Println("Finished running line #26")
 	}
 
 	{
@@ -164,12 +171,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ int = 3
 		/* tbl.count() */
 
-		suite.T().Log("About to run line #30: tbl.Count()")
+		fmt.Println("About to run line #30: tbl.Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #30")
+		fmt.Println("Finished running line #30")
 	}
 
 	{
@@ -178,12 +186,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Durability option `wrong` unrecognized (options are \"hard\" and \"soft\").")
 		/* tbl.insert({'id':3, 'a':3}, durability='wrong') */
 
-		suite.T().Log("About to run line #34: tbl.Insert(map[interface{}]interface{}{'id': 3, 'a': 3, }, r.InsertOpts{Durability: 'wrong', })")
+		fmt.Println("About to run line #34: tbl.Insert(map[interface{}]interface{}{'id': 3, 'a': 3, }, r.InsertOpts{Durability: 'wrong', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 3, "a": 3, }, r.InsertOpts{Durability: "wrong", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #34")
+		fmt.Println("Finished running line #34")
 	}
 
 	{
@@ -192,12 +201,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ int = 3
 		/* tbl.count() */
 
-		suite.T().Log("About to run line #38: tbl.Count()")
+		fmt.Println("About to run line #38: tbl.Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #38")
+		fmt.Println("Finished running line #38")
 	}
 
 	{
@@ -206,12 +216,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 1, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 0, }
 		/* tbl.get(2).delete() */
 
-		suite.T().Log("About to run line #42: tbl.Get(2).Delete()")
+		fmt.Println("About to run line #42: tbl.Get(2).Delete()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(2).Delete(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #42")
+		fmt.Println("Finished running line #42")
 	}
 
 	{
@@ -220,12 +231,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 2, }
 		/* tbl.insert([{'id':2,'a':2}, {'id':3,'a':3}]) */
 
-		suite.T().Log("About to run line #46: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 2, 'a': 2, }, map[interface{}]interface{}{'id': 3, 'a': 3, }})")
+		fmt.Println("About to run line #46: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 2, 'a': 2, }, map[interface{}]interface{}{'id': 3, 'a': 3, }})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"id": 2, "a": 2, }, map[interface{}]interface{}{"id": 3, "a": 3, }}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #46")
+		fmt.Println("Finished running line #46")
 	}
 
 	{
@@ -234,12 +246,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 4, }
 		/* tbl2.insert(tbl) */
 
-		suite.T().Log("About to run line #50: tbl2.Insert(tbl)")
+		fmt.Println("About to run line #50: tbl2.Insert(tbl)")
 
 		runAndAssert(suite.Suite, expected_, tbl2.Insert(tbl), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #50")
+		fmt.Println("Finished running line #50")
 	}
 
 	{
@@ -248,12 +261,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"first_error": "Duplicate primary key `id`:\n{\n\t\"a\":\t2,\n\t\"id\":\t2\n}\n{\n\t\"b\":\t20,\n\t\"id\":\t2\n}", "deleted": 0, "replaced": 0, "unchanged": 0, "errors": 1, "skipped": 0, "inserted": 0, }
 		/* tbl.insert({'id':2,'b':20}) */
 
-		suite.T().Log("About to run line #54: tbl.Insert(map[interface{}]interface{}{'id': 2, 'b': 20, })")
+		fmt.Println("About to run line #54: tbl.Insert(map[interface{}]interface{}{'id': 2, 'b': 20, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 2, "b": 20, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #54")
+		fmt.Println("Finished running line #54")
 	}
 
 	{
@@ -262,12 +276,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"first_error": "Duplicate primary key `id`:\n{\n\t\"a\":\t2,\n\t\"id\":\t2\n}\n{\n\t\"b\":\t20,\n\t\"id\":\t2\n}", "deleted": 0, "replaced": 0, "unchanged": 0, "errors": 1, "skipped": 0, "inserted": 0, }
 		/* tbl.insert({'id':2,'b':20}, conflict='error') */
 
-		suite.T().Log("About to run line #58: tbl.Insert(map[interface{}]interface{}{'id': 2, 'b': 20, }, r.InsertOpts{Conflict: 'error', })")
+		fmt.Println("About to run line #58: tbl.Insert(map[interface{}]interface{}{'id': 2, 'b': 20, }, r.InsertOpts{Conflict: 'error', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 2, "b": 20, }, r.InsertOpts{Conflict: "error", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #58")
+		fmt.Println("Finished running line #58")
 	}
 
 	{
@@ -276,12 +291,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 1, }
 		/* tbl.insert({'id':15,'b':20}, conflict='error') */
 
-		suite.T().Log("About to run line #64: tbl.Insert(map[interface{}]interface{}{'id': 15, 'b': 20, }, r.InsertOpts{Conflict: 'error', })")
+		fmt.Println("About to run line #64: tbl.Insert(map[interface{}]interface{}{'id': 15, 'b': 20, }, r.InsertOpts{Conflict: 'error', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 15, "b": 20, }, r.InsertOpts{Conflict: "error", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #64")
+		fmt.Println("Finished running line #64")
 	}
 
 	{
@@ -290,12 +306,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 15, "b": 20, }
 		/* tbl.get(15) */
 
-		suite.T().Log("About to run line #69: tbl.Get(15)")
+		fmt.Println("About to run line #69: tbl.Get(15)")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(15), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #69")
+		fmt.Println("Finished running line #69")
 	}
 
 	{
@@ -304,12 +321,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 1, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 0, }
 		/* tbl.insert({'id':2,'b':20}, conflict='replace') */
 
-		suite.T().Log("About to run line #73: tbl.Insert(map[interface{}]interface{}{'id': 2, 'b': 20, }, r.InsertOpts{Conflict: 'replace', })")
+		fmt.Println("About to run line #73: tbl.Insert(map[interface{}]interface{}{'id': 2, 'b': 20, }, r.InsertOpts{Conflict: 'replace', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 2, "b": 20, }, r.InsertOpts{Conflict: "replace", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #73")
+		fmt.Println("Finished running line #73")
 	}
 
 	{
@@ -318,12 +336,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 2, "b": 20, }
 		/* tbl.get(2) */
 
-		suite.T().Log("About to run line #78: tbl.Get(2)")
+		fmt.Println("About to run line #78: tbl.Get(2)")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #78")
+		fmt.Println("Finished running line #78")
 	}
 
 	{
@@ -332,12 +351,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 1, }
 		/* tbl.insert({'id':20,'b':20}, conflict='replace') */
 
-		suite.T().Log("About to run line #82: tbl.Insert(map[interface{}]interface{}{'id': 20, 'b': 20, }, r.InsertOpts{Conflict: 'replace', })")
+		fmt.Println("About to run line #82: tbl.Insert(map[interface{}]interface{}{'id': 20, 'b': 20, }, r.InsertOpts{Conflict: 'replace', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 20, "b": 20, }, r.InsertOpts{Conflict: "replace", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #82")
+		fmt.Println("Finished running line #82")
 	}
 
 	{
@@ -346,12 +366,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 20, "b": 20, }
 		/* tbl.get(20) */
 
-		suite.T().Log("About to run line #87: tbl.Get(20)")
+		fmt.Println("About to run line #87: tbl.Get(20)")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(20), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #87")
+		fmt.Println("Finished running line #87")
 	}
 
 	{
@@ -360,12 +381,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 1, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 0, }
 		/* tbl.insert({'id':2,'c':30}, conflict='update') */
 
-		suite.T().Log("About to run line #91: tbl.Insert(map[interface{}]interface{}{'id': 2, 'c': 30, }, r.InsertOpts{Conflict: 'update', })")
+		fmt.Println("About to run line #91: tbl.Insert(map[interface{}]interface{}{'id': 2, 'c': 30, }, r.InsertOpts{Conflict: 'update', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 2, "c": 30, }, r.InsertOpts{Conflict: "update", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #91")
+		fmt.Println("Finished running line #91")
 	}
 
 	{
@@ -374,12 +396,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 2, "b": 20, "c": 30, }
 		/* tbl.get(2) */
 
-		suite.T().Log("About to run line #96: tbl.Get(2)")
+		fmt.Println("About to run line #96: tbl.Get(2)")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #96")
+		fmt.Println("Finished running line #96")
 	}
 
 	{
@@ -388,12 +411,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 1, }
 		/* tbl.insert({'id':30,'b':20}, conflict='update') */
 
-		suite.T().Log("About to run line #100: tbl.Insert(map[interface{}]interface{}{'id': 30, 'b': 20, }, r.InsertOpts{Conflict: 'update', })")
+		fmt.Println("About to run line #100: tbl.Insert(map[interface{}]interface{}{'id': 30, 'b': 20, }, r.InsertOpts{Conflict: 'update', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 30, "b": 20, }, r.InsertOpts{Conflict: "update", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #100")
+		fmt.Println("Finished running line #100")
 	}
 
 	{
@@ -402,12 +426,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 30, "b": 20, }
 		/* tbl.get(30) */
 
-		suite.T().Log("About to run line #105: tbl.Get(30)")
+		fmt.Println("About to run line #105: tbl.Get(30)")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(30), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #105")
+		fmt.Println("Finished running line #105")
 	}
 
 	{
@@ -416,17 +441,18 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Conflict option `wrong` unrecognized (options are \"error\", \"replace\" and \"update\").")
 		/* tbl.insert({'id':3, 'a':3}, conflict='wrong') */
 
-		suite.T().Log("About to run line #109: tbl.Insert(map[interface{}]interface{}{'id': 3, 'a': 3, }, r.InsertOpts{Conflict: 'wrong', })")
+		fmt.Println("About to run line #109: tbl.Insert(map[interface{}]interface{}{'id': 3, 'a': 3, }, r.InsertOpts{Conflict: 'wrong', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 3, "a": 3, }, r.InsertOpts{Conflict: "wrong", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #109")
+		fmt.Println("Finished running line #109")
 	}
 
 	// mutation/insert.yaml line #120
 	// tblpkey = r.db('test').table('testpkey')
-	suite.T().Log("Possibly executing: var tblpkey r.Term = r.DB('test').Table('testpkey')")
+	fmt.Println("Possibly executing: var tblpkey r.Term = r.DB('test').Table('testpkey')")
 
 	tblpkey := r.DB("test").Table("testpkey")
 	_ = tblpkey // Prevent any noused variable errors
@@ -438,12 +464,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"tables_created": 1, })
 		/* r.db('test').table_create('testpkey', primary_key='foo') */
 
-		suite.T().Log("About to run line #115: r.DB('test').TableCreate('testpkey', r.TableCreateOpts{PrimaryKey: 'foo', })")
+		fmt.Println("About to run line #115: r.DB('test').TableCreate('testpkey', r.TableCreateOpts{PrimaryKey: 'foo', })")
 
 		runAndAssert(suite.Suite, expected_, r.DB("test").TableCreate("testpkey", r.TableCreateOpts{PrimaryKey: "foo", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #115")
+		fmt.Println("Finished running line #115")
 	}
 
 	{
@@ -452,12 +479,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "generated_keys": arrlen(1, uuid()), "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 1, }
 		/* tblpkey.insert({}) */
 
-		suite.T().Log("About to run line #122: tblpkey.Insert(map[interface{}]interface{}{})")
+		fmt.Println("About to run line #122: tblpkey.Insert(map[interface{}]interface{}{})")
 
 		runAndAssert(suite.Suite, expected_, tblpkey.Insert(map[interface{}]interface{}{}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #122")
+		fmt.Println("Finished running line #122")
 	}
 
 	{
@@ -466,12 +494,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"foo": uuid(), }}
 		/* tblpkey */
 
-		suite.T().Log("About to run line #125: tblpkey")
+		fmt.Println("About to run line #125: tblpkey")
 
 		runAndAssert(suite.Suite, expected_, tblpkey, suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #125")
+		fmt.Println("Finished running line #125")
 	}
 
 	{
@@ -480,12 +509,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "generated_keys": arrlen(1, uuid()), "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 1, }
 		/* tblpkey.insert({'b':20}, conflict='replace') */
 
-		suite.T().Log("About to run line #129: tblpkey.Insert(map[interface{}]interface{}{'b': 20, }, r.InsertOpts{Conflict: 'replace', })")
+		fmt.Println("About to run line #129: tblpkey.Insert(map[interface{}]interface{}{'b': 20, }, r.InsertOpts{Conflict: 'replace', })")
 
 		runAndAssert(suite.Suite, expected_, tblpkey.Insert(map[interface{}]interface{}{"b": 20, }, r.InsertOpts{Conflict: "replace", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #129")
+		fmt.Println("Finished running line #129")
 	}
 
 	{
@@ -494,12 +524,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "generated_keys": arrlen(1, uuid()), "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 1, }
 		/* tblpkey.insert({'b':20}, conflict='update') */
 
-		suite.T().Log("About to run line #135: tblpkey.Insert(map[interface{}]interface{}{'b': 20, }, r.InsertOpts{Conflict: 'update', })")
+		fmt.Println("About to run line #135: tblpkey.Insert(map[interface{}]interface{}{'b': 20, }, r.InsertOpts{Conflict: 'update', })")
 
 		runAndAssert(suite.Suite, expected_, tblpkey.Insert(map[interface{}]interface{}{"b": 20, }, r.InsertOpts{Conflict: "update", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #135")
+		fmt.Println("Finished running line #135")
 	}
 
 	{
@@ -508,12 +539,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"tables_dropped": 1, })
 		/* r.db('test').table_drop('testpkey') */
 
-		suite.T().Log("About to run line #140: r.DB('test').TableDrop('testpkey')")
+		fmt.Println("About to run line #140: r.DB('test').TableDrop('testpkey')")
 
 		runAndAssert(suite.Suite, expected_, r.DB("test").TableDrop("testpkey"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #140")
+		fmt.Println("Finished running line #140")
 	}
 
 	{
@@ -522,12 +554,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0, "replaced": 0, "unchanged": 0, "errors": 0, "skipped": 0, "inserted": 7, }
 		/* tbl.for_each(lambda  row:          tbl2.insert(row.merge({'id':row['id']  +  100 }))   ) */
 
-		suite.T().Log("About to run line #144: tbl.ForEach(func(row r.Term) interface{} { return tbl2.Insert(row.Merge(map[interface{}]interface{}{'id': row.AtIndex('id').Add(100), }))})")
+		fmt.Println("About to run line #144: tbl.ForEach(func(row r.Term) interface{} { return tbl2.Insert(row.Merge(map[interface{}]interface{}{'id': row.AtIndex('id').Add(100), }))})")
 
 		runAndAssert(suite.Suite, expected_, tbl.ForEach(func(row r.Term) interface{} { return tbl2.Insert(row.Merge(map[interface{}]interface{}{"id": row.AtIndex("id").Add(100), }))}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #144")
+		fmt.Println("Finished running line #144")
 	}
 
 	{
@@ -536,12 +569,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"errors": 1, "first_error": "`r.minval` and `r.maxval` cannot be written to disk.", })
 		/* tbl.insert({'value':r.minval}) */
 
-		suite.T().Log("About to run line #150: tbl.Insert(map[interface{}]interface{}{'value': r.MinVal, })")
+		fmt.Println("About to run line #150: tbl.Insert(map[interface{}]interface{}{'value': r.MinVal, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"value": r.MinVal, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #150")
+		fmt.Println("Finished running line #150")
 	}
 
 	{
@@ -550,12 +584,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"errors": 1, "first_error": "`r.minval` and `r.maxval` cannot be written to disk.", })
 		/* tbl.insert({'value':r.maxval}) */
 
-		suite.T().Log("About to run line #154: tbl.Insert(map[interface{}]interface{}{'value': r.MaxVal, })")
+		fmt.Println("About to run line #154: tbl.Insert(map[interface{}]interface{}{'value': r.MaxVal, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"value": r.MaxVal, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #154")
+		fmt.Println("Finished running line #154")
 	}
 
 	{
@@ -564,12 +599,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"id": 666, }, "old_val": nil, }, map[interface{}]interface{}{"error": "Duplicate primary key `id`:\n{\n\t\"id\":\t666\n}\n{\n\t\"id\":\t666\n}", "new_val": map[interface{}]interface{}{"id": 666, }, "old_val": map[interface{}]interface{}{"id": 666, }, }}, "deleted": 0, "errors": 1, "first_error": "Duplicate primary key `id`:\n{\n\t\"id\":\t666\n}\n{\n\t\"id\":\t666\n}", "inserted": 1, "replaced": 0, "skipped": 0, "unchanged": 0, }
 		/* tbl.insert([{'id':666}, {'id':666}], return_changes="always") */
 
-		suite.T().Log("About to run line #159: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 666, }, map[interface{}]interface{}{'id': 666, }}, r.InsertOpts{ReturnChanges: 'always', })")
+		fmt.Println("About to run line #159: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 666, }, map[interface{}]interface{}{'id': 666, }}, r.InsertOpts{ReturnChanges: 'always', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"id": 666, }, map[interface{}]interface{}{"id": 666, }}, r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #159")
+		fmt.Println("Finished running line #159")
 	}
 
 	{
@@ -585,7 +621,7 @@ func (suite *MutationInsertSuite) TestCases() {
 }()), })
 		/* tbl.insert([{'id':100+i, 'ordered-num':i} for i in range(1,100)], return_changes="always") */
 
-		suite.T().Log("About to run line #163: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': r.Add(100, i), 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
+		fmt.Println("About to run line #163: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': r.Add(100, i), 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
@@ -595,9 +631,10 @@ func (suite *MutationInsertSuite) TestCases() {
     }
     return res
 }()), r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #163")
+		fmt.Println("Finished running line #163")
 	}
 
 	{
@@ -613,7 +650,7 @@ func (suite *MutationInsertSuite) TestCases() {
 }()), })
 		/* tbl.insert([{'id':[1, "blah", 200+i], 'ordered-num':i} for i in range(1,100)], return_changes="always") */
 
-		suite.T().Log("About to run line #167: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': []interface{}{1, 'blah', r.Add(200, i)}, 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
+		fmt.Println("About to run line #167: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': []interface{}{1, 'blah', r.Add(200, i)}, 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
@@ -623,9 +660,10 @@ func (suite *MutationInsertSuite) TestCases() {
     }
     return res
 }()), r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #167")
+		fmt.Println("Finished running line #167")
 	}
 
 	{
@@ -641,7 +679,7 @@ func (suite *MutationInsertSuite) TestCases() {
 }()), })
 		/* tbl.insert([{'id':[1, "blah", 300+i], 'ordered-num':i} for i in range(1,100)], return_changes=true) */
 
-		suite.T().Log("About to run line #171: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': []interface{}{1, 'blah', r.Add(300, i)}, 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: true, })")
+		fmt.Println("About to run line #171: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': []interface{}{1, 'blah', r.Add(300, i)}, 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: true, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
@@ -651,9 +689,10 @@ func (suite *MutationInsertSuite) TestCases() {
     }
     return res
 }()), r.InsertOpts{ReturnChanges: true, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #171")
+		fmt.Println("Finished running line #171")
 	}
 
 	{
@@ -669,7 +708,7 @@ func (suite *MutationInsertSuite) TestCases() {
 }()), })
 		/* tbl.insert([{'id':100 + i, 'ordered-num':i} for i in range(1,100)], return_changes="always") */
 
-		suite.T().Log("About to run line #175: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': r.Add(100, i), 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
+		fmt.Println("About to run line #175: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': r.Add(100, i), 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: 'always', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
@@ -679,9 +718,10 @@ func (suite *MutationInsertSuite) TestCases() {
     }
     return res
 }()), r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #175")
+		fmt.Println("Finished running line #175")
 	}
 
 	{
@@ -690,12 +730,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"error": "Duplicate primary key `id`:\n{\n\t\"id\":\t123,\n\t\"ordered-num\":\t23\n}\n{\n\t\"id\":\t123\n}", "new_val": map[interface{}]interface{}{"id": 123, "ordered-num": 23, }, "old_val": map[interface{}]interface{}{"id": 123, "ordered-num": 23, }, }, map[interface{}]interface{}{"error": "Primary key too long (max 127 characters): \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"", "new_val": nil, "old_val": nil, }, map[interface{}]interface{}{"new_val": map[interface{}]interface{}{"id": 321, }, "old_val": nil, }}, "deleted": 0, "errors": 2, "first_error": "Primary key too long (max 127 characters): \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"", "inserted": 1, "replaced": 0, "skipped": 0, "unchanged": 0, }
 		/* tbl.insert([{'id':123}, {'id':'a'*500}, {'id':321}], return_changes="always") */
 
-		suite.T().Log("About to run line #179: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 123, }, map[interface{}]interface{}{'id': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', }, map[interface{}]interface{}{'id': 321, }}, r.InsertOpts{ReturnChanges: 'always', })")
+		fmt.Println("About to run line #179: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 123, }, map[interface{}]interface{}{'id': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', }, map[interface{}]interface{}{'id': 321, }}, r.InsertOpts{ReturnChanges: 'always', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"id": 123, }, map[interface{}]interface{}{"id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", }, map[interface{}]interface{}{"id": 321, }}, r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #179")
+		fmt.Println("Finished running line #179")
 	}
 
 	{
@@ -704,7 +745,7 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"changes": []interface{}{}, })
 		/* tbl.insert([{'id':100 + i, 'ordered-num':i} for i in range(1,100)], return_changes=true) */
 
-		suite.T().Log("About to run line #183: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': r.Add(100, i), 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: true, })")
+		fmt.Println("About to run line #183: tbl.Insert((func() []interface{} {\n    res := []interface{}{}\n    for iterator_ := 1; iterator_ < 100; iterator_++ {\n        i := iterator_\n        res = append(res, map[interface{}]interface{}{'id': r.Add(100, i), 'ordered-num': i, })\n    }\n    return res\n}()), r.InsertOpts{ReturnChanges: true, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert((func() []interface{} {
     res := []interface{}{}
@@ -714,9 +755,10 @@ func (suite *MutationInsertSuite) TestCases() {
     }
     return res
 }()), r.InsertOpts{ReturnChanges: true, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #183")
+		fmt.Println("Finished running line #183")
 	}
 
 	{
@@ -725,12 +767,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"changes": []interface{}{map[interface{}]interface{}{"old_val": nil, "new_val": nil, "error": "`r.minval` and `r.maxval` cannot be written to disk.", }}, })
 		/* tbl.insert({'a':r.minval}, return_changes="always") */
 
-		suite.T().Log("About to run line #186: tbl.Insert(map[interface{}]interface{}{'a': r.MinVal, }, r.InsertOpts{ReturnChanges: 'always', })")
+		fmt.Println("About to run line #186: tbl.Insert(map[interface{}]interface{}{'a': r.MinVal, }, r.InsertOpts{ReturnChanges: 'always', })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"a": r.MinVal, }, r.InsertOpts{ReturnChanges: "always", }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #186")
+		fmt.Println("Finished running line #186")
 	}
 
 	{
@@ -739,12 +782,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"inserted": 1, })
 		/* tbl.insert({'id':42, 'foo':1, 'bar':1}) */
 
-		suite.T().Log("About to run line #192: tbl.Insert(map[interface{}]interface{}{'id': 42, 'foo': 1, 'bar': 1, })")
+		fmt.Println("About to run line #192: tbl.Insert(map[interface{}]interface{}{'id': 42, 'foo': 1, 'bar': 1, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 42, "foo": 1, "bar": 1, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #192")
+		fmt.Println("Finished running line #192")
 	}
 
 	{
@@ -753,12 +797,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"replaced": 1, })
 		/* tbl.insert({'id':42, 'foo':5, 'bar':5}, conflict=lambda id, old_row, new_row: old_row.merge(new_row.pluck("bar"))) */
 
-		suite.T().Log("About to run line #194: tbl.Insert(map[interface{}]interface{}{'id': 42, 'foo': 5, 'bar': 5, }, r.InsertOpts{Conflict: func(id r.Term, old_row r.Term, new_row r.Term) interface{} { return old_row.Merge(new_row.Pluck('bar'))}, })")
+		fmt.Println("About to run line #194: tbl.Insert(map[interface{}]interface{}{'id': 42, 'foo': 5, 'bar': 5, }, r.InsertOpts{Conflict: func(id r.Term, old_row r.Term, new_row r.Term) interface{} { return old_row.Merge(new_row.Pluck('bar'))}, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 42, "foo": 5, "bar": 5, }, r.InsertOpts{Conflict: func(id r.Term, old_row r.Term, new_row r.Term) interface{} { return old_row.Merge(new_row.Pluck("bar"))}, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #194")
+		fmt.Println("Finished running line #194")
 	}
 
 	{
@@ -767,12 +812,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 42, "foo": 1, "bar": 5, }
 		/* tbl.get(42) */
 
-		suite.T().Log("About to run line #196: tbl.Get(42)")
+		fmt.Println("About to run line #196: tbl.Get(42)")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(42), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #196")
+		fmt.Println("Finished running line #196")
 	}
 
 	{
@@ -781,12 +827,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"first_error": "Inserted value must be an OBJECT (got NUMBER):\n2", })
 		/* tbl.insert({'id':42, 'foo':1, 'bar':1}, conflict=lambda a,b,c: 2) */
 
-		suite.T().Log("About to run line #214: tbl.Insert(map[interface{}]interface{}{'id': 42, 'foo': 1, 'bar': 1, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term, c r.Term) interface{} { return 2}, })")
+		fmt.Println("About to run line #214: tbl.Insert(map[interface{}]interface{}{'id': 42, 'foo': 1, 'bar': 1, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term, c r.Term) interface{} { return 2}, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 42, "foo": 1, "bar": 1, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term, c r.Term) interface{} { return 2}, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #214")
+		fmt.Println("Finished running line #214")
 	}
 
 	{
@@ -795,12 +842,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "The conflict function passed to `insert` should expect 3 arguments.")
 		/* tbl.insert({'id':42}, conflict=lambda a,b: a) */
 
-		suite.T().Log("About to run line #218: tbl.Insert(map[interface{}]interface{}{'id': 42, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term) interface{} { return a}, })")
+		fmt.Println("About to run line #218: tbl.Insert(map[interface{}]interface{}{'id': 42, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term) interface{} { return a}, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 42, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term) interface{} { return a}, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #218")
+		fmt.Println("Finished running line #218")
 	}
 
 	{
@@ -809,12 +857,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "The conflict function passed to `insert` must be deterministic.")
 		/* tbl.insert({'id':42}, conflict=lambda a,b,c: tbl.get(42)) */
 
-		suite.T().Log("About to run line #222: tbl.Insert(map[interface{}]interface{}{'id': 42, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term, c r.Term) interface{} { return tbl.Get(42)}, })")
+		fmt.Println("About to run line #222: tbl.Insert(map[interface{}]interface{}{'id': 42, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term, c r.Term) interface{} { return tbl.Get(42)}, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 42, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term, c r.Term) interface{} { return tbl.Get(42)}, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #222")
+		fmt.Println("Finished running line #222")
 	}
 
 	{
@@ -823,12 +872,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"replaced": 1, })
 		/* tbl.insert({'id':42}, conflict=lambda a,b,c: {'id':42, 'num':'424'}) */
 
-		suite.T().Log("About to run line #225: tbl.Insert(map[interface{}]interface{}{'id': 42, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term, c r.Term) interface{} { return map[interface{}]interface{}{'id': 42, 'num': '424', }}, })")
+		fmt.Println("About to run line #225: tbl.Insert(map[interface{}]interface{}{'id': 42, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term, c r.Term) interface{} { return map[interface{}]interface{}{'id': 42, 'num': '424', }}, })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert(map[interface{}]interface{}{"id": 42, }, r.InsertOpts{Conflict: func(a r.Term, b r.Term, c r.Term) interface{} { return map[interface{}]interface{}{"id": 42, "num": "424", }}, }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #225")
+		fmt.Println("Finished running line #225")
 	}
 
 	{
@@ -837,12 +887,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"id": 42, "num": "424", }
 		/* tbl.get(42) */
 
-		suite.T().Log("About to run line #227: tbl.Get(42)")
+		fmt.Println("About to run line #227: tbl.Get(42)")
 
 		runAndAssert(suite.Suite, expected_, tbl.Get(42), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #227")
+		fmt.Println("Finished running line #227")
 	}
 
 	{
@@ -851,12 +902,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot convert `r.minval` to JSON.")
 		/* r.minval */
 
-		suite.T().Log("About to run line #231: r.MinVal")
+		fmt.Println("About to run line #231: r.MinVal")
 
 		runAndAssert(suite.Suite, expected_, r.MinVal, suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #231")
+		fmt.Println("Finished running line #231")
 	}
 
 	{
@@ -865,12 +917,13 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot convert `r.maxval` to JSON.")
 		/* r.maxval */
 
-		suite.T().Log("About to run line #234: r.MaxVal")
+		fmt.Println("About to run line #234: r.MaxVal")
 
 		runAndAssert(suite.Suite, expected_, r.MaxVal, suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #234")
+		fmt.Println("Finished running line #234")
 	}
 
 	{
@@ -879,11 +932,12 @@ func (suite *MutationInsertSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"tables_dropped": 1, })
 		/* r.db('test').table_drop('test2') */
 
-		suite.T().Log("About to run line #238: r.DB('test').TableDrop('test2')")
+		fmt.Println("About to run line #238: r.DB('test').TableDrop('test2')")
 
 		runAndAssert(suite.Suite, expected_, r.DB("test").TableDrop("test2"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #238")
+		fmt.Println("Finished running line #238")
 	}
 }

@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type AggregationSuite struct {
 }
 
 func (suite *AggregationSuite) SetupTest() {
-	suite.T().Log("Setting up AggregationSuite")
+	fmt.Println("Setting up AggregationSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -63,7 +64,7 @@ func (suite *AggregationSuite) SetupTest() {
 }
 
 func (suite *AggregationSuite) TearDownSuite() {
-	suite.T().Log("Tearing down AggregationSuite")
+	fmt.Println("Tearing down AggregationSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -78,7 +79,7 @@ func (suite *AggregationSuite) TearDownSuite() {
 }
 
 func (suite *AggregationSuite) TestCases() {
-	suite.T().Log("Running AggregationSuite: Tests that manipulation data in tables")
+	fmt.Println("Running AggregationSuite: Tests that manipulation data in tables")
 
 	tbl := r.DB("test").Table("tbl")
 	_ = tbl // Prevent any noused variable errors
@@ -96,12 +97,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0.0, "replaced": 0.0, "unchanged": 0.0, "errors": 0.0, "skipped": 0.0, "inserted": 100, }
 		/* r.range(100).for_each(tbl.insert({'id':r.row, 'a':r.row.mod(4)})) */
 
-		suite.T().Log("About to run line #6: r.Range(100).ForEach(tbl.Insert(map[interface{}]interface{}{'id': r.Row, 'a': r.Row.Mod(4), }))")
+		fmt.Println("About to run line #6: r.Range(100).ForEach(tbl.Insert(map[interface{}]interface{}{'id': r.Row, 'a': r.Row.Mod(4), }))")
 
 		runAndAssert(suite.Suite, expected_, r.Range(100).ForEach(tbl.Insert(map[interface{}]interface{}{"id": r.Row, "a": r.Row.Mod(4), })), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -110,12 +112,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0.0, "replaced": 0.0, "unchanged": 0.0, "errors": 0.0, "skipped": 0.0, "inserted": 100, }
 		/* r.range(100).for_each(tbl2.insert({'id':r.row, 'a':r.row.mod(4)})) */
 
-		suite.T().Log("About to run line #10: r.Range(100).ForEach(tbl2.Insert(map[interface{}]interface{}{'id': r.Row, 'a': r.Row.Mod(4), }))")
+		fmt.Println("About to run line #10: r.Range(100).ForEach(tbl2.Insert(map[interface{}]interface{}{'id': r.Row, 'a': r.Row.Mod(4), }))")
 
 		runAndAssert(suite.Suite, expected_, r.Range(100).ForEach(tbl2.Insert(map[interface{}]interface{}{"id": r.Row, "a": r.Row.Mod(4), })), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #10")
+		fmt.Println("Finished running line #10")
 	}
 
 	{
@@ -124,17 +127,18 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0.0, "replaced": 0.0, "unchanged": 0.0, "errors": 0.0, "skipped": 0.0, "inserted": 100, }
 		/* r.range(100).for_each(tbl3.insert({'id':r.row, 'a':r.row.mod(4), 'b':{'c':r.row.mod(5)}})) */
 
-		suite.T().Log("About to run line #14: r.Range(100).ForEach(tbl3.Insert(map[interface{}]interface{}{'id': r.Row, 'a': r.Row.Mod(4), 'b': map[interface{}]interface{}{'c': r.Row.Mod(5), }, }))")
+		fmt.Println("About to run line #14: r.Range(100).ForEach(tbl3.Insert(map[interface{}]interface{}{'id': r.Row, 'a': r.Row.Mod(4), 'b': map[interface{}]interface{}{'c': r.Row.Mod(5), }, }))")
 
 		runAndAssert(suite.Suite, expected_, r.Range(100).ForEach(tbl3.Insert(map[interface{}]interface{}{"id": r.Row, "a": r.Row.Mod(4), "b": map[interface{}]interface{}{"c": r.Row.Mod(5), }, })), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #14")
+		fmt.Println("Finished running line #14")
 	}
 
 	// aggregation.yaml line #19
 	// time1 = 1375115782.24
-	suite.T().Log("Possibly executing: var time1 float64 = 1375115782.24")
+	fmt.Println("Possibly executing: var time1 float64 = 1375115782.24")
 
 	time1 := 1375115782.24
 	_ = time1 // Prevent any noused variable errors
@@ -142,7 +146,7 @@ func (suite *AggregationSuite) TestCases() {
 
 	// aggregation.yaml line #23
 	// time2 = 1375147296.68
-	suite.T().Log("Possibly executing: var time2 float64 = 1375147296.68")
+	fmt.Println("Possibly executing: var time2 float64 = 1375147296.68")
 
 	time2 := 1375147296.68
 	_ = time2 // Prevent any noused variable errors
@@ -154,12 +158,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0.0, "replaced": 0.0, "unchanged": 0.0, "errors": 0.0, "skipped": 0.0, "inserted": 1, }
 		/* tbl4.insert({'id':0, 'time':r.epoch_time(time1)}) */
 
-		suite.T().Log("About to run line #27: tbl4.Insert(map[interface{}]interface{}{'id': 0, 'time': r.EpochTime(time1), })")
+		fmt.Println("About to run line #27: tbl4.Insert(map[interface{}]interface{}{'id': 0, 'time': r.EpochTime(time1), })")
 
 		runAndAssert(suite.Suite, expected_, tbl4.Insert(map[interface{}]interface{}{"id": 0, "time": r.EpochTime(time1), }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #27")
+		fmt.Println("Finished running line #27")
 	}
 
 	{
@@ -168,12 +173,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"deleted": 0.0, "replaced": 0.0, "unchanged": 0.0, "errors": 0.0, "skipped": 0.0, "inserted": 1, }
 		/* tbl4.insert({'id':1, 'time':r.epoch_time(time2)}) */
 
-		suite.T().Log("About to run line #28: tbl4.Insert(map[interface{}]interface{}{'id': 1, 'time': r.EpochTime(time2), })")
+		fmt.Println("About to run line #28: tbl4.Insert(map[interface{}]interface{}{'id': 1, 'time': r.EpochTime(time2), })")
 
 		runAndAssert(suite.Suite, expected_, tbl4.Insert(map[interface{}]interface{}{"id": 1, "time": r.EpochTime(time2), }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #28")
+		fmt.Println("Finished running line #28")
 	}
 
 	{
@@ -182,12 +188,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 150
 		/* tbl.sum('a') */
 
-		suite.T().Log("About to run line #33: tbl.Sum('a')")
+		fmt.Println("About to run line #33: tbl.Sum('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Sum("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #33")
+		fmt.Println("Finished running line #33")
 	}
 
 	{
@@ -196,12 +203,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 150
 		/* tbl.map(lambda row:row['a']).sum() */
 
-		suite.T().Log("About to run line #36: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Sum()")
+		fmt.Println("About to run line #36: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Sum()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Map(func(row r.Term) interface{} { return row.AtIndex("a")}).Sum(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #36")
+		fmt.Println("Finished running line #36")
 	}
 
 	{
@@ -210,12 +218,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: 1200, 1: 1225, 2: 1250, 3: 1275, }
 		/* tbl.group('a').sum('id') */
 
-		suite.T().Log("About to run line #39: tbl.Group('a').Sum('id')")
+		fmt.Println("About to run line #39: tbl.Group('a').Sum('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Sum("id"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #39")
+		fmt.Println("Finished running line #39")
 	}
 
 	{
@@ -224,12 +233,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ float64 = 1.5
 		/* tbl.avg('a') */
 
-		suite.T().Log("About to run line #43: tbl.Avg('a')")
+		fmt.Println("About to run line #43: tbl.Avg('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Avg("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #43")
+		fmt.Println("Finished running line #43")
 	}
 
 	{
@@ -238,12 +248,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ float64 = 1.5
 		/* tbl.map(lambda row:row['a']).avg() */
 
-		suite.T().Log("About to run line #46: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Avg()")
+		fmt.Println("About to run line #46: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Avg()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Map(func(row r.Term) interface{} { return row.AtIndex("a")}).Avg(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #46")
+		fmt.Println("Finished running line #46")
 	}
 
 	{
@@ -252,12 +263,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: 48, 1: 49, 2: 50, 3: 51, }
 		/* tbl.group('a').avg('id') */
 
-		suite.T().Log("About to run line #49: tbl.Group('a').Avg('id')")
+		fmt.Println("About to run line #49: tbl.Group('a').Avg('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Avg("id"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #49")
+		fmt.Println("Finished running line #49")
 	}
 
 	{
@@ -266,12 +278,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 0
 		/* tbl.min('a')['a'] */
 
-		suite.T().Log("About to run line #53: tbl.Min('a').AtIndex('a')")
+		fmt.Println("About to run line #53: tbl.Min('a').AtIndex('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Min("a").AtIndex("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #53")
+		fmt.Println("Finished running line #53")
 	}
 
 	{
@@ -280,12 +293,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 0, "id": 0, }
 		/* tbl.order_by('id').min('a') */
 
-		suite.T().Log("About to run line #56: tbl.OrderBy('id').Min('a')")
+		fmt.Println("About to run line #56: tbl.OrderBy('id').Min('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy("id").Min("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #56")
+		fmt.Println("Finished running line #56")
 	}
 
 	{
@@ -294,12 +308,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 0
 		/* tbl.map(lambda row:row['a']).min() */
 
-		suite.T().Log("About to run line #59: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Min()")
+		fmt.Println("About to run line #59: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Min()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Map(func(row r.Term) interface{} { return row.AtIndex("a")}).Min(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #59")
+		fmt.Println("Finished running line #59")
 	}
 
 	{
@@ -308,12 +323,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: map[interface{}]interface{}{"a": 0, "id": 0, }, 1: map[interface{}]interface{}{"a": 1, "id": 1, }, 2: map[interface{}]interface{}{"a": 2, "id": 2, }, 3: map[interface{}]interface{}{"a": 3, "id": 3, }, }
 		/* tbl.group('a').min('id') */
 
-		suite.T().Log("About to run line #62: tbl.Group('a').Min('id')")
+		fmt.Println("About to run line #62: tbl.Group('a').Min('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Min("id"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #62")
+		fmt.Println("Finished running line #62")
 	}
 
 	{
@@ -322,12 +338,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 3, "id": 3, }
 		/* tbl.order_by('id').max('a') */
 
-		suite.T().Log("About to run line #66: tbl.OrderBy('id').Max('a')")
+		fmt.Println("About to run line #66: tbl.OrderBy('id').Max('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy("id").Max("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #66")
+		fmt.Println("Finished running line #66")
 	}
 
 	{
@@ -336,12 +353,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 3
 		/* tbl.map(lambda row:row['a']).max() */
 
-		suite.T().Log("About to run line #69: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Max()")
+		fmt.Println("About to run line #69: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Max()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Map(func(row r.Term) interface{} { return row.AtIndex("a")}).Max(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #69")
+		fmt.Println("Finished running line #69")
 	}
 
 	{
@@ -350,12 +368,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: map[interface{}]interface{}{"a": 0, "id": 96, }, 1: map[interface{}]interface{}{"a": 1, "id": 97, }, 2: map[interface{}]interface{}{"a": 2, "id": 98, }, 3: map[interface{}]interface{}{"a": 3, "id": 99, }, }
 		/* tbl.group('a').max('id') */
 
-		suite.T().Log("About to run line #72: tbl.Group('a').Max('id')")
+		fmt.Println("About to run line #72: tbl.Group('a').Max('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Max("id"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #72")
+		fmt.Println("Finished running line #72")
 	}
 
 	{
@@ -364,12 +383,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 0, "id": 0, }
 		/* tbl.min() */
 
-		suite.T().Log("About to run line #77: tbl.Min()")
+		fmt.Println("About to run line #77: tbl.Min()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Min(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #77")
+		fmt.Println("Finished running line #77")
 	}
 
 	{
@@ -378,12 +398,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: map[interface{}]interface{}{"a": 0, "id": 0, }, 1: map[interface{}]interface{}{"a": 1, "id": 1, }, 2: map[interface{}]interface{}{"a": 2, "id": 2, }, 3: map[interface{}]interface{}{"a": 3, "id": 3, }, }
 		/* tbl.group('a').min() */
 
-		suite.T().Log("About to run line #79: tbl.Group('a').Min()")
+		fmt.Println("About to run line #79: tbl.Group('a').Min()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Min(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #79")
+		fmt.Println("Finished running line #79")
 	}
 
 	{
@@ -392,12 +413,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 3, "id": 99, }
 		/* tbl.max() */
 
-		suite.T().Log("About to run line #83: tbl.Max()")
+		fmt.Println("About to run line #83: tbl.Max()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Max(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #83")
+		fmt.Println("Finished running line #83")
 	}
 
 	{
@@ -406,12 +428,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: map[interface{}]interface{}{"a": 0, "id": 96, }, 1: map[interface{}]interface{}{"a": 1, "id": 97, }, 2: map[interface{}]interface{}{"a": 2, "id": 98, }, 3: map[interface{}]interface{}{"a": 3, "id": 99, }, }
 		/* tbl.group('a').max() */
 
-		suite.T().Log("About to run line #85: tbl.Group('a').Max()")
+		fmt.Println("About to run line #85: tbl.Group('a').Max()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Max(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #85")
+		fmt.Println("Finished running line #85")
 	}
 
 	{
@@ -420,12 +443,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 150
 		/* tbl.sum(lambda row:row['a']) */
 
-		suite.T().Log("About to run line #92: tbl.Sum(func(row r.Term) interface{} { return row.AtIndex('a')})")
+		fmt.Println("About to run line #92: tbl.Sum(func(row r.Term) interface{} { return row.AtIndex('a')})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Sum(func(row r.Term) interface{} { return row.AtIndex("a")}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #92")
+		fmt.Println("Finished running line #92")
 	}
 
 	{
@@ -434,12 +458,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 150
 		/* tbl.sum(r.row['a']) */
 
-		suite.T().Log("About to run line #93: tbl.Sum(r.Row.AtIndex('a'))")
+		fmt.Println("About to run line #93: tbl.Sum(r.Row.AtIndex('a'))")
 
 		runAndAssert(suite.Suite, expected_, tbl.Sum(r.Row.AtIndex("a")), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #93")
+		fmt.Println("Finished running line #93")
 	}
 
 	{
@@ -448,12 +473,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 150
 		/* tbl.map(lambda row:row['a']).sum() */
 
-		suite.T().Log("About to run line #99: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Sum()")
+		fmt.Println("About to run line #99: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Sum()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Map(func(row r.Term) interface{} { return row.AtIndex("a")}).Sum(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #99")
+		fmt.Println("Finished running line #99")
 	}
 
 	{
@@ -462,12 +488,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: 1200, 1: 1225, 2: 1250, 3: 1275, }
 		/* tbl.group(lambda row:row['a']).sum(lambda row:row['id']) */
 
-		suite.T().Log("About to run line #103: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Sum(func(row r.Term) interface{} { return row.AtIndex('id')})")
+		fmt.Println("About to run line #103: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Sum(func(row r.Term) interface{} { return row.AtIndex('id')})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Sum(func(row r.Term) interface{} { return row.AtIndex("id")}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #103")
+		fmt.Println("Finished running line #103")
 	}
 
 	{
@@ -476,12 +503,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ float64 = 1.5
 		/* tbl.avg(lambda row:row['a']) */
 
-		suite.T().Log("About to run line #111: tbl.Avg(func(row r.Term) interface{} { return row.AtIndex('a')})")
+		fmt.Println("About to run line #111: tbl.Avg(func(row r.Term) interface{} { return row.AtIndex('a')})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Avg(func(row r.Term) interface{} { return row.AtIndex("a")}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #111")
+		fmt.Println("Finished running line #111")
 	}
 
 	{
@@ -490,12 +518,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ float64 = 1.5
 		/* tbl.avg(r.row['a']) */
 
-		suite.T().Log("About to run line #112: tbl.Avg(r.Row.AtIndex('a'))")
+		fmt.Println("About to run line #112: tbl.Avg(r.Row.AtIndex('a'))")
 
 		runAndAssert(suite.Suite, expected_, tbl.Avg(r.Row.AtIndex("a")), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #112")
+		fmt.Println("Finished running line #112")
 	}
 
 	{
@@ -504,12 +533,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ float64 = 1.5
 		/* tbl.map(lambda row:row['a']).avg() */
 
-		suite.T().Log("About to run line #118: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Avg()")
+		fmt.Println("About to run line #118: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Avg()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Map(func(row r.Term) interface{} { return row.AtIndex("a")}).Avg(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #118")
+		fmt.Println("Finished running line #118")
 	}
 
 	{
@@ -518,12 +548,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: 48, 1: 49, 2: 50, 3: 51, }
 		/* tbl.group(lambda row:row['a']).avg(lambda row:row['id']) */
 
-		suite.T().Log("About to run line #122: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Avg(func(row r.Term) interface{} { return row.AtIndex('id')})")
+		fmt.Println("About to run line #122: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Avg(func(row r.Term) interface{} { return row.AtIndex('id')})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Avg(func(row r.Term) interface{} { return row.AtIndex("id")}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #122")
+		fmt.Println("Finished running line #122")
 	}
 
 	{
@@ -532,12 +563,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 0, "id": 96, }
 		/* tbl.order_by(r.desc('id')).min(lambda row:row['a']) */
 
-		suite.T().Log("About to run line #129: tbl.OrderBy(r.Desc('id')).Min(func(row r.Term) interface{} { return row.AtIndex('a')})")
+		fmt.Println("About to run line #129: tbl.OrderBy(r.Desc('id')).Min(func(row r.Term) interface{} { return row.AtIndex('a')})")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy(r.Desc("id")).Min(func(row r.Term) interface{} { return row.AtIndex("a")}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #129")
+		fmt.Println("Finished running line #129")
 	}
 
 	{
@@ -546,12 +578,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 0, "id": 96, }
 		/* tbl.order_by(r.desc('id')).min(r.row['a']) */
 
-		suite.T().Log("About to run line #130: tbl.OrderBy(r.Desc('id')).Min(r.Row.AtIndex('a'))")
+		fmt.Println("About to run line #130: tbl.OrderBy(r.Desc('id')).Min(r.Row.AtIndex('a'))")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy(r.Desc("id")).Min(r.Row.AtIndex("a")), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #130")
+		fmt.Println("Finished running line #130")
 	}
 
 	{
@@ -560,12 +593,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 0
 		/* tbl.order_by(r.desc('id')).min(lambda row:row['a'])['a'] */
 
-		suite.T().Log("About to run line #138: tbl.OrderBy(r.Desc('id')).Min(func(row r.Term) interface{} { return row.AtIndex('a')}).AtIndex('a')")
+		fmt.Println("About to run line #138: tbl.OrderBy(r.Desc('id')).Min(func(row r.Term) interface{} { return row.AtIndex('a')}).AtIndex('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy(r.Desc("id")).Min(func(row r.Term) interface{} { return row.AtIndex("a")}).AtIndex("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #138")
+		fmt.Println("Finished running line #138")
 	}
 
 	{
@@ -574,12 +608,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 0
 		/* tbl.order_by(r.desc('id')).min(r.row['a'])['a'] */
 
-		suite.T().Log("About to run line #139: tbl.OrderBy(r.Desc('id')).Min(r.Row.AtIndex('a')).AtIndex('a')")
+		fmt.Println("About to run line #139: tbl.OrderBy(r.Desc('id')).Min(r.Row.AtIndex('a')).AtIndex('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy(r.Desc("id")).Min(r.Row.AtIndex("a")).AtIndex("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #139")
+		fmt.Println("Finished running line #139")
 	}
 
 	{
@@ -588,12 +623,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 0
 		/* tbl.map(lambda row:row['a']).min() */
 
-		suite.T().Log("About to run line #145: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Min()")
+		fmt.Println("About to run line #145: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Min()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Map(func(row r.Term) interface{} { return row.AtIndex("a")}).Min(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #145")
+		fmt.Println("Finished running line #145")
 	}
 
 	{
@@ -602,12 +638,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: 0, 1: 1, 2: 2, 3: 3, }
 		/* tbl.group(lambda row:row['a']).min(lambda row:row['id'])['id'] */
 
-		suite.T().Log("About to run line #149: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Min(func(row r.Term) interface{} { return row.AtIndex('id')}).AtIndex('id')")
+		fmt.Println("About to run line #149: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Min(func(row r.Term) interface{} { return row.AtIndex('id')}).AtIndex('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Min(func(row r.Term) interface{} { return row.AtIndex("id")}).AtIndex("id"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #149")
+		fmt.Println("Finished running line #149")
 	}
 
 	{
@@ -616,12 +653,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 3
 		/* tbl.max(lambda row:row['a'])['a'] */
 
-		suite.T().Log("About to run line #157: tbl.Max(func(row r.Term) interface{} { return row.AtIndex('a')}).AtIndex('a')")
+		fmt.Println("About to run line #157: tbl.Max(func(row r.Term) interface{} { return row.AtIndex('a')}).AtIndex('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Max(func(row r.Term) interface{} { return row.AtIndex("a")}).AtIndex("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #157")
+		fmt.Println("Finished running line #157")
 	}
 
 	{
@@ -630,12 +668,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 3
 		/* tbl.max(r.row['a'])['a'] */
 
-		suite.T().Log("About to run line #158: tbl.Max(r.Row.AtIndex('a')).AtIndex('a')")
+		fmt.Println("About to run line #158: tbl.Max(r.Row.AtIndex('a')).AtIndex('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Max(r.Row.AtIndex("a")).AtIndex("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #158")
+		fmt.Println("Finished running line #158")
 	}
 
 	{
@@ -644,12 +683,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 3
 		/* tbl.map(lambda row:row['a']).max() */
 
-		suite.T().Log("About to run line #164: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Max()")
+		fmt.Println("About to run line #164: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Max()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Map(func(row r.Term) interface{} { return row.AtIndex("a")}).Max(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #164")
+		fmt.Println("Finished running line #164")
 	}
 
 	{
@@ -658,12 +698,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: 96, 1: 97, 2: 98, 3: 99, }
 		/* tbl.group(lambda row:row['a']).max(lambda row:row['id'])['id'] */
 
-		suite.T().Log("About to run line #168: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Max(func(row r.Term) interface{} { return row.AtIndex('id')}).AtIndex('id')")
+		fmt.Println("About to run line #168: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Max(func(row r.Term) interface{} { return row.AtIndex('id')}).AtIndex('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Max(func(row r.Term) interface{} { return row.AtIndex("id")}).AtIndex("id"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #168")
+		fmt.Println("Finished running line #168")
 	}
 
 	{
@@ -672,12 +713,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: 1200, 1: 1225, 2: 1250, 3: 1275, }
 		/* tbl.group(lambda row:row['a']).map(lambda row:row['id']).reduce(lambda a,b:a+b) */
 
-		suite.T().Log("About to run line #175: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #175: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #175")
+		fmt.Println("Finished running line #175")
 	}
 
 	{
@@ -686,13 +728,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 1200}, []interface{}{1, 1225}, []interface{}{2, 1250}, []interface{}{3, 1275}}, }
 		/* tbl.group(lambda row:row['a']).map(lambda row:row['id']).reduce(lambda a,b:a+b) */
 
-		suite.T().Log("About to run line #185: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #185: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #185")
+		fmt.Println("Finished running line #185")
 	}
 
 	{
@@ -701,13 +743,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 1200}, []interface{}{1, 1225}, []interface{}{2, 1250}, []interface{}{3, 1275}}, }
 		/* tbl.group(r.row['a']).map(r.row['id']).reduce(lambda a,b:a + b) */
 
-		suite.T().Log("About to run line #186: tbl.Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #186: tbl.Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group(r.Row.AtIndex("a")).Map(r.Row.AtIndex("id")).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #186")
+		fmt.Println("Finished running line #186")
 	}
 
 	{
@@ -716,13 +758,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{1, []interface{}{map[interface{}]interface{}{"a": 1, }}}}, }
 		/* r.expr([{'a':1}]).filter(true).limit(1).group('a') */
 
-		suite.T().Log("About to run line #192: r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, }}).Filter(true).Limit(1).Group('a')")
+		fmt.Println("About to run line #192: r.Expr([]interface{}{map[interface{}]interface{}{'a': 1, }}).Filter(true).Limit(1).Group('a')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{map[interface{}]interface{}{"a": 1, }}).Filter(true).Limit(1).Group("a"), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #192")
+		fmt.Println("Finished running line #192")
 	}
 
 	{
@@ -731,12 +773,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ string = "GROUPED_STREAM"
 		/* tbl.group('a').type_of() */
 
-		suite.T().Log("About to run line #198: tbl.Group('a').TypeOf()")
+		fmt.Println("About to run line #198: tbl.Group('a').TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #198")
+		fmt.Println("Finished running line #198")
 	}
 
 	{
@@ -745,12 +788,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ string = "GROUPED_DATA"
 		/* tbl.group('a').count().type_of() */
 
-		suite.T().Log("About to run line #200: tbl.Group('a').Count().TypeOf()")
+		fmt.Println("About to run line #200: tbl.Group('a').Count().TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Count().TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #200")
+		fmt.Println("Finished running line #200")
 	}
 
 	{
@@ -759,12 +803,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ string = "GROUPED_DATA"
 		/* tbl.group('a').coerce_to('ARRAY').type_of() */
 
-		suite.T().Log("About to run line #202: tbl.Group('a').CoerceTo('ARRAY').TypeOf()")
+		fmt.Println("About to run line #202: tbl.Group('a').CoerceTo('ARRAY').TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").CoerceTo("ARRAY").TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #202")
+		fmt.Println("Finished running line #202")
 	}
 
 	{
@@ -773,12 +818,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: []interface{}{0, 4, 8}, 1: []interface{}{1, 5, 9}, 2: []interface{}{2, 6}, 3: []interface{}{3, 7}, }
 		/* tbl.order_by(index='id').filter(lambda row:row['id'] < 10).group('a').map(lambda row:row['id']).coerce_to('ARRAY') */
 
-		suite.T().Log("About to run line #206: tbl.OrderBy(r.OrderByOpts{Index: 'id', }).Filter(func(row r.Term) interface{} { return row.AtIndex('id').Lt(10)}).Group('a').Map(func(row r.Term) interface{} { return row.AtIndex('id')}).CoerceTo('ARRAY')")
+		fmt.Println("About to run line #206: tbl.OrderBy(r.OrderByOpts{Index: 'id', }).Filter(func(row r.Term) interface{} { return row.AtIndex('id').Lt(10)}).Group('a').Map(func(row r.Term) interface{} { return row.AtIndex('id')}).CoerceTo('ARRAY')")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy(r.OrderByOpts{Index: "id", }).Filter(func(row r.Term) interface{} { return row.AtIndex("id").Lt(10)}).Group("a").Map(func(row r.Term) interface{} { return row.AtIndex("id")}).CoerceTo("ARRAY"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #206")
+		fmt.Println("Finished running line #206")
 	}
 
 	{
@@ -787,12 +833,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: 9, 1: 9, 2: 4, 3: 4, }
 		/* tbl.filter(lambda row:row['id'] < 10).group('a').count().do(lambda x:x*x) */
 
-		suite.T().Log("About to run line #213: tbl.Filter(func(row r.Term) interface{} { return row.AtIndex('id').Lt(10)}).Group('a').Count().Do(func(x r.Term) interface{} { return r.Mul(x, x)})")
+		fmt.Println("About to run line #213: tbl.Filter(func(row r.Term) interface{} { return row.AtIndex('id').Lt(10)}).Group('a').Count().Do(func(x r.Term) interface{} { return r.Mul(x, x)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Filter(func(row r.Term) interface{} { return row.AtIndex("id").Lt(10)}).Group("a").Count().Do(func(x r.Term) interface{} { return r.Mul(x, x)}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #213")
+		fmt.Println("Finished running line #213")
 	}
 
 	{
@@ -801,13 +848,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 2400}, []interface{}{1, 2450}, []interface{}{2, 2500}, []interface{}{3, 2550}}, }
 		/* tbl.union(tbl).group(lambda row:row['a']).map(lambda row:row['id']).reduce(lambda a,b:a + b) */
 
-		suite.T().Log("About to run line #223: tbl.Union(tbl).Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #223: tbl.Union(tbl).Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Union(tbl).Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #223")
+		fmt.Println("Finished running line #223")
 	}
 
 	{
@@ -816,13 +863,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 2400}, []interface{}{1, 2450}, []interface{}{2, 2500}, []interface{}{3, 2550}}, }
 		/* tbl.union(tbl).group(r.row['a']).map(r.row['id']).reduce(lambda a,b:a + b) */
 
-		suite.T().Log("About to run line #224: tbl.Union(tbl).Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #224: tbl.Union(tbl).Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Union(tbl).Group(r.Row.AtIndex("a")).Map(r.Row.AtIndex("id")).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #224")
+		fmt.Println("Finished running line #224")
 	}
 
 	{
@@ -831,13 +878,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 2400}, []interface{}{1, 2450}, []interface{}{2, 2500}, []interface{}{3, 2550}}, }
 		/* tbl.coerce_to("array").union(tbl).group(lambda row:row['a']).map(lambda row:row['id']).reduce(lambda a,b:a + b) */
 
-		suite.T().Log("About to run line #235: tbl.CoerceTo('array').Union(tbl).Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #235: tbl.CoerceTo('array').Union(tbl).Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.CoerceTo("array").Union(tbl).Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #235")
+		fmt.Println("Finished running line #235")
 	}
 
 	{
@@ -846,13 +893,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 2400}, []interface{}{1, 2450}, []interface{}{2, 2500}, []interface{}{3, 2550}}, }
 		/* tbl.coerce_to("array").union(tbl).group(r.row['a']).map(r.row['id']).reduce(lambda a,b:a + b) */
 
-		suite.T().Log("About to run line #236: tbl.CoerceTo('array').Union(tbl).Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #236: tbl.CoerceTo('array').Union(tbl).Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.CoerceTo("array").Union(tbl).Group(r.Row.AtIndex("a")).Map(r.Row.AtIndex("id")).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #236")
+		fmt.Println("Finished running line #236")
 	}
 
 	{
@@ -861,13 +908,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 2400}, []interface{}{1, 2450}, []interface{}{2, 2500}, []interface{}{3, 2550}}, }
 		/* tbl.union(tbl.coerce_to("array")).group(lambda row:row['a']).map(lambda row:row['id']).reduce(lambda a,b:a + b) */
 
-		suite.T().Log("About to run line #247: tbl.Union(tbl.CoerceTo('array')).Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #247: tbl.Union(tbl.CoerceTo('array')).Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Union(tbl.CoerceTo("array")).Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #247")
+		fmt.Println("Finished running line #247")
 	}
 
 	{
@@ -876,13 +923,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 2400}, []interface{}{1, 2450}, []interface{}{2, 2500}, []interface{}{3, 2550}}, }
 		/* tbl.union(tbl.coerce_to("array")).group(r.row['a']).map(r.row['id']).reduce(lambda a,b:a + b) */
 
-		suite.T().Log("About to run line #248: tbl.Union(tbl.CoerceTo('array')).Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #248: tbl.Union(tbl.CoerceTo('array')).Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Union(tbl.CoerceTo("array")).Group(r.Row.AtIndex("a")).Map(r.Row.AtIndex("id")).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #248")
+		fmt.Println("Finished running line #248")
 	}
 
 	{
@@ -891,13 +938,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 1200}, []interface{}{1, 1225}, []interface{}{2, 1250}, []interface{}{3, 1275}}, }
 		/* tbl.group(lambda row:row['a']).map(lambda row:row['id']).reduce(lambda a,b:a + b) */
 
-		suite.T().Log("About to run line #255: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #255: tbl.Group(func(row r.Term) interface{} { return row.AtIndex('a')}).Map(func(row r.Term) interface{} { return row.AtIndex('id')}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group(func(row r.Term) interface{} { return row.AtIndex("a")}).Map(func(row r.Term) interface{} { return row.AtIndex("id")}).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #255")
+		fmt.Println("Finished running line #255")
 	}
 
 	{
@@ -906,13 +953,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 1200}, []interface{}{1, 1225}, []interface{}{2, 1250}, []interface{}{3, 1275}}, }
 		/* tbl.group(r.row['a']).map(r.row['id']).reduce(lambda a,b:a + b) */
 
-		suite.T().Log("About to run line #256: tbl.Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
+		fmt.Println("About to run line #256: tbl.Group(r.Row.AtIndex('a')).Map(r.Row.AtIndex('id')).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)})")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group(r.Row.AtIndex("a")).Map(r.Row.AtIndex("id")).Reduce(func(a r.Term, b r.Term) interface{} { return r.Add(a, b)}), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #256")
+		fmt.Println("Finished running line #256")
 	}
 
 	{
@@ -921,13 +968,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 25}, []interface{}{1, 25}, []interface{}{2, 25}, []interface{}{3, 25}}, }
 		/* tbl.group('a').count() */
 
-		suite.T().Log("About to run line #286: tbl.Group('a').Count()")
+		fmt.Println("About to run line #286: tbl.Group('a').Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Count(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #286")
+		fmt.Println("Finished running line #286")
 	}
 
 	{
@@ -936,13 +983,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 1200}, []interface{}{1, 1225}, []interface{}{2, 1250}, []interface{}{3, 1275}}, }
 		/* tbl.group('a').sum('id') */
 
-		suite.T().Log("About to run line #292: tbl.Group('a').Sum('id')")
+		fmt.Println("About to run line #292: tbl.Group('a').Sum('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Sum("id"), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #292")
+		fmt.Println("Finished running line #292")
 	}
 
 	{
@@ -951,13 +998,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 48}, []interface{}{1, 49}, []interface{}{2, 50}, []interface{}{3, 51}}, }
 		/* tbl.group('a').avg('id') */
 
-		suite.T().Log("About to run line #298: tbl.Group('a').Avg('id')")
+		fmt.Println("About to run line #298: tbl.Group('a').Avg('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Avg("id"), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #298")
+		fmt.Println("Finished running line #298")
 	}
 
 	{
@@ -966,13 +1013,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 20}, []interface{}{1, 20}, []interface{}{2, 20}, []interface{}{3, 20}, []interface{}{4, 20}}, }
 		/* tbl3.group(lambda row:row['b']['c']).count() */
 
-		suite.T().Log("About to run line #305: tbl3.Group(func(row r.Term) interface{} { return row.AtIndex('b').AtIndex('c')}).Count()")
+		fmt.Println("About to run line #305: tbl3.Group(func(row r.Term) interface{} { return row.AtIndex('b').AtIndex('c')}).Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl3.Group(func(row r.Term) interface{} { return row.AtIndex("b").AtIndex("c")}).Count(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #305")
+		fmt.Println("Finished running line #305")
 	}
 
 	{
@@ -981,13 +1028,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{[]interface{}{0, 0}, 9}, []interface{}{[]interface{}{0, 1}, 8}, []interface{}{[]interface{}{0, 2}, 8}, []interface{}{[]interface{}{1, 0}, 8}, []interface{}{[]interface{}{1, 1}, 9}, []interface{}{[]interface{}{1, 2}, 8}, []interface{}{[]interface{}{2, 0}, 8}, []interface{}{[]interface{}{2, 1}, 8}, []interface{}{[]interface{}{2, 2}, 9}, []interface{}{[]interface{}{3, 0}, 9}, []interface{}{[]interface{}{3, 1}, 8}, []interface{}{[]interface{}{3, 2}, 8}}, }
 		/* tbl.group('a', lambda row:row['id'].mod(3)).count() */
 
-		suite.T().Log("About to run line #313: tbl.Group('a', func(row r.Term) interface{} { return row.AtIndex('id').Mod(3)}).Count()")
+		fmt.Println("About to run line #313: tbl.Group('a', func(row r.Term) interface{} { return row.AtIndex('id').Mod(3)}).Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a", func(row r.Term) interface{} { return row.AtIndex("id").Mod(3)}).Count(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #313")
+		fmt.Println("Finished running line #313")
 	}
 
 	{
@@ -996,12 +1043,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 4
 		/* tbl.map(lambda row:row['a']).distinct().count() */
 
-		suite.T().Log("About to run line #329: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Distinct().Count()")
+		fmt.Println("About to run line #329: tbl.Map(func(row r.Term) interface{} { return row.AtIndex('a')}).Distinct().Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Map(func(row r.Term) interface{} { return row.AtIndex("a")}).Distinct().Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #329")
+		fmt.Println("Finished running line #329")
 	}
 
 	{
@@ -1010,12 +1058,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ string = "STREAM"
 		/* tbl.distinct().type_of() */
 
-		suite.T().Log("About to run line #334: tbl.Distinct().TypeOf()")
+		fmt.Println("About to run line #334: tbl.Distinct().TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Distinct().TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #334")
+		fmt.Println("Finished running line #334")
 	}
 
 	{
@@ -1024,12 +1073,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 100
 		/* tbl.distinct().count() */
 
-		suite.T().Log("About to run line #337: tbl.Distinct().Count()")
+		fmt.Println("About to run line #337: tbl.Distinct().Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Distinct().Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #337")
+		fmt.Println("Finished running line #337")
 	}
 
 	{
@@ -1038,12 +1088,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ string = "STREAM"
 		/* tbl.distinct(index='id').type_of() */
 
-		suite.T().Log("About to run line #341: tbl.Distinct(r.DistinctOpts{Index: 'id', }).TypeOf()")
+		fmt.Println("About to run line #341: tbl.Distinct(r.DistinctOpts{Index: 'id', }).TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Distinct(r.DistinctOpts{Index: "id", }).TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #341")
+		fmt.Println("Finished running line #341")
 	}
 
 	{
@@ -1052,12 +1103,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 100
 		/* tbl.distinct(index='id').count() */
 
-		suite.T().Log("About to run line #345: tbl.Distinct(r.DistinctOpts{Index: 'id', }).Count()")
+		fmt.Println("About to run line #345: tbl.Distinct(r.DistinctOpts{Index: 'id', }).Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Distinct(r.DistinctOpts{Index: "id", }).Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #345")
+		fmt.Println("Finished running line #345")
 	}
 
 	{
@@ -1066,12 +1118,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"created": 1, }
 		/* tbl.index_create('a') */
 
-		suite.T().Log("About to run line #348: tbl.IndexCreate('a')")
+		fmt.Println("About to run line #348: tbl.IndexCreate('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.IndexCreate("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #348")
+		fmt.Println("Finished running line #348")
 	}
 
 	{
@@ -1080,12 +1133,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"index": "a", "ready": true, }}
 		/* tbl.index_wait('a').pluck('index', 'ready') */
 
-		suite.T().Log("About to run line #357: tbl.IndexWait('a').Pluck('index', 'ready')")
+		fmt.Println("About to run line #357: tbl.IndexWait('a').Pluck('index', 'ready')")
 
 		runAndAssert(suite.Suite, expected_, tbl.IndexWait("a").Pluck("index", "ready"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #357")
+		fmt.Println("Finished running line #357")
 	}
 
 	{
@@ -1094,12 +1148,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 25
 		/* tbl.between(0, 1, index='a').distinct().count() */
 
-		suite.T().Log("About to run line #367: tbl.Between(0, 1, r.BetweenOpts{Index: 'a', }).Distinct().Count()")
+		fmt.Println("About to run line #367: tbl.Between(0, 1, r.BetweenOpts{Index: 'a', }).Distinct().Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Between(0, 1, r.BetweenOpts{Index: "a", }).Distinct().Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #367")
+		fmt.Println("Finished running line #367")
 	}
 
 	{
@@ -1108,12 +1163,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 25
 		/* tbl.between(0, 1, index='a').distinct(index='id').count() */
 
-		suite.T().Log("About to run line #371: tbl.Between(0, 1, r.BetweenOpts{Index: 'a', }).Distinct(r.DistinctOpts{Index: 'id', }).Count()")
+		fmt.Println("About to run line #371: tbl.Between(0, 1, r.BetweenOpts{Index: 'a', }).Distinct(r.DistinctOpts{Index: 'id', }).Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Between(0, 1, r.BetweenOpts{Index: "a", }).Distinct(r.DistinctOpts{Index: "id", }).Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #371")
+		fmt.Println("Finished running line #371")
 	}
 
 	{
@@ -1122,12 +1178,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ string = "STREAM"
 		/* tbl.distinct(index='a').type_of() */
 
-		suite.T().Log("About to run line #408: tbl.Distinct(r.DistinctOpts{Index: 'a', }).TypeOf()")
+		fmt.Println("About to run line #408: tbl.Distinct(r.DistinctOpts{Index: 'a', }).TypeOf()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Distinct(r.DistinctOpts{Index: "a", }).TypeOf(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #408")
+		fmt.Println("Finished running line #408")
 	}
 
 	{
@@ -1136,12 +1193,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 4
 		/* tbl.distinct(index='a').count() */
 
-		suite.T().Log("About to run line #412: tbl.Distinct(r.DistinctOpts{Index: 'a', }).Count()")
+		fmt.Println("About to run line #412: tbl.Distinct(r.DistinctOpts{Index: 'a', }).Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Distinct(r.DistinctOpts{Index: "a", }).Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #412")
+		fmt.Println("Finished running line #412")
 	}
 
 	{
@@ -1150,12 +1208,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot group by nothing.")
 		/* tbl.group() */
 
-		suite.T().Log("About to run line #415: tbl.Group()")
+		fmt.Println("About to run line #415: tbl.Group()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #415")
+		fmt.Println("Finished running line #415")
 	}
 
 	{
@@ -1164,13 +1223,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 1}, []interface{}{1, 1}, []interface{}{2, 1}, []interface{}{3, 1}, []interface{}{4, 1}, []interface{}{5, 1}, []interface{}{6, 1}, []interface{}{7, 1}, []interface{}{8, 1}, []interface{}{9, 1}, []interface{}{10, 1}, []interface{}{11, 1}, []interface{}{12, 1}, []interface{}{13, 1}, []interface{}{14, 1}, []interface{}{15, 1}, []interface{}{16, 1}, []interface{}{17, 1}, []interface{}{18, 1}, []interface{}{19, 1}, []interface{}{20, 1}, []interface{}{21, 1}, []interface{}{22, 1}, []interface{}{23, 1}, []interface{}{24, 1}, []interface{}{25, 1}, []interface{}{26, 1}, []interface{}{27, 1}, []interface{}{28, 1}, []interface{}{29, 1}, []interface{}{30, 1}, []interface{}{31, 1}, []interface{}{32, 1}, []interface{}{33, 1}, []interface{}{34, 1}, []interface{}{35, 1}, []interface{}{36, 1}, []interface{}{37, 1}, []interface{}{38, 1}, []interface{}{39, 1}, []interface{}{40, 1}, []interface{}{41, 1}, []interface{}{42, 1}, []interface{}{43, 1}, []interface{}{44, 1}, []interface{}{45, 1}, []interface{}{46, 1}, []interface{}{47, 1}, []interface{}{48, 1}, []interface{}{49, 1}, []interface{}{50, 1}, []interface{}{51, 1}, []interface{}{52, 1}, []interface{}{53, 1}, []interface{}{54, 1}, []interface{}{55, 1}, []interface{}{56, 1}, []interface{}{57, 1}, []interface{}{58, 1}, []interface{}{59, 1}, []interface{}{60, 1}, []interface{}{61, 1}, []interface{}{62, 1}, []interface{}{63, 1}, []interface{}{64, 1}, []interface{}{65, 1}, []interface{}{66, 1}, []interface{}{67, 1}, []interface{}{68, 1}, []interface{}{69, 1}, []interface{}{70, 1}, []interface{}{71, 1}, []interface{}{72, 1}, []interface{}{73, 1}, []interface{}{74, 1}, []interface{}{75, 1}, []interface{}{76, 1}, []interface{}{77, 1}, []interface{}{78, 1}, []interface{}{79, 1}, []interface{}{80, 1}, []interface{}{81, 1}, []interface{}{82, 1}, []interface{}{83, 1}, []interface{}{84, 1}, []interface{}{85, 1}, []interface{}{86, 1}, []interface{}{87, 1}, []interface{}{88, 1}, []interface{}{89, 1}, []interface{}{90, 1}, []interface{}{91, 1}, []interface{}{92, 1}, []interface{}{93, 1}, []interface{}{94, 1}, []interface{}{95, 1}, []interface{}{96, 1}, []interface{}{97, 1}, []interface{}{98, 1}, []interface{}{99, 1}}, }
 		/* tbl.group(index='id').count() */
 
-		suite.T().Log("About to run line #418: tbl.GroupByIndex('id').Count()")
+		fmt.Println("About to run line #418: tbl.GroupByIndex('id').Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.GroupByIndex("id").Count(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #418")
+		fmt.Println("Finished running line #418")
 	}
 
 	{
@@ -1179,13 +1238,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{0, 25}, []interface{}{1, 25}, []interface{}{2, 25}, []interface{}{3, 25}}, }
 		/* tbl.group(index='a').count() */
 
-		suite.T().Log("About to run line #425: tbl.GroupByIndex('a').Count()")
+		fmt.Println("About to run line #425: tbl.GroupByIndex('a').Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.GroupByIndex("a").Count(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #425")
+		fmt.Println("Finished running line #425")
 	}
 
 	{
@@ -1194,13 +1253,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{[]interface{}{0, 0}, 1}, []interface{}{[]interface{}{0, 4}, 1}, []interface{}{[]interface{}{0, 8}, 1}, []interface{}{[]interface{}{0, 12}, 1}, []interface{}{[]interface{}{0, 16}, 1}, []interface{}{[]interface{}{0, 20}, 1}, []interface{}{[]interface{}{0, 24}, 1}, []interface{}{[]interface{}{0, 28}, 1}, []interface{}{[]interface{}{0, 32}, 1}, []interface{}{[]interface{}{0, 36}, 1}, []interface{}{[]interface{}{0, 40}, 1}, []interface{}{[]interface{}{0, 44}, 1}, []interface{}{[]interface{}{0, 48}, 1}, []interface{}{[]interface{}{0, 52}, 1}, []interface{}{[]interface{}{0, 56}, 1}, []interface{}{[]interface{}{0, 60}, 1}, []interface{}{[]interface{}{0, 64}, 1}, []interface{}{[]interface{}{0, 68}, 1}, []interface{}{[]interface{}{0, 72}, 1}, []interface{}{[]interface{}{0, 76}, 1}, []interface{}{[]interface{}{0, 80}, 1}, []interface{}{[]interface{}{0, 84}, 1}, []interface{}{[]interface{}{0, 88}, 1}, []interface{}{[]interface{}{0, 92}, 1}, []interface{}{[]interface{}{0, 96}, 1}, []interface{}{[]interface{}{1, 1}, 1}, []interface{}{[]interface{}{1, 5}, 1}, []interface{}{[]interface{}{1, 9}, 1}, []interface{}{[]interface{}{1, 13}, 1}, []interface{}{[]interface{}{1, 17}, 1}, []interface{}{[]interface{}{1, 21}, 1}, []interface{}{[]interface{}{1, 25}, 1}, []interface{}{[]interface{}{1, 29}, 1}, []interface{}{[]interface{}{1, 33}, 1}, []interface{}{[]interface{}{1, 37}, 1}, []interface{}{[]interface{}{1, 41}, 1}, []interface{}{[]interface{}{1, 45}, 1}, []interface{}{[]interface{}{1, 49}, 1}, []interface{}{[]interface{}{1, 53}, 1}, []interface{}{[]interface{}{1, 57}, 1}, []interface{}{[]interface{}{1, 61}, 1}, []interface{}{[]interface{}{1, 65}, 1}, []interface{}{[]interface{}{1, 69}, 1}, []interface{}{[]interface{}{1, 73}, 1}, []interface{}{[]interface{}{1, 77}, 1}, []interface{}{[]interface{}{1, 81}, 1}, []interface{}{[]interface{}{1, 85}, 1}, []interface{}{[]interface{}{1, 89}, 1}, []interface{}{[]interface{}{1, 93}, 1}, []interface{}{[]interface{}{1, 97}, 1}, []interface{}{[]interface{}{2, 2}, 1}, []interface{}{[]interface{}{2, 6}, 1}, []interface{}{[]interface{}{2, 10}, 1}, []interface{}{[]interface{}{2, 14}, 1}, []interface{}{[]interface{}{2, 18}, 1}, []interface{}{[]interface{}{2, 22}, 1}, []interface{}{[]interface{}{2, 26}, 1}, []interface{}{[]interface{}{2, 30}, 1}, []interface{}{[]interface{}{2, 34}, 1}, []interface{}{[]interface{}{2, 38}, 1}, []interface{}{[]interface{}{2, 42}, 1}, []interface{}{[]interface{}{2, 46}, 1}, []interface{}{[]interface{}{2, 50}, 1}, []interface{}{[]interface{}{2, 54}, 1}, []interface{}{[]interface{}{2, 58}, 1}, []interface{}{[]interface{}{2, 62}, 1}, []interface{}{[]interface{}{2, 66}, 1}, []interface{}{[]interface{}{2, 70}, 1}, []interface{}{[]interface{}{2, 74}, 1}, []interface{}{[]interface{}{2, 78}, 1}, []interface{}{[]interface{}{2, 82}, 1}, []interface{}{[]interface{}{2, 86}, 1}, []interface{}{[]interface{}{2, 90}, 1}, []interface{}{[]interface{}{2, 94}, 1}, []interface{}{[]interface{}{2, 98}, 1}, []interface{}{[]interface{}{3, 3}, 1}, []interface{}{[]interface{}{3, 7}, 1}, []interface{}{[]interface{}{3, 11}, 1}, []interface{}{[]interface{}{3, 15}, 1}, []interface{}{[]interface{}{3, 19}, 1}, []interface{}{[]interface{}{3, 23}, 1}, []interface{}{[]interface{}{3, 27}, 1}, []interface{}{[]interface{}{3, 31}, 1}, []interface{}{[]interface{}{3, 35}, 1}, []interface{}{[]interface{}{3, 39}, 1}, []interface{}{[]interface{}{3, 43}, 1}, []interface{}{[]interface{}{3, 47}, 1}, []interface{}{[]interface{}{3, 51}, 1}, []interface{}{[]interface{}{3, 55}, 1}, []interface{}{[]interface{}{3, 59}, 1}, []interface{}{[]interface{}{3, 63}, 1}, []interface{}{[]interface{}{3, 67}, 1}, []interface{}{[]interface{}{3, 71}, 1}, []interface{}{[]interface{}{3, 75}, 1}, []interface{}{[]interface{}{3, 79}, 1}, []interface{}{[]interface{}{3, 83}, 1}, []interface{}{[]interface{}{3, 87}, 1}, []interface{}{[]interface{}{3, 91}, 1}, []interface{}{[]interface{}{3, 95}, 1}, []interface{}{[]interface{}{3, 99}, 1}}, }
 		/* tbl.group('a', index='id').count() */
 
-		suite.T().Log("About to run line #432: tbl.GroupByIndex('id', 'a').Count()")
+		fmt.Println("About to run line #432: tbl.GroupByIndex('id', 'a').Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.GroupByIndex("id", "a").Count(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #432")
+		fmt.Println("Finished running line #432")
 	}
 
 	{
@@ -1209,13 +1268,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{[]interface{}{0, 0}, 25}, []interface{}{[]interface{}{1, 1}, 25}, []interface{}{[]interface{}{2, 2}, 25}, []interface{}{[]interface{}{3, 3}, 25}}, }
 		/* tbl.group('a', index='a').count() */
 
-		suite.T().Log("About to run line #439: tbl.GroupByIndex('a', 'a').Count()")
+		fmt.Println("About to run line #439: tbl.GroupByIndex('a', 'a').Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.GroupByIndex("a", "a").Count(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #439")
+		fmt.Println("Finished running line #439")
 	}
 
 	{
@@ -1224,13 +1283,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"$reql_type$": "GROUPED_DATA", "data": []interface{}{[]interface{}{[]interface{}{0, "f", nil, []interface{}{0}}, 25}, []interface{}{[]interface{}{0, "f", nil, nil}, 25}, []interface{}{[]interface{}{0, "f", nil, 0}, 25}, []interface{}{[]interface{}{0, "f", nil, map[interface{}]interface{}{}}, 25}, []interface{}{[]interface{}{1, "f", nil, []interface{}{0}}, 25}, []interface{}{[]interface{}{1, "f", nil, nil}, 25}, []interface{}{[]interface{}{1, "f", nil, 0}, 25}, []interface{}{[]interface{}{1, "f", nil, map[interface{}]interface{}{}}, 25}, []interface{}{[]interface{}{2, "f", nil, []interface{}{0}}, 25}, []interface{}{[]interface{}{2, "f", nil, nil}, 25}, []interface{}{[]interface{}{2, "f", nil, 0}, 25}, []interface{}{[]interface{}{2, "f", nil, map[interface{}]interface{}{}}, 25}, []interface{}{[]interface{}{3, "f", nil, []interface{}{0}}, 25}, []interface{}{[]interface{}{3, "f", nil, nil}, 25}, []interface{}{[]interface{}{3, "f", nil, 0}, 25}, []interface{}{[]interface{}{3, "f", nil, map[interface{}]interface{}{}}, 25}}, }
 		/* tbl.group('a', lambda row:'f', lambda row:[], lambda row:[{}, [0], null, 0], multi=True).count() */
 
-		suite.T().Log("About to run line #447: tbl.Group('a', func(row r.Term) interface{} { return 'f'}, func(row r.Term) interface{} { return []interface{}{}}, func(row r.Term) interface{} { return []interface{}{map[interface{}]interface{}{}, []interface{}{0}, nil, 0}}).Count()")
+		fmt.Println("About to run line #447: tbl.MultiGroup('a', func(row r.Term) interface{} { return 'f'}, func(row r.Term) interface{} { return []interface{}{}}, func(row r.Term) interface{} { return []interface{}{map[interface{}]interface{}{}, []interface{}{0}, nil, 0}}).Count()")
 
-		runAndAssert(suite.Suite, expected_, tbl.Group("a", func(row r.Term) interface{} { return "f"}, func(row r.Term) interface{} { return []interface{}{}}, func(row r.Term) interface{} { return []interface{}{map[interface{}]interface{}{}, []interface{}{0}, nil, 0}}).Count(), suite.session, r.RunOpts{
-			GeometryFormat: "raw",
+		runAndAssert(suite.Suite, expected_, tbl.MultiGroup("a", func(row r.Term) interface{} { return "f"}, func(row r.Term) interface{} { return []interface{}{}}, func(row r.Term) interface{} { return []interface{}{map[interface{}]interface{}{}, []interface{}{0}, nil, 0}}).Count(), suite.session, r.RunOpts{
 			GroupFormat: "raw",
+			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #447")
+		fmt.Println("Finished running line #447")
 	}
 
 	{
@@ -1239,12 +1298,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"group": 0, "reduction": 25, }, map[interface{}]interface{}{"group": 1, "reduction": 25, }, map[interface{}]interface{}{"group": 2, "reduction": 25, }, map[interface{}]interface{}{"group": 3, "reduction": 25, }}
 		/* tbl.group('a').count().ungroup() */
 
-		suite.T().Log("About to run line #453: tbl.Group('a').Count().Ungroup()")
+		fmt.Println("About to run line #453: tbl.Group('a').Count().Ungroup()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Count().Ungroup(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #453")
+		fmt.Println("Finished running line #453")
 	}
 
 	{
@@ -1253,12 +1313,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{0, 1, 2, 3}
 		/* tbl.group('a').ungroup()['group'] */
 
-		suite.T().Log("About to run line #456: tbl.Group('a').Ungroup().AtIndex('group')")
+		fmt.Println("About to run line #456: tbl.Group('a').Ungroup().AtIndex('group')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Ungroup().AtIndex("group"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #456")
+		fmt.Println("Finished running line #456")
 	}
 
 	{
@@ -1267,12 +1328,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"group": []interface{}{0, 0}, "reduction": 24, }, map[interface{}]interface{}{"group": []interface{}{1, 1}, "reduction": 28, }, map[interface{}]interface{}{"group": []interface{}{2, 2}, "reduction": 32, }, map[interface{}]interface{}{"group": []interface{}{3, 3}, "reduction": 36, }}
 		/* tbl.order_by(index='id').limit(16).group('a','a').map(r.row['id']).sum().ungroup() */
 
-		suite.T().Log("About to run line #460: tbl.OrderBy(r.OrderByOpts{Index: 'id', }).Limit(16).Group('a', 'a').Map(r.Row.AtIndex('id')).Sum().Ungroup()")
+		fmt.Println("About to run line #460: tbl.OrderBy(r.OrderByOpts{Index: 'id', }).Limit(16).Group('a', 'a').Map(r.Row.AtIndex('id')).Sum().Ungroup()")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy(r.OrderByOpts{Index: "id", }).Limit(16).Group("a", "a").Map(r.Row.AtIndex("id")).Sum().Ungroup(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #460")
+		fmt.Println("Finished running line #460")
 	}
 
 	{
@@ -1281,12 +1343,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"group": []interface{}{0, nil}, "reduction": 25, }, map[interface{}]interface{}{"group": []interface{}{1, nil}, "reduction": 25, }, map[interface{}]interface{}{"group": []interface{}{2, nil}, "reduction": 25, }, map[interface{}]interface{}{"group": []interface{}{3, nil}, "reduction": 25, }}
 		/* tbl.group('a', null).count().ungroup() */
 
-		suite.T().Log("About to run line #465: tbl.Group('a', nil).Count().Ungroup()")
+		fmt.Println("About to run line #465: tbl.Group('a', nil).Count().Ungroup()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a", nil).Count().Ungroup(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #465")
+		fmt.Println("Finished running line #465")
 	}
 
 	{
@@ -1295,12 +1358,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"group": []interface{}{0, 1}, "reduction": 25, }, map[interface{}]interface{}{"group": []interface{}{0, "two"}, "reduction": 25, }, map[interface{}]interface{}{"group": []interface{}{1, 1}, "reduction": 25, }, map[interface{}]interface{}{"group": []interface{}{1, "two"}, "reduction": 25, }, map[interface{}]interface{}{"group": []interface{}{2, 1}, "reduction": 25, }, map[interface{}]interface{}{"group": []interface{}{2, "two"}, "reduction": 25, }, map[interface{}]interface{}{"group": []interface{}{3, 1}, "reduction": 25, }, map[interface{}]interface{}{"group": []interface{}{3, "two"}, "reduction": 25, }}
 		/* tbl.group('a', lambda row:[1,'two'], multi=True).count().ungroup() */
 
-		suite.T().Log("About to run line #468: tbl.Group('a', func(row r.Term) interface{} { return []interface{}{1, 'two'}}).Count().Ungroup()")
+		fmt.Println("About to run line #468: tbl.MultiGroup('a', func(row r.Term) interface{} { return []interface{}{1, 'two'}}).Count().Ungroup()")
 
-		runAndAssert(suite.Suite, expected_, tbl.Group("a", func(row r.Term) interface{} { return []interface{}{1, "two"}}).Count().Ungroup(), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, tbl.MultiGroup("a", func(row r.Term) interface{} { return []interface{}{1, "two"}}).Count().Ungroup(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #468")
+		fmt.Println("Finished running line #468")
 	}
 
 	{
@@ -1309,12 +1373,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 100
 		/* tbl.count() */
 
-		suite.T().Log("About to run line #474: tbl.Count()")
+		fmt.Println("About to run line #474: tbl.Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #474")
+		fmt.Println("Finished running line #474")
 	}
 
 	{
@@ -1323,12 +1388,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ Expected = partial(map[interface{}]interface{}{"errors": 0, "replaced": 67, })
 		/* tbl.filter(r.row['a'].ne(1).and_(r.row['id'].gt(10))).update({'b':r.row['a'] * 10}) */
 
-		suite.T().Log("About to run line #478: tbl.Filter(r.Row.AtIndex('a').Ne(1).And(r.Row.AtIndex('id').Gt(10))).Update(map[interface{}]interface{}{'b': r.Row.AtIndex('a').Mul(10), })")
+		fmt.Println("About to run line #478: tbl.Filter(r.Row.AtIndex('a').Ne(1).And(r.Row.AtIndex('id').Gt(10))).Update(map[interface{}]interface{}{'b': r.Row.AtIndex('a').Mul(10), })")
 
 		runAndAssert(suite.Suite, expected_, tbl.Filter(r.Row.AtIndex("a").Ne(1).And(r.Row.AtIndex("id").Gt(10))).Update(map[interface{}]interface{}{"b": r.Row.AtIndex("a").Mul(10), }), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #478")
+		fmt.Println("Finished running line #478")
 	}
 
 	{
@@ -1337,12 +1403,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{nil: 33, 0: 22, 20: 22, 30: 23, }
 		/* tbl.group('b').count() */
 
-		suite.T().Log("About to run line #482: tbl.Group('b').Count()")
+		fmt.Println("About to run line #482: tbl.Group('b').Count()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("b").Count(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #482")
+		fmt.Println("Finished running line #482")
 	}
 
 	{
@@ -1351,12 +1418,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: 0, 2: 440, 3: 690, }
 		/* tbl.group('a').sum('b') */
 
-		suite.T().Log("About to run line #487: tbl.Group('a').Sum('b')")
+		fmt.Println("About to run line #487: tbl.Group('a').Sum('b')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Sum("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #487")
+		fmt.Println("Finished running line #487")
 	}
 
 	{
@@ -1365,12 +1433,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: 0, 2: 20, 3: 30, }
 		/* tbl.group('a').avg('b') */
 
-		suite.T().Log("About to run line #492: tbl.Group('a').Avg('b')")
+		fmt.Println("About to run line #492: tbl.Group('a').Avg('b')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Group("a").Avg("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #492")
+		fmt.Println("Finished running line #492")
 	}
 
 	{
@@ -1379,12 +1448,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: map[interface{}]interface{}{"a": 0, "b": 0, "id": 12, }, 2: map[interface{}]interface{}{"a": 2, "b": 20, "id": 14, }, 3: map[interface{}]interface{}{"a": 3, "b": 30, "id": 11, }, }
 		/* tbl.order_by('id').group('a').min('b') */
 
-		suite.T().Log("About to run line #497: tbl.OrderBy('id').Group('a').Min('b')")
+		fmt.Println("About to run line #497: tbl.OrderBy('id').Group('a').Min('b')")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy("id").Group("a").Min("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #497")
+		fmt.Println("Finished running line #497")
 	}
 
 	{
@@ -1393,12 +1463,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: map[interface{}]interface{}{"a": 0, "id": 0, }, 1: map[interface{}]interface{}{"a": 1, "id": 1, }, 2: map[interface{}]interface{}{"a": 2, "id": 2, }, 3: map[interface{}]interface{}{"a": 3, "id": 3, }, }
 		/* tbl.order_by('id').group('a').min('id') */
 
-		suite.T().Log("About to run line #502: tbl.OrderBy('id').Group('a').Min('id')")
+		fmt.Println("About to run line #502: tbl.OrderBy('id').Group('a').Min('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy("id").Group("a").Min("id"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #502")
+		fmt.Println("Finished running line #502")
 	}
 
 	{
@@ -1407,12 +1478,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{0: map[interface{}]interface{}{"a": 0, "b": 0, "id": 12, }, 2: map[interface{}]interface{}{"a": 2, "b": 20, "id": 14, }, 3: map[interface{}]interface{}{"a": 3, "b": 30, "id": 11, }, }
 		/* tbl.order_by('id').group('a').max('b') */
 
-		suite.T().Log("About to run line #507: tbl.OrderBy('id').Group('a').Max('b')")
+		fmt.Println("About to run line #507: tbl.OrderBy('id').Group('a').Max('b')")
 
 		runAndAssert(suite.Suite, expected_, tbl.OrderBy("id").Group("a").Max("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #507")
+		fmt.Println("Finished running line #507")
 	}
 
 	{
@@ -1421,12 +1493,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 0, "id": 0, }
 		/* tbl.min() */
 
-		suite.T().Log("About to run line #512: tbl.Min()")
+		fmt.Println("About to run line #512: tbl.Min()")
 
 		runAndAssert(suite.Suite, expected_, tbl.Min(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #512")
+		fmt.Println("Finished running line #512")
 	}
 
 	{
@@ -1435,12 +1508,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 0, "id": 0, }
 		/* tbl.min(index='id') */
 
-		suite.T().Log("About to run line #514: tbl.MinIndex('id')")
+		fmt.Println("About to run line #514: tbl.MinIndex('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.MinIndex("id"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #514")
+		fmt.Println("Finished running line #514")
 	}
 
 	{
@@ -1449,12 +1523,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 0, "id": 0, }
 		/* tbl.min(index='a') */
 
-		suite.T().Log("About to run line #518: tbl.MinIndex('a')")
+		fmt.Println("About to run line #518: tbl.MinIndex('a')")
 
 		runAndAssert(suite.Suite, expected_, tbl.MinIndex("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #518")
+		fmt.Println("Finished running line #518")
 	}
 
 	{
@@ -1463,12 +1538,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 3, "id": 99, }
 		/* tbl.max().without('b') */
 
-		suite.T().Log("About to run line #523: tbl.Max().Without('b')")
+		fmt.Println("About to run line #523: tbl.Max().Without('b')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Max().Without("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #523")
+		fmt.Println("Finished running line #523")
 	}
 
 	{
@@ -1477,12 +1553,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 3, "id": 99, }
 		/* tbl.max(index='id').without('b') */
 
-		suite.T().Log("About to run line #525: tbl.MaxIndex('id').Without('b')")
+		fmt.Println("About to run line #525: tbl.MaxIndex('id').Without('b')")
 
 		runAndAssert(suite.Suite, expected_, tbl.MaxIndex("id").Without("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #525")
+		fmt.Println("Finished running line #525")
 	}
 
 	{
@@ -1491,12 +1568,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"a": 3, "id": 99, }
 		/* tbl.max(index='a').without('b') */
 
-		suite.T().Log("About to run line #529: tbl.MaxIndex('a').Without('b')")
+		fmt.Println("About to run line #529: tbl.MaxIndex('a').Without('b')")
 
 		runAndAssert(suite.Suite, expected_, tbl.MaxIndex("a").Without("b"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #529")
+		fmt.Println("Finished running line #529")
 	}
 
 	{
@@ -1505,12 +1583,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"group": 1, "reduction": 2, }, map[interface{}]interface{}{"group": 2, "reduction": 1, }}
 		/* r.group([ 1, 1, 2 ], r.row).count().ungroup() */
 
-		suite.T().Log("About to run line #537: r.Group([]interface{}{1, 1, 2}, r.Row).Count().Ungroup()")
+		fmt.Println("About to run line #537: r.Group([]interface{}{1, 1, 2}, r.Row).Count().Ungroup()")
 
 		runAndAssert(suite.Suite, expected_, r.Group([]interface{}{1, 1, 2}, r.Row).Count().Ungroup(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #537")
+		fmt.Println("Finished running line #537")
 	}
 
 	{
@@ -1519,12 +1598,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 2
 		/* r.count([ 1, 2 ]) */
 
-		suite.T().Log("About to run line #541: r.Count([]interface{}{1, 2})")
+		fmt.Println("About to run line #541: r.Count([]interface{}{1, 2})")
 
 		runAndAssert(suite.Suite, expected_, r.Count([]interface{}{1, 2}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #541")
+		fmt.Println("Finished running line #541")
 	}
 
 	{
@@ -1533,12 +1613,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 2
 		/* r.count([ 1, 2 ], r.row.gt(0)) */
 
-		suite.T().Log("About to run line #542: r.Count([]interface{}{1, 2}, r.Row.Gt(0))")
+		fmt.Println("About to run line #542: r.Count([]interface{}{1, 2}, r.Row.Gt(0))")
 
 		runAndAssert(suite.Suite, expected_, r.Count([]interface{}{1, 2}, r.Row.Gt(0)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #542")
+		fmt.Println("Finished running line #542")
 	}
 
 	{
@@ -1547,12 +1628,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 3
 		/* r.sum([ 1, 2 ]) */
 
-		suite.T().Log("About to run line #548: r.Sum([]interface{}{1, 2})")
+		fmt.Println("About to run line #548: r.Sum([]interface{}{1, 2})")
 
 		runAndAssert(suite.Suite, expected_, r.Sum([]interface{}{1, 2}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #548")
+		fmt.Println("Finished running line #548")
 	}
 
 	{
@@ -1561,12 +1643,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 3
 		/* r.sum([ 1, 2 ], r.row) */
 
-		suite.T().Log("About to run line #549: r.Sum([]interface{}{1, 2}, r.Row)")
+		fmt.Println("About to run line #549: r.Sum([]interface{}{1, 2}, r.Row)")
 
 		runAndAssert(suite.Suite, expected_, r.Sum([]interface{}{1, 2}, r.Row), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #549")
+		fmt.Println("Finished running line #549")
 	}
 
 	{
@@ -1575,12 +1658,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ float64 = 1.5
 		/* r.avg([ 1, 2 ]) */
 
-		suite.T().Log("About to run line #553: r.Avg([]interface{}{1, 2})")
+		fmt.Println("About to run line #553: r.Avg([]interface{}{1, 2})")
 
 		runAndAssert(suite.Suite, expected_, r.Avg([]interface{}{1, 2}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #553")
+		fmt.Println("Finished running line #553")
 	}
 
 	{
@@ -1589,12 +1673,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ float64 = 1.5
 		/* r.avg([ 1, 2 ], r.row) */
 
-		suite.T().Log("About to run line #554: r.Avg([]interface{}{1, 2}, r.Row)")
+		fmt.Println("About to run line #554: r.Avg([]interface{}{1, 2}, r.Row)")
 
 		runAndAssert(suite.Suite, expected_, r.Avg([]interface{}{1, 2}, r.Row), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #554")
+		fmt.Println("Finished running line #554")
 	}
 
 	{
@@ -1603,12 +1688,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 1
 		/* r.min([ 1, 2 ]) */
 
-		suite.T().Log("About to run line #558: r.Min([]interface{}{1, 2})")
+		fmt.Println("About to run line #558: r.Min([]interface{}{1, 2})")
 
 		runAndAssert(suite.Suite, expected_, r.Min([]interface{}{1, 2}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #558")
+		fmt.Println("Finished running line #558")
 	}
 
 	{
@@ -1617,12 +1703,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 1
 		/* r.min([ 1, 2 ], r.row) */
 
-		suite.T().Log("About to run line #559: r.Min([]interface{}{1, 2}, r.Row)")
+		fmt.Println("About to run line #559: r.Min([]interface{}{1, 2}, r.Row)")
 
 		runAndAssert(suite.Suite, expected_, r.Min([]interface{}{1, 2}, r.Row), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #559")
+		fmt.Println("Finished running line #559")
 	}
 
 	{
@@ -1631,12 +1718,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 2
 		/* r.max([ 1, 2 ]) */
 
-		suite.T().Log("About to run line #563: r.Max([]interface{}{1, 2})")
+		fmt.Println("About to run line #563: r.Max([]interface{}{1, 2})")
 
 		runAndAssert(suite.Suite, expected_, r.Max([]interface{}{1, 2}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #563")
+		fmt.Println("Finished running line #563")
 	}
 
 	{
@@ -1645,12 +1733,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ int = 2
 		/* r.max([ 1, 2 ], r.row) */
 
-		suite.T().Log("About to run line #564: r.Max([]interface{}{1, 2}, r.Row)")
+		fmt.Println("About to run line #564: r.Max([]interface{}{1, 2}, r.Row)")
 
 		runAndAssert(suite.Suite, expected_, r.Max([]interface{}{1, 2}, r.Row), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #564")
+		fmt.Println("Finished running line #564")
 	}
 
 	{
@@ -1659,12 +1748,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1}
 		/* r.distinct([ 1, 1 ]) */
 
-		suite.T().Log("About to run line #567: r.Distinct([]interface{}{1, 1})")
+		fmt.Println("About to run line #567: r.Distinct([]interface{}{1, 1})")
 
 		runAndAssert(suite.Suite, expected_, r.Distinct([]interface{}{1, 1}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #567")
+		fmt.Println("Finished running line #567")
 	}
 
 	{
@@ -1673,12 +1763,13 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ bool = true
 		/* r.contains([ 1, 2 ]) */
 
-		suite.T().Log("About to run line #570: r.Contains([]interface{}{1, 2})")
+		fmt.Println("About to run line #570: r.Contains([]interface{}{1, 2})")
 
 		runAndAssert(suite.Suite, expected_, r.Contains([]interface{}{1, 2}), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #570")
+		fmt.Println("Finished running line #570")
 	}
 
 	{
@@ -1687,11 +1778,12 @@ func (suite *AggregationSuite) TestCases() {
 		var expected_ bool = true
 		/* r.contains([ 1, 2 ], r.row.gt(0)) */
 
-		suite.T().Log("About to run line #571: r.Contains([]interface{}{1, 2}, r.Row.Gt(0))")
+		fmt.Println("About to run line #571: r.Contains([]interface{}{1, 2}, r.Row.Gt(0))")
 
 		runAndAssert(suite.Suite, expected_, r.Contains([]interface{}{1, 2}, r.Row.Gt(0)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #571")
+		fmt.Println("Finished running line #571")
 	}
 }

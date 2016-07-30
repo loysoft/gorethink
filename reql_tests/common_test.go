@@ -2,7 +2,7 @@ package reql_tests
 
 import "testing"
 
-func TestString(t *testing.T) {
+func TestCompareString(t *testing.T) {
 
 	// simple
 	assertCompare(t, "a", "a")
@@ -16,7 +16,7 @@ func TestString(t *testing.T) {
 	assertCompareFalse(t, "a", []interface{}{"a"})
 	assertCompareFalse(t, "a", map[string]interface{}{"a": 1})
 }
-func TestArray(t *testing.T) {
+func TestCompareArray(t *testing.T) {
 
 	// simple pass
 	assertCompare(t, []interface{}{1, 2, 3}, []interface{}{1, 2, 3})
@@ -49,7 +49,7 @@ func TestArray(t *testing.T) {
 	assertCompareFalse(t, []interface{}{1, 2, 2, 3, 3, 3}, []interface{}{1, 2, 3})
 	assertCompareFalse(t, []interface{}{1, 2, 3}, []interface{}{1, 2, 2, 3, 3, 3})
 }
-func TestArray_partial(t *testing.T) {
+func TestCompareArray_partial(t *testing.T) {
 	// note that these are all in-order
 
 	// simple
@@ -75,7 +75,7 @@ func TestArray_partial(t *testing.T) {
 	assertCompare(t, partial([]interface{}{1, 2, 2}), []interface{}{1, 2, 2, 3, 3, 3})
 	assertCompareFalse(t, partial([]interface{}{1, 2, 2, 2}), []interface{}{1, 2, 2, 3, 3, 3})
 }
-func TestArray_unordered(t *testing.T) {
+func TestCompareArray_unordered(t *testing.T) {
 
 	// simple
 	assertCompare(t, bag([]interface{}{1, 2}), []interface{}{1, 2})
@@ -88,21 +88,24 @@ func TestArray_unordered(t *testing.T) {
 	// empty array
 	assertCompare(t, bag([]interface{}{}), []interface{}{})
 }
-func TestMap(t *testing.T) {
+func TestCompareMap(t *testing.T) {
 
-	// simple
-	assertCompare(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"a": 1, "b": 2, "c": 3})
-	assertCompare(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"c": 3, "a": 1, "b": 2})
+	// // simple
+	// assertCompare(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"a": 1, "b": 2, "c": 3})
+	// assertCompare(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"c": 3, "a": 1, "b": 2})
 
-	assertCompareFalse(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"a": 1})
-	assertCompareFalse(t, map[string]interface{}{"a": 1}, map[string]interface{}{"a": 1, "b": 2, "c": 3})
+	// assertCompareFalse(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"a": 1})
+	// assertCompareFalse(t, map[string]interface{}{"a": 1}, map[string]interface{}{"a": 1, "b": 2, "c": 3})
 
-	// empty
-	assertCompare(t, map[string]interface{}{}, map[string]interface{}{})
-	assertCompareFalse(t, map[string]interface{}{}, map[string]interface{}{"a": 1})
-	assertCompareFalse(t, map[string]interface{}{"a": 1}, map[string]interface{}{})
+	// // empty
+	// assertCompare(t, map[string]interface{}{}, map[string]interface{}{})
+	// assertCompareFalse(t, map[string]interface{}{}, map[string]interface{}{"a": 1})
+	// assertCompareFalse(t, map[string]interface{}{"a": 1}, map[string]interface{}{})
+
+	// assertCompare(t, map[interface{}]interface{}{1: 1225, 2: 1250, 3: 1275, 0: 1200}, map[string]interface{}{"2": 1250, "3": 1275, "0": 1200, "1": 1225})
+	assertCompare(t, map[interface{}]interface{}{nil: 33, 0: 22, 20: 22, 30: 23}, map[string]interface{}{"30": 23, "": 33, "0": 22, "20": 22})
 }
-func TestMap_partial(t *testing.T) {
+func TestCompareMap_partial(t *testing.T) {
 
 	// simple
 	assertCompare(t, partial(map[string]interface{}{"a": 1}), map[string]interface{}{"a": 1})
@@ -117,7 +120,7 @@ func TestMap_partial(t *testing.T) {
 	assertCompare(t, partial(map[string]interface{}{}), map[string]interface{}{"a": 1})
 	assertCompareFalse(t, partial(map[string]interface{}{"a": 1}), map[string]interface{}{})
 }
-func TestMap_inSlice(t *testing.T) {
+func TestCompareMap_inSlice(t *testing.T) {
 
 	// simple
 	assertCompare(t, []interface{}{map[string]interface{}{"a": 1}}, []interface{}{map[string]interface{}{"a": 1}})
@@ -153,7 +156,7 @@ func TestMap_inSlice(t *testing.T) {
 	assertCompare(t, []interface{}{map[string]interface{}{"a": 1, "b": 1}, partial(map[string]interface{}{"a": 2})}, []interface{}{map[string]interface{}{"a": 1, "b": 1}, map[string]interface{}{"a": 2, "b": 2}})
 }
 
-func TestUUID(t *testing.T) {
+func TestCompareUUID(t *testing.T) {
 
 	// simple
 	assertCompare(t, uuid(), "4e9e5bc2-9b11-4143-9aa1-75c10e7a193a")
@@ -162,7 +165,7 @@ func TestUUID(t *testing.T) {
 	assertCompareFalse(t, uuid(), nil)
 }
 
-func TestNumbers(t *testing.T) {
+func TestCompareNumbers(t *testing.T) {
 
 	// simple
 	assertCompare(t, 1, 1)

@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type MathLogicLogicSuite struct {
 }
 
 func (suite *MathLogicLogicSuite) SetupTest() {
-	suite.T().Log("Setting up MathLogicLogicSuite")
+	fmt.Println("Setting up MathLogicLogicSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *MathLogicLogicSuite) SetupTest() {
 }
 
 func (suite *MathLogicLogicSuite) TearDownSuite() {
-	suite.T().Log("Tearing down MathLogicLogicSuite")
+	fmt.Println("Tearing down MathLogicLogicSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *MathLogicLogicSuite) TearDownSuite() {
 }
 
 func (suite *MathLogicLogicSuite) TestCases() {
-	suite.T().Log("Running MathLogicLogicSuite: These tests are aimed at &&, ||, and !")
+	fmt.Println("Running MathLogicLogicSuite: These tests are aimed at &&, ||, and !")
 
 
 
@@ -64,12 +65,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(true) & true */
 
-		suite.T().Log("About to run line #8: r.Expr(true).And(true)")
+		fmt.Println("About to run line #8: r.Expr(true).And(true)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).And(true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #8")
+		fmt.Println("Finished running line #8")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* true & r.expr(true) */
 
-		suite.T().Log("About to run line #9: r.And(true, r.Expr(true))")
+		fmt.Println("About to run line #9: r.And(true, r.Expr(true))")
 
 		runAndAssert(suite.Suite, expected_, r.And(true, r.Expr(true)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #9")
+		fmt.Println("Finished running line #9")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.and_(true,true) */
 
-		suite.T().Log("About to run line #10: r.And(true, true)")
+		fmt.Println("About to run line #10: r.And(true, true)")
 
 		runAndAssert(suite.Suite, expected_, r.And(true, true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #10")
+		fmt.Println("Finished running line #10")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(true).and_(true) */
 
-		suite.T().Log("About to run line #11: r.Expr(true).And(true)")
+		fmt.Println("About to run line #11: r.Expr(true).And(true)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).And(true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #11")
+		fmt.Println("Finished running line #11")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(true) & false */
 
-		suite.T().Log("About to run line #22: r.Expr(true).And(false)")
+		fmt.Println("About to run line #22: r.Expr(true).And(false)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).And(false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #22")
+		fmt.Println("Finished running line #22")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(false) & false */
 
-		suite.T().Log("About to run line #23: r.Expr(false).And(false)")
+		fmt.Println("About to run line #23: r.Expr(false).And(false)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(false).And(false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #23")
+		fmt.Println("Finished running line #23")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* true & r.expr(false) */
 
-		suite.T().Log("About to run line #24: r.And(true, r.Expr(false))")
+		fmt.Println("About to run line #24: r.And(true, r.Expr(false))")
 
 		runAndAssert(suite.Suite, expected_, r.And(true, r.Expr(false)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #24")
+		fmt.Println("Finished running line #24")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* false & r.expr(false) */
 
-		suite.T().Log("About to run line #25: r.And(false, r.Expr(false))")
+		fmt.Println("About to run line #25: r.And(false, r.Expr(false))")
 
 		runAndAssert(suite.Suite, expected_, r.And(false, r.Expr(false)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #25")
+		fmt.Println("Finished running line #25")
 	}
 
 	{
@@ -176,12 +185,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.and_(true,false) */
 
-		suite.T().Log("About to run line #26: r.And(true, false)")
+		fmt.Println("About to run line #26: r.And(true, false)")
 
 		runAndAssert(suite.Suite, expected_, r.And(true, false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #26")
+		fmt.Println("Finished running line #26")
 	}
 
 	{
@@ -190,12 +200,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.and_(false,false) */
 
-		suite.T().Log("About to run line #27: r.And(false, false)")
+		fmt.Println("About to run line #27: r.And(false, false)")
 
 		runAndAssert(suite.Suite, expected_, r.And(false, false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #27")
+		fmt.Println("Finished running line #27")
 	}
 
 	{
@@ -204,12 +215,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(true).and_(false) */
 
-		suite.T().Log("About to run line #28: r.Expr(true).And(false)")
+		fmt.Println("About to run line #28: r.Expr(true).And(false)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).And(false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #28")
+		fmt.Println("Finished running line #28")
 	}
 
 	{
@@ -218,12 +230,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(false).and_(false) */
 
-		suite.T().Log("About to run line #29: r.Expr(false).And(false)")
+		fmt.Println("About to run line #29: r.Expr(false).And(false)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(false).And(false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #29")
+		fmt.Println("Finished running line #29")
 	}
 
 	{
@@ -232,12 +245,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(true) | true */
 
-		suite.T().Log("About to run line #48: r.Expr(true).Or(true)")
+		fmt.Println("About to run line #48: r.Expr(true).Or(true)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).Or(true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #48")
+		fmt.Println("Finished running line #48")
 	}
 
 	{
@@ -246,12 +260,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(true) | false */
 
-		suite.T().Log("About to run line #49: r.Expr(true).Or(false)")
+		fmt.Println("About to run line #49: r.Expr(true).Or(false)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).Or(false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #49")
+		fmt.Println("Finished running line #49")
 	}
 
 	{
@@ -260,12 +275,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* true | r.expr(true) */
 
-		suite.T().Log("About to run line #50: r.Or(true, r.Expr(true))")
+		fmt.Println("About to run line #50: r.Or(true, r.Expr(true))")
 
 		runAndAssert(suite.Suite, expected_, r.Or(true, r.Expr(true)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #50")
+		fmt.Println("Finished running line #50")
 	}
 
 	{
@@ -274,12 +290,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* true | r.expr(false) */
 
-		suite.T().Log("About to run line #51: r.Or(true, r.Expr(false))")
+		fmt.Println("About to run line #51: r.Or(true, r.Expr(false))")
 
 		runAndAssert(suite.Suite, expected_, r.Or(true, r.Expr(false)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #51")
+		fmt.Println("Finished running line #51")
 	}
 
 	{
@@ -288,12 +305,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.or_(true,true) */
 
-		suite.T().Log("About to run line #52: r.Or(true, true)")
+		fmt.Println("About to run line #52: r.Or(true, true)")
 
 		runAndAssert(suite.Suite, expected_, r.Or(true, true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #52")
+		fmt.Println("Finished running line #52")
 	}
 
 	{
@@ -302,12 +320,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.or_(true,false) */
 
-		suite.T().Log("About to run line #53: r.Or(true, false)")
+		fmt.Println("About to run line #53: r.Or(true, false)")
 
 		runAndAssert(suite.Suite, expected_, r.Or(true, false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #53")
+		fmt.Println("Finished running line #53")
 	}
 
 	{
@@ -316,12 +335,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(true).or_(true) */
 
-		suite.T().Log("About to run line #54: r.Expr(true).Or(true)")
+		fmt.Println("About to run line #54: r.Expr(true).Or(true)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).Or(true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #54")
+		fmt.Println("Finished running line #54")
 	}
 
 	{
@@ -330,12 +350,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(true).or_(false) */
 
-		suite.T().Log("About to run line #55: r.Expr(true).Or(false)")
+		fmt.Println("About to run line #55: r.Expr(true).Or(false)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).Or(false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #55")
+		fmt.Println("Finished running line #55")
 	}
 
 	{
@@ -344,12 +365,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(false) | false */
 
-		suite.T().Log("About to run line #72: r.Expr(false).Or(false)")
+		fmt.Println("About to run line #72: r.Expr(false).Or(false)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(false).Or(false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #72")
+		fmt.Println("Finished running line #72")
 	}
 
 	{
@@ -358,12 +380,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* false | r.expr(false) */
 
-		suite.T().Log("About to run line #73: r.Or(false, r.Expr(false))")
+		fmt.Println("About to run line #73: r.Or(false, r.Expr(false))")
 
 		runAndAssert(suite.Suite, expected_, r.Or(false, r.Expr(false)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #73")
+		fmt.Println("Finished running line #73")
 	}
 
 	{
@@ -372,12 +395,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.and_(false,false) */
 
-		suite.T().Log("About to run line #74: r.And(false, false)")
+		fmt.Println("About to run line #74: r.And(false, false)")
 
 		runAndAssert(suite.Suite, expected_, r.And(false, false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #74")
+		fmt.Println("Finished running line #74")
 	}
 
 	{
@@ -386,12 +410,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(false).and_(false) */
 
-		suite.T().Log("About to run line #75: r.Expr(false).And(false)")
+		fmt.Println("About to run line #75: r.Expr(false).And(false)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(false).And(false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #75")
+		fmt.Println("Finished running line #75")
 	}
 
 	{
@@ -400,12 +425,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* ~r.expr(True) */
 
-		suite.T().Log("About to run line #88: r.Expr(true).Not()")
+		fmt.Println("About to run line #88: r.Expr(true).Not()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).Not(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #88")
+		fmt.Println("Finished running line #88")
 	}
 
 	{
@@ -414,12 +440,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.not_(True) */
 
-		suite.T().Log("About to run line #89: r.Not(true)")
+		fmt.Println("About to run line #89: r.Not(true)")
 
 		runAndAssert(suite.Suite, expected_, r.Not(true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #89")
+		fmt.Println("Finished running line #89")
 	}
 
 	{
@@ -428,12 +455,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* ~r.expr(False) */
 
-		suite.T().Log("About to run line #93: r.Expr(false).Not()")
+		fmt.Println("About to run line #93: r.Expr(false).Not()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(false).Not(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #93")
+		fmt.Println("Finished running line #93")
 	}
 
 	{
@@ -442,12 +470,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.not_(False) */
 
-		suite.T().Log("About to run line #94: r.Not(false)")
+		fmt.Println("About to run line #94: r.Not(false)")
 
 		runAndAssert(suite.Suite, expected_, r.Not(false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #94")
+		fmt.Println("Finished running line #94")
 	}
 
 	{
@@ -456,12 +485,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(True).not_() */
 
-		suite.T().Log("About to run line #97: r.Expr(true).Not()")
+		fmt.Println("About to run line #97: r.Expr(true).Not()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(true).Not(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #97")
+		fmt.Println("Finished running line #97")
 	}
 
 	{
@@ -470,12 +500,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(False).not_() */
 
-		suite.T().Log("About to run line #100: r.Expr(false).Not()")
+		fmt.Println("About to run line #100: r.Expr(false).Not()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(false).Not(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #100")
+		fmt.Println("Finished running line #100")
 	}
 
 	{
@@ -484,12 +515,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* ~r.and_(True, True) == r.or_(~r.expr(True), ~r.expr(True)) */
 
-		suite.T().Log("About to run line #107: r.And(true, true).Not().Eq(r.Or(r.Expr(true).Not(), r.Expr(true).Not()))")
+		fmt.Println("About to run line #107: r.And(true, true).Not().Eq(r.Or(r.Expr(true).Not(), r.Expr(true).Not()))")
 
 		runAndAssert(suite.Suite, expected_, r.And(true, true).Not().Eq(r.Or(r.Expr(true).Not(), r.Expr(true).Not())), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #107")
+		fmt.Println("Finished running line #107")
 	}
 
 	{
@@ -498,12 +530,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* ~r.and_(True, False) == r.or_(~r.expr(True), ~r.expr(False)) */
 
-		suite.T().Log("About to run line #108: r.And(true, false).Not().Eq(r.Or(r.Expr(true).Not(), r.Expr(false).Not()))")
+		fmt.Println("About to run line #108: r.And(true, false).Not().Eq(r.Or(r.Expr(true).Not(), r.Expr(false).Not()))")
 
 		runAndAssert(suite.Suite, expected_, r.And(true, false).Not().Eq(r.Or(r.Expr(true).Not(), r.Expr(false).Not())), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #108")
+		fmt.Println("Finished running line #108")
 	}
 
 	{
@@ -512,12 +545,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* ~r.and_(False, False) == r.or_(~r.expr(False), ~r.expr(False)) */
 
-		suite.T().Log("About to run line #109: r.And(false, false).Not().Eq(r.Or(r.Expr(false).Not(), r.Expr(false).Not()))")
+		fmt.Println("About to run line #109: r.And(false, false).Not().Eq(r.Or(r.Expr(false).Not(), r.Expr(false).Not()))")
 
 		runAndAssert(suite.Suite, expected_, r.And(false, false).Not().Eq(r.Or(r.Expr(false).Not(), r.Expr(false).Not())), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #109")
+		fmt.Println("Finished running line #109")
 	}
 
 	{
@@ -526,12 +560,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* ~r.and_(False, True) == r.or_(~r.expr(False), ~r.expr(True)) */
 
-		suite.T().Log("About to run line #110: r.And(false, true).Not().Eq(r.Or(r.Expr(false).Not(), r.Expr(true).Not()))")
+		fmt.Println("About to run line #110: r.And(false, true).Not().Eq(r.Or(r.Expr(false).Not(), r.Expr(true).Not()))")
 
 		runAndAssert(suite.Suite, expected_, r.And(false, true).Not().Eq(r.Or(r.Expr(false).Not(), r.Expr(true).Not())), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #110")
+		fmt.Println("Finished running line #110")
 	}
 
 	{
@@ -540,12 +575,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.and_(True, True, True, True, True) */
 
-		suite.T().Log("About to run line #120: r.And(true, true, true, true, true)")
+		fmt.Println("About to run line #120: r.And(true, true, true, true, true)")
 
 		runAndAssert(suite.Suite, expected_, r.And(true, true, true, true, true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #120")
+		fmt.Println("Finished running line #120")
 	}
 
 	{
@@ -554,12 +590,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.and_(True, True, True, False, True) */
 
-		suite.T().Log("About to run line #123: r.And(true, true, true, false, true)")
+		fmt.Println("About to run line #123: r.And(true, true, true, false, true)")
 
 		runAndAssert(suite.Suite, expected_, r.And(true, true, true, false, true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #123")
+		fmt.Println("Finished running line #123")
 	}
 
 	{
@@ -568,12 +605,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.and_(True, False, True, False, True) */
 
-		suite.T().Log("About to run line #126: r.And(true, false, true, false, true)")
+		fmt.Println("About to run line #126: r.And(true, false, true, false, true)")
 
 		runAndAssert(suite.Suite, expected_, r.And(true, false, true, false, true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #126")
+		fmt.Println("Finished running line #126")
 	}
 
 	{
@@ -582,12 +620,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.or_(False, False, False, False, False) */
 
-		suite.T().Log("About to run line #129: r.Or(false, false, false, false, false)")
+		fmt.Println("About to run line #129: r.Or(false, false, false, false, false)")
 
 		runAndAssert(suite.Suite, expected_, r.Or(false, false, false, false, false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #129")
+		fmt.Println("Finished running line #129")
 	}
 
 	{
@@ -596,12 +635,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.or_(False, False, False, True, False) */
 
-		suite.T().Log("About to run line #132: r.Or(false, false, false, true, false)")
+		fmt.Println("About to run line #132: r.Or(false, false, false, true, false)")
 
 		runAndAssert(suite.Suite, expected_, r.Or(false, false, false, true, false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #132")
+		fmt.Println("Finished running line #132")
 	}
 
 	{
@@ -610,12 +650,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.or_(False, True, False, True, False) */
 
-		suite.T().Log("About to run line #135: r.Or(false, true, false, true, false)")
+		fmt.Println("About to run line #135: r.Or(false, true, false, true, false)")
 
 		runAndAssert(suite.Suite, expected_, r.Or(false, true, false, true, false), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #135")
+		fmt.Println("Finished running line #135")
 	}
 
 	{
@@ -624,12 +665,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot perform bracket on a non-object non-sequence `\"a\"`.")
 		/* r.expr(r.expr('a')['b']).default(2) */
 
-		suite.T().Log("About to run line #140: r.Expr(r.Expr('a').AtIndex('b')).Default(2)")
+		fmt.Println("About to run line #140: r.Expr(r.Expr('a').AtIndex('b')).Default(2)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(r.Expr("a").AtIndex("b")).Default(2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #140")
+		fmt.Println("Finished running line #140")
 	}
 
 	{
@@ -638,12 +680,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(r.and_(True, False) == r.or_(False, True)) */
 
-		suite.T().Log("About to run line #145: r.Expr(r.And(true, false).Eq(r.Or(false, true)))")
+		fmt.Println("About to run line #145: r.Expr(r.And(true, false).Eq(r.Or(false, true)))")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(r.And(true, false).Eq(r.Or(false, true))), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #145")
+		fmt.Println("Finished running line #145")
 	}
 
 	{
@@ -652,12 +695,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* r.expr(r.and_(True, False) >= r.or_(False, True)) */
 
-		suite.T().Log("About to run line #151: r.Expr(r.And(true, false).Ge(r.Or(false, true)))")
+		fmt.Println("About to run line #151: r.Expr(r.And(true, false).Ge(r.Or(false, true)))")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(r.And(true, false).Ge(r.Or(false, true))), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #151")
+		fmt.Println("Finished running line #151")
 	}
 
 	{
@@ -666,12 +710,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* r.expr(1) & True */
 
-		suite.T().Log("About to run line #155: r.Expr(1).And(true)")
+		fmt.Println("About to run line #155: r.Expr(1).And(true)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).And(true), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #155")
+		fmt.Println("Finished running line #155")
 	}
 
 	{
@@ -680,12 +725,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ string = "str"
 		/* r.expr(False) | 'str' */
 
-		suite.T().Log("About to run line #159: r.Expr(false).Or('str')")
+		fmt.Println("About to run line #159: r.Expr(false).Or('str')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(false).Or("str"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #159")
+		fmt.Println("Finished running line #159")
 	}
 
 	{
@@ -694,12 +740,13 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = false
 		/* ~r.expr(1) */
 
-		suite.T().Log("About to run line #163: r.Expr(1).Not()")
+		fmt.Println("About to run line #163: r.Expr(1).Not()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).Not(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #163")
+		fmt.Println("Finished running line #163")
 	}
 
 	{
@@ -708,11 +755,12 @@ func (suite *MathLogicLogicSuite) TestCases() {
 		var expected_ bool = true
 		/* ~r.expr(null) */
 
-		suite.T().Log("About to run line #167: r.Expr(nil).Not()")
+		fmt.Println("About to run line #167: r.Expr(nil).Not()")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(nil).Not(), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #167")
+		fmt.Println("Finished running line #167")
 	}
 }

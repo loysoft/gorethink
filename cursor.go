@@ -58,16 +58,17 @@ type Cursor struct {
 	term       *Term
 	opts       map[string]interface{}
 
-	mu           sync.RWMutex
-	lastErr      error
-	fetching     bool
-	closed       bool
-	finished     bool
-	isAtom       bool
-	pendingSkips int
-	buffer       []interface{}
-	responses    []json.RawMessage
-	profile      interface{}
+	mu            sync.RWMutex
+	lastErr       error
+	fetching      bool
+	closed        bool
+	finished      bool
+	isAtom        bool
+	isSingleValue bool
+	pendingSkips  int
+	buffer        []interface{}
+	responses     []json.RawMessage
+	profile       interface{}
 }
 
 // Profile returns the information returned from the query profiler.
@@ -485,6 +486,23 @@ func (c *Cursor) IsNil() bool {
 	return true
 }
 
+// IsSingleValue returns true if the response is both an atom response and
+// contains a single value and not an array of values (for example if a
+// query returns an integer or string then the function returns true)
+//
+// Please note that this function is currently used for testing the driver and
+// may change
+func (c *Cursor) IsSingleValue() bool {
+	if c == nil {
+		return false
+	}
+
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	return c.isSingleValue
+}
+
 // fetchMore fetches more rows from the database.
 //
 // If wait is true then it will wait for the database to reply otherwise it
@@ -546,6 +564,12 @@ func (c *Cursor) extendLocked(response *Response) {
 	c.isAtom = response.Type == p.Response_SUCCESS_ATOM
 
 	putResponse(response)
+
+	// If both c.buffer is empty and this is the only loaded response then
+	// attempt to load the response into the buffer
+	if len(c.buffer) == 0 && len(c.responses) == 1 {
+		c.bufferNextResponse()
+	}
 }
 
 // seekCursor takes care of loading more data if needed and applying pending skips
@@ -649,6 +673,12 @@ func (c *Cursor) bufferNextResponse() error {
 		c.buffer = append(c.buffer, nil)
 	} else {
 		c.buffer = append(c.buffer, value)
+
+		// If this is the only value in the response and the response was an
+		// atom then set the single value flag
+		if c.isAtom {
+			c.isSingleValue = true
+		}
 	}
 	return nil
 }

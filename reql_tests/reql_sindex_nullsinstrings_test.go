@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type SindexNullsinstringsSuite struct {
 }
 
 func (suite *SindexNullsinstringsSuite) SetupTest() {
-	suite.T().Log("Setting up SindexNullsinstringsSuite")
+	fmt.Println("Setting up SindexNullsinstringsSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -48,7 +49,7 @@ func (suite *SindexNullsinstringsSuite) SetupTest() {
 }
 
 func (suite *SindexNullsinstringsSuite) TearDownSuite() {
-	suite.T().Log("Tearing down SindexNullsinstringsSuite")
+	fmt.Println("Tearing down SindexNullsinstringsSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -60,7 +61,7 @@ func (suite *SindexNullsinstringsSuite) TearDownSuite() {
 }
 
 func (suite *SindexNullsinstringsSuite) TestCases() {
-	suite.T().Log("Running SindexNullsinstringsSuite: sindex nulls in strings")
+	fmt.Println("Running SindexNullsinstringsSuite: sindex nulls in strings")
 
 	tbl := r.DB("test").Table("tbl")
 	_ = tbl // Prevent any noused variable errors
@@ -72,12 +73,13 @@ func (suite *SindexNullsinstringsSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"created": 1, }
 		/* tbl.index_create("key") */
 
-		suite.T().Log("About to run line #4: tbl.IndexCreate('key')")
+		fmt.Println("About to run line #4: tbl.IndexCreate('key')")
 
 		runAndAssert(suite.Suite, expected_, tbl.IndexCreate("key"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #4")
+		fmt.Println("Finished running line #4")
 	}
 
 	{
@@ -86,12 +88,13 @@ func (suite *SindexNullsinstringsSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"ready": true, }}
 		/* tbl.index_wait().pluck("ready") */
 
-		suite.T().Log("About to run line #6: tbl.IndexWait().Pluck('ready')")
+		fmt.Println("About to run line #6: tbl.IndexWait().Pluck('ready')")
 
 		runAndAssert(suite.Suite, expected_, tbl.IndexWait().Pluck("ready"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -100,12 +103,13 @@ func (suite *SindexNullsinstringsSuite) TestCases() {
 		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"inserted": 2, }
 		/* tbl.insert([{"id":1,"key":["a","b"]},{"id":2,"key":["a\u0000Sb"]}]).pluck("inserted") */
 
-		suite.T().Log("About to run line #10: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 1, 'key': []interface{}{'a', 'b'}, }, map[interface{}]interface{}{'id': 2, 'key': []interface{}{'a\\u0000Sb'}, }}).Pluck('inserted')")
+		fmt.Println("About to run line #10: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 1, 'key': []interface{}{'a', 'b'}, }, map[interface{}]interface{}{'id': 2, 'key': []interface{}{'a\\u0000Sb'}, }}).Pluck('inserted')")
 
 		runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"id": 1, "key": []interface{}{"a", "b"}, }, map[interface{}]interface{}{"id": 2, "key": []interface{}{"a\u0000Sb"}, }}).Pluck("inserted"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #10")
+		fmt.Println("Finished running line #10")
 	}
 
 	{
@@ -114,12 +118,13 @@ func (suite *SindexNullsinstringsSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"id": 2, }}
 		/* tbl.get_all(["a\u0000Sb"], index="key").pluck("id") */
 
-		suite.T().Log("About to run line #13: tbl.GetAllByIndex('key', []interface{}{'a\\u0000Sb'}).Pluck('id')")
+		fmt.Println("About to run line #13: tbl.GetAllByIndex('key', []interface{}{'a\\u0000Sb'}).Pluck('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.GetAllByIndex("key", []interface{}{"a\u0000Sb"}).Pluck("id"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #13")
+		fmt.Println("Finished running line #13")
 	}
 
 	{
@@ -128,11 +133,12 @@ func (suite *SindexNullsinstringsSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"id": 1, }}
 		/* tbl.get_all(["a","b"], index="key").pluck("id") */
 
-		suite.T().Log("About to run line #18: tbl.GetAllByIndex('key', []interface{}{'a', 'b'}).Pluck('id')")
+		fmt.Println("About to run line #18: tbl.GetAllByIndex('key', []interface{}{'a', 'b'}).Pluck('id')")
 
 		runAndAssert(suite.Suite, expected_, tbl.GetAllByIndex("key", []interface{}{"a", "b"}).Pluck("id"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #18")
+		fmt.Println("Finished running line #18")
 	}
 }

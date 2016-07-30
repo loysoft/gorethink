@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type MathLogicDivSuite struct {
 }
 
 func (suite *MathLogicDivSuite) SetupTest() {
-	suite.T().Log("Setting up MathLogicDivSuite")
+	fmt.Println("Setting up MathLogicDivSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *MathLogicDivSuite) SetupTest() {
 }
 
 func (suite *MathLogicDivSuite) TearDownSuite() {
-	suite.T().Log("Tearing down MathLogicDivSuite")
+	fmt.Println("Tearing down MathLogicDivSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *MathLogicDivSuite) TearDownSuite() {
 }
 
 func (suite *MathLogicDivSuite) TestCases() {
-	suite.T().Log("Running MathLogicDivSuite: Tests for the basic usage of the division operation")
+	fmt.Println("Running MathLogicDivSuite: Tests for the basic usage of the division operation")
 
 
 
@@ -64,12 +65,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ int = 2
 		/* r.expr(4) / 2 */
 
-		suite.T().Log("About to run line #6: r.Expr(4).Div(2)")
+		fmt.Println("About to run line #6: r.Expr(4).Div(2)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(4).Div(2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ int = 2
 		/* 4 / r.expr(2) */
 
-		suite.T().Log("About to run line #7: r.Div(4, r.Expr(2))")
+		fmt.Println("About to run line #7: r.Div(4, r.Expr(2))")
 
 		runAndAssert(suite.Suite, expected_, r.Div(4, r.Expr(2)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #7")
+		fmt.Println("Finished running line #7")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ int = 2
 		/* r.expr(4).div(2) */
 
-		suite.T().Log("About to run line #8: r.Expr(4).Div(2)")
+		fmt.Println("About to run line #8: r.Expr(4).Div(2)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(4).Div(2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #8")
+		fmt.Println("Finished running line #8")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ float64 = 0.5
 		/* r.expr(-1) / -2 */
 
-		suite.T().Log("About to run line #15: r.Expr(-1).Div(-2)")
+		fmt.Println("About to run line #15: r.Expr(-1).Div(-2)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(-1).Div(-2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #15")
+		fmt.Println("Finished running line #15")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ float64 = 4.9 / 0.7
 		/* r.expr(4.9) / 0.7 */
 
-		suite.T().Log("About to run line #20: r.Expr(4.9).Div(0.7)")
+		fmt.Println("About to run line #20: r.Expr(4.9).Div(0.7)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(4.9).Div(0.7), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #20")
+		fmt.Println("Finished running line #20")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ float64 = 1.0 / 120
 		/* r.expr(1).div(2,3,4,5) */
 
-		suite.T().Log("About to run line #25: r.Expr(1).Div(2, 3, 4, 5)")
+		fmt.Println("About to run line #25: r.Expr(1).Div(2, 3, 4, 5)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).Div(2, 3, 4, 5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #25")
+		fmt.Println("Finished running line #25")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot divide by zero.")
 		/* r.expr(1) / 0 */
 
-		suite.T().Log("About to run line #37: r.Expr(1).Div(0)")
+		fmt.Println("About to run line #37: r.Expr(1).Div(0)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).Div(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #37")
+		fmt.Println("Finished running line #37")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot divide by zero.")
 		/* r.expr(2.0) / 0 */
 
-		suite.T().Log("About to run line #38: r.Expr(2.0).Div(0)")
+		fmt.Println("About to run line #38: r.Expr(2.0).Div(0)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(2.0).Div(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #38")
+		fmt.Println("Finished running line #38")
 	}
 
 	{
@@ -176,12 +185,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot divide by zero.")
 		/* r.expr(3) / 0.0 */
 
-		suite.T().Log("About to run line #39: r.Expr(3).Div(0.0)")
+		fmt.Println("About to run line #39: r.Expr(3).Div(0.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(3).Div(0.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #39")
+		fmt.Println("Finished running line #39")
 	}
 
 	{
@@ -190,12 +200,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot divide by zero.")
 		/* r.expr(4.0) / 0.0 */
 
-		suite.T().Log("About to run line #40: r.Expr(4.0).Div(0.0)")
+		fmt.Println("About to run line #40: r.Expr(4.0).Div(0.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(4.0).Div(0.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #40")
+		fmt.Println("Finished running line #40")
 	}
 
 	{
@@ -204,12 +215,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot divide by zero.")
 		/* r.expr(0) / 0 */
 
-		suite.T().Log("About to run line #41: r.Expr(0).Div(0)")
+		fmt.Println("About to run line #41: r.Expr(0).Div(0)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(0).Div(0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #41")
+		fmt.Println("Finished running line #41")
 	}
 
 	{
@@ -218,12 +230,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Cannot divide by zero.")
 		/* r.expr(0.0) / 0.0 */
 
-		suite.T().Log("About to run line #42: r.Expr(0.0).Div(0.0)")
+		fmt.Println("About to run line #42: r.Expr(0.0).Div(0.0)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(0.0).Div(0.0), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #42")
+		fmt.Println("Finished running line #42")
 	}
 
 	{
@@ -232,12 +245,13 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")
 		/* r.expr('a') / 0.8 */
 
-		suite.T().Log("About to run line #46: r.Expr('a').Div(0.8)")
+		fmt.Println("About to run line #46: r.Expr('a').Div(0.8)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("a").Div(0.8), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #46")
+		fmt.Println("Finished running line #46")
 	}
 
 	{
@@ -246,11 +260,12 @@ func (suite *MathLogicDivSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")
 		/* r.expr(1) / 'a' */
 
-		suite.T().Log("About to run line #50: r.Expr(1).Div('a')")
+		fmt.Println("About to run line #50: r.Expr(1).Div('a')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).Div("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #50")
+		fmt.Println("Finished running line #50")
 	}
 }

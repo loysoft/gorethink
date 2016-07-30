@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type MathLogicMathSuite struct {
 }
 
 func (suite *MathLogicMathSuite) SetupTest() {
-	suite.T().Log("Setting up MathLogicMathSuite")
+	fmt.Println("Setting up MathLogicMathSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *MathLogicMathSuite) SetupTest() {
 }
 
 func (suite *MathLogicMathSuite) TearDownSuite() {
-	suite.T().Log("Tearing down MathLogicMathSuite")
+	fmt.Println("Tearing down MathLogicMathSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *MathLogicMathSuite) TearDownSuite() {
 }
 
 func (suite *MathLogicMathSuite) TestCases() {
-	suite.T().Log("Running MathLogicMathSuite: Tests of nested arithmetic expressions")
+	fmt.Println("Running MathLogicMathSuite: Tests of nested arithmetic expressions")
 
 
 
@@ -64,11 +65,12 @@ func (suite *MathLogicMathSuite) TestCases() {
 		var expected_ int = 1
 		/* (((4 + 2 * (r.expr(26) % 18)) / 5) - 3) */
 
-		suite.T().Log("About to run line #4: r.Add(4, r.Mul(2, r.Expr(26).Mod(18))).Div(5).Sub(3)")
+		fmt.Println("About to run line #4: r.Add(4, r.Mul(2, r.Expr(26).Mod(18))).Div(5).Sub(3)")
 
 		runAndAssert(suite.Suite, expected_, r.Add(4, r.Mul(2, r.Expr(26).Mod(18))).Div(5).Sub(3), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #4")
+		fmt.Println("Finished running line #4")
 	}
 }

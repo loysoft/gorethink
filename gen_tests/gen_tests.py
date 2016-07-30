@@ -90,7 +90,7 @@ def parse_args():
     parser.add_argument(
         "--test-dir",
         help="Directory where yaml tests are",
-        default="../../rethinkdb/rethinkdb/test/rql_test/src"
+        default="../../rethinkdb/rethinkdb/test/rql_test/src/test"
     )
     parser.add_argument(
         "--test-output-dir",
@@ -264,6 +264,7 @@ def py_to_go_type(py_type):
             'float_cmp': 'float64',
             'partial': 'Expected',
             'bag': 'Expected',
+            'err_regex': 'Err',
             'uuid': 'Regex',  # clashes with ast.Uuid
         }.get(py_type.__name__, camel(py_type.__name__))
     elif py_type.__module__ == 'rethinkdb.query':
@@ -316,6 +317,8 @@ def query_to_go(item, reql_vars):
     if converted_runopts is None:
         converted_runopts = {}
     converted_runopts['GeometryFormat'] = '\"raw\"'
+    if 'GroupFormat' not in converted_runopts:
+        converted_runopts['GroupFormat'] = '\"map\"'
     try:
         is_value = False
         if not item.query.type.__module__.startswith("rethinkdb.") or (not item.query.type.__module__.startswith("rethinkdb.") and item.query.type.__name__.endswith("Error")):
@@ -1032,8 +1035,8 @@ class ReQLVisitor(GoVisitor):
             for keyword in node.keywords:
                 if keyword.arg == 'index':
                     index = keyword.value
-                elif keyword.arg == 'multi' and type(keyword.arg) == ast.NameConstant and arg.value == True:
-                    multi = keyword.value
+                elif keyword.arg == 'multi' and type(keyword.value) == ast.NameConstant:
+                    multi = keyword.value.value
 
             if index is not None:
                 node.func.attr = 'group_by_index'

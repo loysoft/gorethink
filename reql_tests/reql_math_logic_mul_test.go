@@ -5,6 +5,7 @@
 package reql_tests
 
 import (
+"fmt"
 	"testing"
 	"time"
 
@@ -24,7 +25,7 @@ type MathLogicMulSuite struct {
 }
 
 func (suite *MathLogicMulSuite) SetupTest() {
-	suite.T().Log("Setting up MathLogicMulSuite")
+	fmt.Println("Setting up MathLogicMulSuite")
 	// Use imports to prevent errors
 	time.Now()
 
@@ -43,7 +44,7 @@ func (suite *MathLogicMulSuite) SetupTest() {
 }
 
 func (suite *MathLogicMulSuite) TearDownSuite() {
-	suite.T().Log("Tearing down MathLogicMulSuite")
+	fmt.Println("Tearing down MathLogicMulSuite")
 
 	if suite.session != nil {
 		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
@@ -54,7 +55,7 @@ func (suite *MathLogicMulSuite) TearDownSuite() {
 }
 
 func (suite *MathLogicMulSuite) TestCases() {
-	suite.T().Log("Running MathLogicMulSuite: Tests for the basic usage of the multiplication operation")
+	fmt.Println("Running MathLogicMulSuite: Tests for the basic usage of the multiplication operation")
 
 
 
@@ -64,12 +65,13 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ int = 2
 		/* r.expr(1) * 2 */
 
-		suite.T().Log("About to run line #6: r.Expr(1).Mul(2)")
+		fmt.Println("About to run line #6: r.Expr(1).Mul(2)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).Mul(2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #6")
+		fmt.Println("Finished running line #6")
 	}
 
 	{
@@ -78,12 +80,13 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ int = 2
 		/* 1 * r.expr(2) */
 
-		suite.T().Log("About to run line #7: r.Mul(1, r.Expr(2))")
+		fmt.Println("About to run line #7: r.Mul(1, r.Expr(2))")
 
 		runAndAssert(suite.Suite, expected_, r.Mul(1, r.Expr(2)), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #7")
+		fmt.Println("Finished running line #7")
 	}
 
 	{
@@ -92,12 +95,13 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ int = 2
 		/* r.expr(1).mul(2) */
 
-		suite.T().Log("About to run line #8: r.Expr(1).Mul(2)")
+		fmt.Println("About to run line #8: r.Expr(1).Mul(2)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).Mul(2), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #8")
+		fmt.Println("Finished running line #8")
 	}
 
 	{
@@ -106,12 +110,13 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ int = 1
 		/* r.expr(-1) * -1 */
 
-		suite.T().Log("About to run line #15: r.Expr(-1).Mul(-1)")
+		fmt.Println("About to run line #15: r.Expr(-1).Mul(-1)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(-1).Mul(-1), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #15")
+		fmt.Println("Finished running line #15")
 	}
 
 	{
@@ -120,12 +125,13 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ float64 = 6.75
 		/* r.expr(1.5) * 4.5 */
 
-		suite.T().Log("About to run line #21: r.Expr(1.5).Mul(4.5)")
+		fmt.Println("About to run line #21: r.Expr(1.5).Mul(4.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1.5).Mul(4.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #21")
+		fmt.Println("Finished running line #21")
 	}
 
 	{
@@ -134,12 +140,13 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ []interface{} = []interface{}{1, 2, 3, 1, 2, 3, 1, 2, 3}
 		/* r.expr([1,2,3]) * 3 */
 
-		suite.T().Log("About to run line #25: r.Expr([]interface{}{1, 2, 3}).Mul(3)")
+		fmt.Println("About to run line #25: r.Expr([]interface{}{1, 2, 3}).Mul(3)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{1, 2, 3}).Mul(3), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #25")
+		fmt.Println("Finished running line #25")
 	}
 
 	{
@@ -148,12 +155,13 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ int = 120
 		/* r.expr(1).mul(2,3,4,5) */
 
-		suite.T().Log("About to run line #30: r.Expr(1).Mul(2, 3, 4, 5)")
+		fmt.Println("About to run line #30: r.Expr(1).Mul(2, 3, 4, 5)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).Mul(2, 3, 4, 5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #30")
+		fmt.Println("Finished running line #30")
 	}
 
 	{
@@ -162,12 +170,13 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")
 		/* r.expr('a') * 0.8 */
 
-		suite.T().Log("About to run line #46: r.Expr('a').Mul(0.8)")
+		fmt.Println("About to run line #46: r.Expr('a').Mul(0.8)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("a").Mul(0.8), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #46")
+		fmt.Println("Finished running line #46")
 	}
 
 	{
@@ -176,12 +185,13 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")
 		/* r.expr(1) * 'a' */
 
-		suite.T().Log("About to run line #50: r.Expr(1).Mul('a')")
+		fmt.Println("About to run line #50: r.Expr(1).Mul('a')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr(1).Mul("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #50")
+		fmt.Println("Finished running line #50")
 	}
 
 	{
@@ -190,12 +200,13 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Expected type NUMBER but found STRING.")
 		/* r.expr('b') * 'a' */
 
-		suite.T().Log("About to run line #54: r.Expr('b').Mul('a')")
+		fmt.Println("About to run line #54: r.Expr('b').Mul('a')")
 
 		runAndAssert(suite.Suite, expected_, r.Expr("b").Mul("a"), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #54")
+		fmt.Println("Finished running line #54")
 	}
 
 	{
@@ -204,11 +215,12 @@ func (suite *MathLogicMulSuite) TestCases() {
 		var expected_ Err = err("ReqlQueryLogicError", "Number not an integer: 1.5")
 		/* r.expr([]) * 1.5 */
 
-		suite.T().Log("About to run line #58: r.Expr([]interface{}{}).Mul(1.5)")
+		fmt.Println("About to run line #58: r.Expr([]interface{}{}).Mul(1.5)")
 
 		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{}).Mul(1.5), suite.session, r.RunOpts{
+			GroupFormat: "map",
 			GeometryFormat: "raw",
 		})
-		suite.T().Log("Finished running line #58")
+		fmt.Println("Finished running line #58")
 	}
 }
