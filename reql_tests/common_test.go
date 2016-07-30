@@ -90,19 +90,19 @@ func TestCompareArray_unordered(t *testing.T) {
 }
 func TestCompareMap(t *testing.T) {
 
-	// // simple
-	// assertCompare(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"a": 1, "b": 2, "c": 3})
-	// assertCompare(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"c": 3, "a": 1, "b": 2})
+	// simple
+	assertCompare(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"a": 1, "b": 2, "c": 3})
+	assertCompare(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"c": 3, "a": 1, "b": 2})
 
-	// assertCompareFalse(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"a": 1})
-	// assertCompareFalse(t, map[string]interface{}{"a": 1}, map[string]interface{}{"a": 1, "b": 2, "c": 3})
+	assertCompareFalse(t, map[string]interface{}{"a": 1, "b": 2, "c": 3}, map[string]interface{}{"a": 1})
+	assertCompareFalse(t, map[string]interface{}{"a": 1}, map[string]interface{}{"a": 1, "b": 2, "c": 3})
 
-	// // empty
-	// assertCompare(t, map[string]interface{}{}, map[string]interface{}{})
-	// assertCompareFalse(t, map[string]interface{}{}, map[string]interface{}{"a": 1})
-	// assertCompareFalse(t, map[string]interface{}{"a": 1}, map[string]interface{}{})
+	// empty
+	assertCompare(t, map[string]interface{}{}, map[string]interface{}{})
+	assertCompareFalse(t, map[string]interface{}{}, map[string]interface{}{"a": 1})
+	assertCompareFalse(t, map[string]interface{}{"a": 1}, map[string]interface{}{})
 
-	// assertCompare(t, map[interface{}]interface{}{1: 1225, 2: 1250, 3: 1275, 0: 1200}, map[string]interface{}{"2": 1250, "3": 1275, "0": 1200, "1": 1225})
+	assertCompare(t, map[interface{}]interface{}{1: 1225, 2: 1250, 3: 1275, 0: 1200}, map[string]interface{}{"2": 1250, "3": 1275, "0": 1200, "1": 1225})
 	assertCompare(t, map[interface{}]interface{}{nil: 33, 0: 22, 20: 22, 30: 23}, map[string]interface{}{"30": 23, "": 33, "0": 22, "20": 22})
 }
 func TestCompareMap_partial(t *testing.T) {
