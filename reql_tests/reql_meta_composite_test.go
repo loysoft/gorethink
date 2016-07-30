@@ -14,7 +14,7 @@ import (
 
 // Tests meta operations in composite queries
 func TestMetaCompositeSuite(t *testing.T) {
-    suite.Run(t, new(MetaCompositeSuite ))
+	suite.Run(t, new(MetaCompositeSuite ))
 }
 
 type MetaCompositeSuite struct {
@@ -34,7 +34,7 @@ func (suite *MetaCompositeSuite) SetupTest() {
 	suite.Require().NoError(err, "Error returned when connecting to server")
 	suite.session = session
 
-    r.DBDrop("test").Exec(suite.session)
+	r.DBDrop("test").Exec(suite.session)
 	err = r.DBCreate("test").Exec(suite.session)
 	suite.Require().NoError(err)
 	err = r.DB("test").Wait().Exec(suite.session)
@@ -45,10 +45,12 @@ func (suite *MetaCompositeSuite) SetupTest() {
 func (suite *MetaCompositeSuite) TearDownSuite() {
 	suite.T().Log("Tearing down MetaCompositeSuite")
 
-	r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
-    r.DBDrop("test").Exec(suite.session)
+	if suite.session != nil {
+		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
+		r.DBDrop("test").Exec(suite.session)
 
-    suite.session.Close()
+		suite.session.Close()
+	}
 }
 
 func (suite *MetaCompositeSuite) TestCases() {
@@ -56,47 +58,47 @@ func (suite *MetaCompositeSuite) TestCases() {
 
 
 
-    {
-        // meta/composite.py.yaml line #4
-        /* ({'dbs_created':3,'config_changes':arrlen(3)}) */
-        var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"dbs_created": 3, "config_changes": arrlen(3), }
-        /* r.expr([1,2,3]).for_each(r.db_create('db_' + r.row.coerce_to('string'))) */
+	{
+		// meta/composite.py.yaml line #4
+		/* ({'dbs_created':3,'config_changes':arrlen(3)}) */
+		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"dbs_created": 3, "config_changes": arrlen(3), }
+		/* r.expr([1,2,3]).for_each(r.db_create('db_' + r.row.coerce_to('string'))) */
 
-    	suite.T().Log("About to run line #4: r.Expr([]interface{}{1, 2, 3}).ForEach(r.DBCreate(r.Add('db_', r.Row.CoerceTo('string'))))")
+		suite.T().Log("About to run line #4: r.Expr([]interface{}{1, 2, 3}).ForEach(r.DBCreate(r.Add('db_', r.Row.CoerceTo('string'))))")
 
-        runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{1, 2, 3}).ForEach(r.DBCreate(r.Add("db_", r.Row.CoerceTo("string")))), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, r.Expr([]interface{}{1, 2, 3}).ForEach(r.DBCreate(r.Add("db_", r.Row.CoerceTo("string")))), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #4")
-    }
+		})
+		suite.T().Log("Finished running line #4")
+	}
 
-    {
-        // meta/composite.py.yaml line #8
-        /* partial({'tables_created':9}) */
-        var expected_ Expected = partial(map[interface{}]interface{}{"tables_created": 9, })
-        /* r.db_list().set_difference(["rethinkdb", "test"]).for_each(lambda db_name:
+	{
+		// meta/composite.py.yaml line #8
+		/* partial({'tables_created':9}) */
+		var expected_ Expected = partial(map[interface{}]interface{}{"tables_created": 9, })
+		/* r.db_list().set_difference(["rethinkdb", "test"]).for_each(lambda db_name:
 r.expr([1,2,3]).for_each(lambda i:
 r.db(db_name).table_create('tbl_' + i.coerce_to('string')))) */
 
-    	suite.T().Log("About to run line #8: r.DBList().SetDifference([]interface{}{'rethinkdb', 'test'}).ForEach(func(db_name r.Term) interface{} { return r.Expr([]interface{}{1, 2, 3}).ForEach(func(i r.Term) interface{} { return r.DB(db_name).TableCreate(r.Add('tbl_', i.CoerceTo('string')))})})")
+		suite.T().Log("About to run line #8: r.DBList().SetDifference([]interface{}{'rethinkdb', 'test'}).ForEach(func(db_name r.Term) interface{} { return r.Expr([]interface{}{1, 2, 3}).ForEach(func(i r.Term) interface{} { return r.DB(db_name).TableCreate(r.Add('tbl_', i.CoerceTo('string')))})})")
 
-        runAndAssert(suite.Suite, expected_, r.DBList().SetDifference([]interface{}{"rethinkdb", "test"}).ForEach(func(db_name r.Term) interface{} { return r.Expr([]interface{}{1, 2, 3}).ForEach(func(i r.Term) interface{} { return r.DB(db_name).TableCreate(r.Add("tbl_", i.CoerceTo("string")))})}), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, r.DBList().SetDifference([]interface{}{"rethinkdb", "test"}).ForEach(func(db_name r.Term) interface{} { return r.Expr([]interface{}{1, 2, 3}).ForEach(func(i r.Term) interface{} { return r.DB(db_name).TableCreate(r.Add("tbl_", i.CoerceTo("string")))})}), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #8")
-    }
+		})
+		suite.T().Log("Finished running line #8")
+	}
 
-    {
-        // meta/composite.py.yaml line #13
-        /* partial({'dbs_dropped':3,'tables_dropped':9}) */
-        var expected_ Expected = partial(map[interface{}]interface{}{"dbs_dropped": 3, "tables_dropped": 9, })
-        /* r.db_list().set_difference(["rethinkdb", "test"]).for_each(r.db_drop(r.row)) */
+	{
+		// meta/composite.py.yaml line #13
+		/* partial({'dbs_dropped':3,'tables_dropped':9}) */
+		var expected_ Expected = partial(map[interface{}]interface{}{"dbs_dropped": 3, "tables_dropped": 9, })
+		/* r.db_list().set_difference(["rethinkdb", "test"]).for_each(r.db_drop(r.row)) */
 
-    	suite.T().Log("About to run line #13: r.DBList().SetDifference([]interface{}{'rethinkdb', 'test'}).ForEach(r.DBDrop(r.Row))")
+		suite.T().Log("About to run line #13: r.DBList().SetDifference([]interface{}{'rethinkdb', 'test'}).ForEach(r.DBDrop(r.Row))")
 
-        runAndAssert(suite.Suite, expected_, r.DBList().SetDifference([]interface{}{"rethinkdb", "test"}).ForEach(r.DBDrop(r.Row)), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, r.DBList().SetDifference([]interface{}{"rethinkdb", "test"}).ForEach(r.DBDrop(r.Row)), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #13")
-    }
+		})
+		suite.T().Log("Finished running line #13")
+	}
 }

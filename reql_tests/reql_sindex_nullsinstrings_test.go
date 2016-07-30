@@ -14,7 +14,7 @@ import (
 
 // sindex nulls in strings
 func TestSindexNullsinstringsSuite(t *testing.T) {
-    suite.Run(t, new(SindexNullsinstringsSuite ))
+	suite.Run(t, new(SindexNullsinstringsSuite ))
 }
 
 type SindexNullsinstringsSuite struct {
@@ -34,7 +34,7 @@ func (suite *SindexNullsinstringsSuite) SetupTest() {
 	suite.Require().NoError(err, "Error returned when connecting to server")
 	suite.session = session
 
-    r.DBDrop("test").Exec(suite.session)
+	r.DBDrop("test").Exec(suite.session)
 	err = r.DBCreate("test").Exec(suite.session)
 	suite.Require().NoError(err)
 	err = r.DB("test").Wait().Exec(suite.session)
@@ -50,86 +50,89 @@ func (suite *SindexNullsinstringsSuite) SetupTest() {
 func (suite *SindexNullsinstringsSuite) TearDownSuite() {
 	suite.T().Log("Tearing down SindexNullsinstringsSuite")
 
-	r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
-	 r.DB("test").TableDrop("tbl").Exec(suite.session)
-    r.DBDrop("test").Exec(suite.session)
+	if suite.session != nil {
+		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
+		 r.DB("test").TableDrop("tbl").Exec(suite.session)
+		r.DBDrop("test").Exec(suite.session)
 
-    suite.session.Close()
+		suite.session.Close()
+	}
 }
 
 func (suite *SindexNullsinstringsSuite) TestCases() {
 	suite.T().Log("Running SindexNullsinstringsSuite: sindex nulls in strings")
 
 	tbl := r.DB("test").Table("tbl")
+	_ = tbl // Prevent any noused variable errors
 
 
-    {
-        // sindex/nullsinstrings.yaml line #4
-        /* ({"created":1}) */
-        var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"created": 1, }
-        /* tbl.index_create("key") */
+	{
+		// sindex/nullsinstrings.yaml line #4
+		/* ({"created":1}) */
+		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"created": 1, }
+		/* tbl.index_create("key") */
 
-    	suite.T().Log("About to run line #4: tbl.IndexCreate('key')")
+		suite.T().Log("About to run line #4: tbl.IndexCreate('key')")
 
-        runAndAssert(suite.Suite, expected_, tbl.IndexCreate("key"), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, tbl.IndexCreate("key"), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #4")
-    }
+		})
+		suite.T().Log("Finished running line #4")
+	}
 
-    {
-        // sindex/nullsinstrings.yaml line #6
-        /* ([{"ready":true}]) */
-        var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"ready": true, }}
-        /* tbl.index_wait().pluck("ready") */
+	{
+		// sindex/nullsinstrings.yaml line #6
+		/* ([{"ready":true}]) */
+		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"ready": true, }}
+		/* tbl.index_wait().pluck("ready") */
 
-    	suite.T().Log("About to run line #6: tbl.IndexWait().Pluck('ready')")
+		suite.T().Log("About to run line #6: tbl.IndexWait().Pluck('ready')")
 
-        runAndAssert(suite.Suite, expected_, tbl.IndexWait().Pluck("ready"), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, tbl.IndexWait().Pluck("ready"), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #6")
-    }
+		})
+		suite.T().Log("Finished running line #6")
+	}
 
-    {
-        // sindex/nullsinstrings.yaml line #10
-        /* ({"inserted":2}) */
-        var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"inserted": 2, }
-        /* tbl.insert([{"id":1,"key":["a","b"]},{"id":2,"key":["a\u0000Sb"]}]).pluck("inserted") */
+	{
+		// sindex/nullsinstrings.yaml line #10
+		/* ({"inserted":2}) */
+		var expected_ map[interface{}]interface{} = map[interface{}]interface{}{"inserted": 2, }
+		/* tbl.insert([{"id":1,"key":["a","b"]},{"id":2,"key":["a\u0000Sb"]}]).pluck("inserted") */
 
-    	suite.T().Log("About to run line #10: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 1, 'key': []interface{}{'a', 'b'}, }, map[interface{}]interface{}{'id': 2, 'key': []interface{}{'a\\u0000Sb'}, }}).Pluck('inserted')")
+		suite.T().Log("About to run line #10: tbl.Insert([]interface{}{map[interface{}]interface{}{'id': 1, 'key': []interface{}{'a', 'b'}, }, map[interface{}]interface{}{'id': 2, 'key': []interface{}{'a\\u0000Sb'}, }}).Pluck('inserted')")
 
-        runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"id": 1, "key": []interface{}{"a", "b"}, }, map[interface{}]interface{}{"id": 2, "key": []interface{}{"a\u0000Sb"}, }}).Pluck("inserted"), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, tbl.Insert([]interface{}{map[interface{}]interface{}{"id": 1, "key": []interface{}{"a", "b"}, }, map[interface{}]interface{}{"id": 2, "key": []interface{}{"a\u0000Sb"}, }}).Pluck("inserted"), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #10")
-    }
+		})
+		suite.T().Log("Finished running line #10")
+	}
 
-    {
-        // sindex/nullsinstrings.yaml line #13
-        /* ([{"id":2}]) */
-        var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"id": 2, }}
-        /* tbl.get_all(["a\u0000Sb"], index="key").pluck("id") */
+	{
+		// sindex/nullsinstrings.yaml line #13
+		/* ([{"id":2}]) */
+		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"id": 2, }}
+		/* tbl.get_all(["a\u0000Sb"], index="key").pluck("id") */
 
-    	suite.T().Log("About to run line #13: tbl.GetAllByIndex('key', []interface{}{'a\\u0000Sb'}).Pluck('id')")
+		suite.T().Log("About to run line #13: tbl.GetAllByIndex('key', []interface{}{'a\\u0000Sb'}).Pluck('id')")
 
-        runAndAssert(suite.Suite, expected_, tbl.GetAllByIndex("key", []interface{}{"a\u0000Sb"}).Pluck("id"), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, tbl.GetAllByIndex("key", []interface{}{"a\u0000Sb"}).Pluck("id"), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #13")
-    }
+		})
+		suite.T().Log("Finished running line #13")
+	}
 
-    {
-        // sindex/nullsinstrings.yaml line #18
-        /* ([{"id":1}]) */
-        var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"id": 1, }}
-        /* tbl.get_all(["a","b"], index="key").pluck("id") */
+	{
+		// sindex/nullsinstrings.yaml line #18
+		/* ([{"id":1}]) */
+		var expected_ []interface{} = []interface{}{map[interface{}]interface{}{"id": 1, }}
+		/* tbl.get_all(["a","b"], index="key").pluck("id") */
 
-    	suite.T().Log("About to run line #18: tbl.GetAllByIndex('key', []interface{}{'a', 'b'}).Pluck('id')")
+		suite.T().Log("About to run line #18: tbl.GetAllByIndex('key', []interface{}{'a', 'b'}).Pluck('id')")
 
-        runAndAssert(suite.Suite, expected_, tbl.GetAllByIndex("key", []interface{}{"a", "b"}).Pluck("id"), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, tbl.GetAllByIndex("key", []interface{}{"a", "b"}).Pluck("id"), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #18")
-    }
+		})
+		suite.T().Log("Finished running line #18")
+	}
 }

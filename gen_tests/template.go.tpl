@@ -10,7 +10,7 @@ import (
 
 // ${description}
 func Test${module_name}Suite(t *testing.T) {
-    suite.Run(t, new(${module_name}Suite ))
+	suite.Run(t, new(${module_name}Suite ))
 }
 
 type ${module_name}Suite struct {
@@ -30,7 +30,7 @@ func (suite *${module_name}Suite) SetupTest() {
 	suite.Require().NoError(err, "Error returned when connecting to server")
 	suite.session = session
 
-    r.DBDrop("test").Exec(suite.session)
+	r.DBDrop("test").Exec(suite.session)
 	err = r.DBCreate("test").Exec(suite.session)
 	suite.Require().NoError(err)
 	err = r.DB("test").Wait().Exec(suite.session)
@@ -48,13 +48,15 @@ func (suite *${module_name}Suite) SetupTest() {
 func (suite *${module_name}Suite) TearDownSuite() {
 	suite.T().Log("Tearing down ${module_name}Suite")
 
-	r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
-    %for var_name in table_var_names:
-	 r.DB("test").TableDrop("${var_name}").Exec(suite.session)
-    %endfor
-    r.DBDrop("test").Exec(suite.session)
+	if suite.session != nil {
+		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
+		%for var_name in table_var_names:
+		 r.DB("test").TableDrop("${var_name}").Exec(suite.session)
+		%endfor
+		r.DBDrop("test").Exec(suite.session)
 
-    suite.session.Close()
+		suite.session.Close()
+	}
 }
 
 <%rendered_vars = set() %>\
@@ -63,67 +65,75 @@ func (suite *${module_name}Suite) TestCases() {
 
 	%for var_name in table_var_names:
 	${var_name} := r.DB("test").Table("${var_name}")
+	_ = ${var_name} // Prevent any noused variable errors
 	%endfor
 
 <%rendered_something = False %>\
-    %for item in defs_and_test:
-    %if type(item) == GoDef:
+	%for item in defs_and_test:
+	%if type(item) == GoDef:
 <%rendered_something = True %>
-    // ${item.testfile} line #${item.line_num}
-    // ${item.line.original.replace('\n', '')}
-    suite.T().Log("Possibly executing: ${item.line.go.replace('\\', '\\\\').replace('"', "'")}")
+	// ${item.testfile} line #${item.line_num}
+	// ${item.line.original.replace('\n', '')}
+	suite.T().Log("Possibly executing: ${item.line.go.replace('\\', '\\\\').replace('"', "'")}")
 
-    %if item.varname in rendered_vars:
-    %if item.run_if_query:
-    ${item.varname} = maybeRun(${item.value}, nil, r.RunOpts{});
-    %else:
-    ${item.varname} = ${item.value}
-    %endif
-    %elif item.run_if_query:
-    ${item.varname} := maybeRun(${item.value}, suite.session, r.RunOpts{
+	%if item.varname in rendered_vars:
+	%if item.run_if_query:
+	${item.varname} = maybeRun(${item.value}, suite.session, r.RunOpts{
 		%if item.runopts:
 		%for key, val in item.runopts.items():
 		${key}: ${val},
 		%endfor
 		%endif
 	});
+	%else:
+	${item.varname} = ${item.value}
+	%endif
+	%elif item.run_if_query:
+	${item.varname} := maybeRun(${item.value}, suite.session, r.RunOpts{
+		%if item.runopts:
+		%for key, val in item.runopts.items():
+		${key}: ${val},
+		%endfor
+		%endif
+	});
+	_ = ${item.varname} // Prevent any noused variable errors
 <%rendered_vars.add(item.varname)%>\
-    %else:
-    var ${item.varname} ${item.vartype} = ${item.value}
-    _ = ${item.varname} // Prevent any noused variable errors
+	%else:
+	${item.varname} := ${item.value}
+	_ = ${item.varname} // Prevent any noused variable errors
 <%rendered_vars.add(item.varname)%>\
-    %endif
+	%endif
 
-    %elif type(item) == GoQuery:
+	%elif type(item) == GoQuery:
 <%rendered_something = True %>
-    {
-        // ${item.testfile} line #${item.line_num}
-        /* ${item.expected_line.original} */
-        var expected_ ${item.expected_type} = ${item.expected_line.go}
-        /* ${item.line.original} */
+	{
+		// ${item.testfile} line #${item.line_num}
+		/* ${item.expected_line.original} */
+		var expected_ ${item.expected_type} = ${item.expected_line.go}
+		/* ${item.line.original} */
 
-    	suite.T().Log("About to run line #${item.line_num}: ${item.line.go.replace('"', "'").replace('\\', '\\\\').replace('\n', '\\n')}")
+		suite.T().Log("About to run line #${item.line_num}: ${item.line.go.replace('"', "'").replace('\\', '\\\\').replace('\n', '\\n')}")
 
-    	%if item.line.go.startswith('fetch(') and item.line.go.endswith(')'):
-        fetchAndAssert(suite.Suite, expected_, ${item.line.go[6:-1]})
-	    %elif item.is_value:
-        actual := ${item.line.go}
+		%if item.line.go.startswith('fetch(') and item.line.go.endswith(')'):
+		fetchAndAssert(suite.Suite, expected_, ${item.line.go[6:-1]})
+	   %elif item.is_value:
+		actual := ${item.line.go}
 
-    	assertCompare(suite.T(), expected_, actual)
-    	%else:
-        runAndAssert(suite.Suite, expected_, ${item.line.go}, suite.session, r.RunOpts{
+		assertCompare(suite.T(), expected_, actual)
+		%else:
+		runAndAssert(suite.Suite, expected_, ${item.line.go}, suite.session, r.RunOpts{
 			%if item.runopts:
 			%for key, val in item.runopts.items():
 			${key}: ${val},
 			%endfor
 			%endif
-    	})
-    	%endif
-        suite.T().Log("Finished running line #${item.line_num}")
-    }
-    %endif
-    %endfor
-    %if not rendered_something:
+		})
+		%endif
+		suite.T().Log("Finished running line #${item.line_num}")
+	}
+	%endif
+	%endfor
+	%if not rendered_something:
 <% raise EmptyTemplate() %>\
-    %endif
+	%endif
 }

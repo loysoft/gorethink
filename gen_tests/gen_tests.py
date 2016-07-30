@@ -252,9 +252,10 @@ def py_to_go_type(py_type):
             type(None): 'interface{}',
         }[py_type]
     elif py_type.__module__ == 'rethinkdb.ast':
+        return "r.Term"
         # Anomalous non-rule based capitalization in the python driver
-        return {
-        }.get(py_type.__name__, py_type.__name__)
+        # return {
+        # }.get(py_type.__name__, py_type.__name__)
     elif py_type.__module__ == 'rethinkdb.errors':
         return py_type.__name__
     elif py_type.__module__ == '?test?':
@@ -325,7 +326,6 @@ def query_to_go(item, reql_vars):
             visitor = ReQLVisitor
         else:
             visitor = GoVisitor
-        print(ast.dump(item.query.ast))
         go_expected_line = visitor(
             reql_vars, type_=item.expected.type)\
             .convert(item.expected.ast)
@@ -516,6 +516,10 @@ class GoVisitor(ast.NodeVisitor):
             if optarg.arg == 'foo':
                 self.skip("test not required since optargs are statically typed")
                 return
+            if type(optarg.value) == ast.Name and optarg.value.id == 'null':
+                self.skip("test not required since go does not support null optargs")
+                return
+
 
             field_name = optarg_field_aliases.get(optarg.arg, camel(optarg.arg))
 
@@ -669,7 +673,6 @@ class GoVisitor(ast.NodeVisitor):
             node.func.id = 'maybeLen'
             self.visit(node.func)
         elif type(node.func) == ast.Name and node.func.id == 'fetch':
-            print(len(node.args))
             if len(node.args) == 1:
                 node.args.append(ast.Num(0))
             elif len(node.args) > 2:
@@ -715,9 +718,9 @@ class GoVisitor(ast.NodeVisitor):
             raise Unhandled("Only integers subscript can be converted."
                             " Got %s" % node.slice.value.s)
         self.visit(node.value)
-        self.write(".get(")
+        self.write("[")
         self.write(str(node.slice.value.n))
-        self.write(")")
+        self.write("]")
 
     def visit_ListComp(self, node):
         gen = node.generators[0]
@@ -1045,7 +1048,6 @@ class ReQLVisitor(GoVisitor):
             node.func.attr = 'union_with_opts'
         if (attr_equals(node.func, "attr", "index_create") and len(node.args) == 2):
             node.func.attr = 'index_create_func'
-            node.keywords = []
 
         # We call the superclass first, so if it's going to fail
         # because of r.row or other things it fails first, rather than

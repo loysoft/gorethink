@@ -14,7 +14,7 @@ import (
 
 // Tests of nested arithmetic expressions
 func TestMathLogicMathSuite(t *testing.T) {
-    suite.Run(t, new(MathLogicMathSuite ))
+	suite.Run(t, new(MathLogicMathSuite ))
 }
 
 type MathLogicMathSuite struct {
@@ -34,7 +34,7 @@ func (suite *MathLogicMathSuite) SetupTest() {
 	suite.Require().NoError(err, "Error returned when connecting to server")
 	suite.session = session
 
-    r.DBDrop("test").Exec(suite.session)
+	r.DBDrop("test").Exec(suite.session)
 	err = r.DBCreate("test").Exec(suite.session)
 	suite.Require().NoError(err)
 	err = r.DB("test").Wait().Exec(suite.session)
@@ -45,10 +45,12 @@ func (suite *MathLogicMathSuite) SetupTest() {
 func (suite *MathLogicMathSuite) TearDownSuite() {
 	suite.T().Log("Tearing down MathLogicMathSuite")
 
-	r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
-    r.DBDrop("test").Exec(suite.session)
+	if suite.session != nil {
+		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
+		r.DBDrop("test").Exec(suite.session)
 
-    suite.session.Close()
+		suite.session.Close()
+	}
 }
 
 func (suite *MathLogicMathSuite) TestCases() {
@@ -56,17 +58,17 @@ func (suite *MathLogicMathSuite) TestCases() {
 
 
 
-    {
-        // math_logic/math.yaml line #4
-        /* 1 */
-        var expected_ int = 1
-        /* (((4 + 2 * (r.expr(26) % 18)) / 5) - 3) */
+	{
+		// math_logic/math.yaml line #4
+		/* 1 */
+		var expected_ int = 1
+		/* (((4 + 2 * (r.expr(26) % 18)) / 5) - 3) */
 
-    	suite.T().Log("About to run line #4: r.Add(4, r.Mul(2, r.Expr(26).Mod(18))).Div(5).Sub(3)")
+		suite.T().Log("About to run line #4: r.Add(4, r.Mul(2, r.Expr(26).Mod(18))).Div(5).Sub(3)")
 
-        runAndAssert(suite.Suite, expected_, r.Add(4, r.Mul(2, r.Expr(26).Mod(18))).Div(5).Sub(3), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, r.Add(4, r.Mul(2, r.Expr(26).Mod(18))).Div(5).Sub(3), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #4")
-    }
+		})
+		suite.T().Log("Finished running line #4")
+	}
 }

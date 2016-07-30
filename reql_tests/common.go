@@ -496,7 +496,12 @@ func partial(v interface{}) Expected {
 	}
 }
 
-func arrlen(length int, v interface{}) []interface{} {
+func arrlen(length int, vs ...interface{}) []interface{} {
+	var v interface{} = AnythingIsFine
+	if len(vs) == 1 {
+		v = vs[0]
+	}
+
 	arr := make([]interface{}, length)
 	for i := 0; i < length; i++ {
 		arr[i] = v
@@ -506,6 +511,12 @@ func arrlen(length int, v interface{}) []interface{} {
 
 func str(v interface{}) string {
 	return fmt.Sprintf("%v", v)
+}
+
+func wait(s int) interface{} {
+	time.Sleep(time.Duration(s) * time.Second)
+
+	return nil
 }
 
 type Err struct {

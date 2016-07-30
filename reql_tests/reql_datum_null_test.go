@@ -14,7 +14,7 @@ import (
 
 // Tests of conversion to and from the RQL null type
 func TestDatumNullSuite(t *testing.T) {
-    suite.Run(t, new(DatumNullSuite ))
+	suite.Run(t, new(DatumNullSuite ))
 }
 
 type DatumNullSuite struct {
@@ -34,7 +34,7 @@ func (suite *DatumNullSuite) SetupTest() {
 	suite.Require().NoError(err, "Error returned when connecting to server")
 	suite.session = session
 
-    r.DBDrop("test").Exec(suite.session)
+	r.DBDrop("test").Exec(suite.session)
 	err = r.DBCreate("test").Exec(suite.session)
 	suite.Require().NoError(err)
 	err = r.DB("test").Wait().Exec(suite.session)
@@ -45,10 +45,12 @@ func (suite *DatumNullSuite) SetupTest() {
 func (suite *DatumNullSuite) TearDownSuite() {
 	suite.T().Log("Tearing down DatumNullSuite")
 
-	r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
-    r.DBDrop("test").Exec(suite.session)
+	if suite.session != nil {
+		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
+		r.DBDrop("test").Exec(suite.session)
 
-    suite.session.Close()
+		suite.session.Close()
+	}
 }
 
 func (suite *DatumNullSuite) TestCases() {
@@ -56,59 +58,59 @@ func (suite *DatumNullSuite) TestCases() {
 
 
 
-    {
-        // datum/null.yaml line #6
-        /* (null) */
-        var expected_ interface{} = nil
-        /* r.expr(null) */
+	{
+		// datum/null.yaml line #6
+		/* (null) */
+		var expected_ interface{} = nil
+		/* r.expr(null) */
 
-    	suite.T().Log("About to run line #6: r.Expr(nil)")
+		suite.T().Log("About to run line #6: r.Expr(nil)")
 
-        runAndAssert(suite.Suite, expected_, r.Expr(nil), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, r.Expr(nil), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #6")
-    }
+		})
+		suite.T().Log("Finished running line #6")
+	}
 
-    {
-        // datum/null.yaml line #9
-        /* 'NULL' */
-        var expected_ string = "NULL"
-        /* r.expr(null).type_of() */
+	{
+		// datum/null.yaml line #9
+		/* 'NULL' */
+		var expected_ string = "NULL"
+		/* r.expr(null).type_of() */
 
-    	suite.T().Log("About to run line #9: r.Expr(nil).TypeOf()")
+		suite.T().Log("About to run line #9: r.Expr(nil).TypeOf()")
 
-        runAndAssert(suite.Suite, expected_, r.Expr(nil).TypeOf(), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, r.Expr(nil).TypeOf(), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #9")
-    }
+		})
+		suite.T().Log("Finished running line #9")
+	}
 
-    {
-        // datum/null.yaml line #14
-        /* 'null' */
-        var expected_ string = "null"
-        /* r.expr(null).coerce_to('string') */
+	{
+		// datum/null.yaml line #14
+		/* 'null' */
+		var expected_ string = "null"
+		/* r.expr(null).coerce_to('string') */
 
-    	suite.T().Log("About to run line #14: r.Expr(nil).CoerceTo('string')")
+		suite.T().Log("About to run line #14: r.Expr(nil).CoerceTo('string')")
 
-        runAndAssert(suite.Suite, expected_, r.Expr(nil).CoerceTo("string"), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, r.Expr(nil).CoerceTo("string"), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #14")
-    }
+		})
+		suite.T().Log("Finished running line #14")
+	}
 
-    {
-        // datum/null.yaml line #17
-        /* null */
-        var expected_ interface{} = nil
-        /* r.expr(null).coerce_to('null') */
+	{
+		// datum/null.yaml line #17
+		/* null */
+		var expected_ interface{} = nil
+		/* r.expr(null).coerce_to('null') */
 
-    	suite.T().Log("About to run line #17: r.Expr(nil).CoerceTo('null')")
+		suite.T().Log("About to run line #17: r.Expr(nil).CoerceTo('null')")
 
-        runAndAssert(suite.Suite, expected_, r.Expr(nil).CoerceTo("null"), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, r.Expr(nil).CoerceTo("null"), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #17")
-    }
+		})
+		suite.T().Log("Finished running line #17")
+	}
 }

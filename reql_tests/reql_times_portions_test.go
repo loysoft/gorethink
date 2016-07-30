@@ -14,7 +14,7 @@ import (
 
 // accessing portions
 func TestTimesPortionsSuite(t *testing.T) {
-    suite.Run(t, new(TimesPortionsSuite ))
+	suite.Run(t, new(TimesPortionsSuite ))
 }
 
 type TimesPortionsSuite struct {
@@ -34,7 +34,7 @@ func (suite *TimesPortionsSuite) SetupTest() {
 	suite.Require().NoError(err, "Error returned when connecting to server")
 	suite.session = session
 
-    r.DBDrop("test").Exec(suite.session)
+	r.DBDrop("test").Exec(suite.session)
 	err = r.DBCreate("test").Exec(suite.session)
 	suite.Require().NoError(err)
 	err = r.DB("test").Wait().Exec(suite.session)
@@ -45,10 +45,12 @@ func (suite *TimesPortionsSuite) SetupTest() {
 func (suite *TimesPortionsSuite) TearDownSuite() {
 	suite.T().Log("Tearing down TimesPortionsSuite")
 
-	r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
-    r.DBDrop("test").Exec(suite.session)
+	if suite.session != nil {
+		r.DB("rethinkdb").Table("_debug_scratch").Delete().Exec(suite.session)
+		r.DBDrop("test").Exec(suite.session)
 
-    suite.session.Close()
+		suite.session.Close()
+	}
 }
 
 func (suite *TimesPortionsSuite) TestCases() {
@@ -56,184 +58,184 @@ func (suite *TimesPortionsSuite) TestCases() {
 
 
 
-    // times/portions.yaml line #3
-    // rt1 = 1375147296.681
-    suite.T().Log("Possibly executing: var rt1 float64 = 1375147296.681")
+	// times/portions.yaml line #3
+	// rt1 = 1375147296.681
+	suite.T().Log("Possibly executing: var rt1 float64 = 1375147296.681")
 
-    var rt1 float64 = 1375147296.681
-    _ = rt1 // Prevent any noused variable errors
-
-
-    // times/portions.yaml line #4
-    // rt2 = 1375147296.682
-    suite.T().Log("Possibly executing: var rt2 float64 = 1375147296.682")
-
-    var rt2 float64 = 1375147296.682
-    _ = rt2 // Prevent any noused variable errors
+	rt1 := 1375147296.681
+	_ = rt1 // Prevent any noused variable errors
 
 
-    // times/portions.yaml line #5
-    // rt3 = 1375147297.681
-    suite.T().Log("Possibly executing: var rt3 float64 = 1375147297.681")
+	// times/portions.yaml line #4
+	// rt2 = 1375147296.682
+	suite.T().Log("Possibly executing: var rt2 float64 = 1375147296.682")
 
-    var rt3 float64 = 1375147297.681
-    _ = rt3 // Prevent any noused variable errors
-
-
-    // times/portions.yaml line #6
-    // rt4 = 2375147296.681
-    suite.T().Log("Possibly executing: var rt4 float64 = 2375147296.681")
-
-    var rt4 float64 = 2375147296.681
-    _ = rt4 // Prevent any noused variable errors
+	rt2 := 1375147296.682
+	_ = rt2 // Prevent any noused variable errors
 
 
-    // times/portions.yaml line #7
-    // rts = [rt1, rt2, rt3, rt4]
-    suite.T().Log("Possibly executing: var rts []interface{} = []interface{}{rt1, rt2, rt3, rt4}")
+	// times/portions.yaml line #5
+	// rt3 = 1375147297.681
+	suite.T().Log("Possibly executing: var rt3 float64 = 1375147297.681")
 
-    var rts []interface{} = []interface{}{rt1, rt2, rt3, rt4}
-    _ = rts // Prevent any noused variable errors
-
-
-    // times/portions.yaml line #9
-    // t1 = r.epoch_time(rt1)
-    suite.T().Log("Possibly executing: var t1 r.Term = r.EpochTime(rt1)")
-
-    var t1 r.Term = r.EpochTime(rt1)
-    _ = t1 // Prevent any noused variable errors
+	rt3 := 1375147297.681
+	_ = rt3 // Prevent any noused variable errors
 
 
-    // times/portions.yaml line #10
-    // t2 = r.epoch_time(rt2)
-    suite.T().Log("Possibly executing: var t2 r.Term = r.EpochTime(rt2)")
+	// times/portions.yaml line #6
+	// rt4 = 2375147296.681
+	suite.T().Log("Possibly executing: var rt4 float64 = 2375147296.681")
 
-    var t2 r.Term = r.EpochTime(rt2)
-    _ = t2 // Prevent any noused variable errors
-
-
-    // times/portions.yaml line #11
-    // t3 = r.epoch_time(rt3)
-    suite.T().Log("Possibly executing: var t3 r.Term = r.EpochTime(rt3)")
-
-    var t3 r.Term = r.EpochTime(rt3)
-    _ = t3 // Prevent any noused variable errors
+	rt4 := 2375147296.681
+	_ = rt4 // Prevent any noused variable errors
 
 
-    // times/portions.yaml line #12
-    // t4 = r.epoch_time(rt4)
-    suite.T().Log("Possibly executing: var t4 r.Term = r.EpochTime(rt4)")
+	// times/portions.yaml line #7
+	// rts = [rt1, rt2, rt3, rt4]
+	suite.T().Log("Possibly executing: var rts []interface{} = []interface{}{rt1, rt2, rt3, rt4}")
 
-    var t4 r.Term = r.EpochTime(rt4)
-    _ = t4 // Prevent any noused variable errors
-
-
-    // times/portions.yaml line #13
-    // ts = r.expr([t1, t2, t3, t4])
-    suite.T().Log("Possibly executing: var ts r.Term = r.Expr([]interface{}{t1, t2, t3, t4})")
-
-    var ts r.Term = r.Expr([]interface{}{t1, t2, t3, t4})
-    _ = ts // Prevent any noused variable errors
+	rts := []interface{}{rt1, rt2, rt3, rt4}
+	_ = rts // Prevent any noused variable errors
 
 
-    {
-        // times/portions.yaml line #16
-        /* ([1375142400, 1375142400, 1375142400, 2375136000]) */
-        var expected_ []interface{} = []interface{}{1375142400, 1375142400, 1375142400, 2375136000}
-        /* ts.map(lambda x:x.date()).map(lambda x:x.to_epoch_time()) */
+	// times/portions.yaml line #9
+	// t1 = r.epoch_time(rt1)
+	suite.T().Log("Possibly executing: var t1 r.Term = r.EpochTime(rt1)")
 
-    	suite.T().Log("About to run line #16: ts.Map(func(x r.Term) interface{} { return x.Date()}).Map(func(x r.Term) interface{} { return x.ToEpochTime()})")
+	t1 := r.EpochTime(rt1)
+	_ = t1 // Prevent any noused variable errors
 
-        runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return x.Date()}).Map(func(x r.Term) interface{} { return x.ToEpochTime()}), suite.session, r.RunOpts{
+
+	// times/portions.yaml line #10
+	// t2 = r.epoch_time(rt2)
+	suite.T().Log("Possibly executing: var t2 r.Term = r.EpochTime(rt2)")
+
+	t2 := r.EpochTime(rt2)
+	_ = t2 // Prevent any noused variable errors
+
+
+	// times/portions.yaml line #11
+	// t3 = r.epoch_time(rt3)
+	suite.T().Log("Possibly executing: var t3 r.Term = r.EpochTime(rt3)")
+
+	t3 := r.EpochTime(rt3)
+	_ = t3 // Prevent any noused variable errors
+
+
+	// times/portions.yaml line #12
+	// t4 = r.epoch_time(rt4)
+	suite.T().Log("Possibly executing: var t4 r.Term = r.EpochTime(rt4)")
+
+	t4 := r.EpochTime(rt4)
+	_ = t4 // Prevent any noused variable errors
+
+
+	// times/portions.yaml line #13
+	// ts = r.expr([t1, t2, t3, t4])
+	suite.T().Log("Possibly executing: var ts r.Term = r.Expr([]interface{}{t1, t2, t3, t4})")
+
+	ts := r.Expr([]interface{}{t1, t2, t3, t4})
+	_ = ts // Prevent any noused variable errors
+
+
+	{
+		// times/portions.yaml line #16
+		/* ([1375142400, 1375142400, 1375142400, 2375136000]) */
+		var expected_ []interface{} = []interface{}{1375142400, 1375142400, 1375142400, 2375136000}
+		/* ts.map(lambda x:x.date()).map(lambda x:x.to_epoch_time()) */
+
+		suite.T().Log("About to run line #16: ts.Map(func(x r.Term) interface{} { return x.Date()}).Map(func(x r.Term) interface{} { return x.ToEpochTime()})")
+
+		runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return x.Date()}).Map(func(x r.Term) interface{} { return x.ToEpochTime()}), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #16")
-    }
+		})
+		suite.T().Log("Finished running line #16")
+	}
 
-    {
-        // times/portions.yaml line #20
-        /* ([0, 0, 0, 0]) */
-        var expected_ []interface{} = []interface{}{0, 0, 0, 0}
-        /* ts.map(lambda x:x.date().time_of_day()) */
+	{
+		// times/portions.yaml line #20
+		/* ([0, 0, 0, 0]) */
+		var expected_ []interface{} = []interface{}{0, 0, 0, 0}
+		/* ts.map(lambda x:x.date().time_of_day()) */
 
-    	suite.T().Log("About to run line #20: ts.Map(func(x r.Term) interface{} { return x.Date().TimeOfDay()})")
+		suite.T().Log("About to run line #20: ts.Map(func(x r.Term) interface{} { return x.Date().TimeOfDay()})")
 
-        runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return x.Date().TimeOfDay()}), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return x.Date().TimeOfDay()}), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #20")
-    }
+		})
+		suite.T().Log("Finished running line #20")
+	}
 
-    {
-        // times/portions.yaml line #24
-        /* ([4896.681, 4896.682, 4897.681, 11296.681]) */
-        var expected_ []interface{} = []interface{}{4896.681, 4896.682, 4897.681, 11296.681}
-        /* ts.map(lambda x:x.time_of_day()) */
+	{
+		// times/portions.yaml line #24
+		/* ([4896.681, 4896.682, 4897.681, 11296.681]) */
+		var expected_ []interface{} = []interface{}{4896.681, 4896.682, 4897.681, 11296.681}
+		/* ts.map(lambda x:x.time_of_day()) */
 
-    	suite.T().Log("About to run line #24: ts.Map(func(x r.Term) interface{} { return x.TimeOfDay()})")
+		suite.T().Log("About to run line #24: ts.Map(func(x r.Term) interface{} { return x.TimeOfDay()})")
 
-        runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return x.TimeOfDay()}), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return x.TimeOfDay()}), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #24")
-    }
+		})
+		suite.T().Log("Finished running line #24")
+	}
 
-    {
-        // times/portions.yaml line #29
-        /* ([[2013, 7, 30, 1, 21, 36.681],
+	{
+		// times/portions.yaml line #29
+		/* ([[2013, 7, 30, 1, 21, 36.681],
 [2013, 7, 30, 1, 21, 36.682],
 [2013, 7, 30, 1, 21, 37.681],
 [2045, 4, 7, 3, 8, 16.681]]) */
-        var expected_ []interface{} = []interface{}{[]interface{}{2013, 7, 30, 1, 21, 36.681}, []interface{}{2013, 7, 30, 1, 21, 36.682}, []interface{}{2013, 7, 30, 1, 21, 37.681}, []interface{}{2045, 4, 7, 3, 8, 16.681}}
-        /* ts.map(lambda x:[x.year(), x.month(), x.day(), x.hours(), x.minutes(), x.seconds()]) */
+		var expected_ []interface{} = []interface{}{[]interface{}{2013, 7, 30, 1, 21, 36.681}, []interface{}{2013, 7, 30, 1, 21, 36.682}, []interface{}{2013, 7, 30, 1, 21, 37.681}, []interface{}{2045, 4, 7, 3, 8, 16.681}}
+		/* ts.map(lambda x:[x.year(), x.month(), x.day(), x.hours(), x.minutes(), x.seconds()]) */
 
-    	suite.T().Log("About to run line #29: ts.Map(func(x r.Term) interface{} { return []interface{}{x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds()}})")
+		suite.T().Log("About to run line #29: ts.Map(func(x r.Term) interface{} { return []interface{}{x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds()}})")
 
-        runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return []interface{}{x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds()}}), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return []interface{}{x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds()}}), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #29")
-    }
+		})
+		suite.T().Log("Finished running line #29")
+	}
 
-    {
-        // times/portions.yaml line #36
-        /* rts */
-        var expected_ []interface{} = rts
-        /* ts.map(lambda x:r.time(x.year(), x.month(), x.day(), x.hours(), x.minutes(), x.seconds(), x.timezone())).map(lambda x:x.to_epoch_time()) */
+	{
+		// times/portions.yaml line #36
+		/* rts */
+		var expected_ []interface{} = rts
+		/* ts.map(lambda x:r.time(x.year(), x.month(), x.day(), x.hours(), x.minutes(), x.seconds(), x.timezone())).map(lambda x:x.to_epoch_time()) */
 
-    	suite.T().Log("About to run line #36: ts.Map(func(x r.Term) interface{} { return r.Time(x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds(), x.Timezone())}).Map(func(x r.Term) interface{} { return x.ToEpochTime()})")
+		suite.T().Log("About to run line #36: ts.Map(func(x r.Term) interface{} { return r.Time(x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds(), x.Timezone())}).Map(func(x r.Term) interface{} { return x.ToEpochTime()})")
 
-        runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return r.Time(x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds(), x.Timezone())}).Map(func(x r.Term) interface{} { return x.ToEpochTime()}), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return r.Time(x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds(), x.Timezone())}).Map(func(x r.Term) interface{} { return x.ToEpochTime()}), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #36")
-    }
+		})
+		suite.T().Log("Finished running line #36")
+	}
 
-    {
-        // times/portions.yaml line #40
-        /* 0 */
-        var expected_ int = 0
-        /* ts.map(lambda x:r.time(x.year(), x.month(), x.day(), x.hours(), x.minutes(), x.seconds(), x.timezone())).union(ts).map(lambda x:x.to_iso8601()).distinct().count().sub(ts.count()) */
+	{
+		// times/portions.yaml line #40
+		/* 0 */
+		var expected_ int = 0
+		/* ts.map(lambda x:r.time(x.year(), x.month(), x.day(), x.hours(), x.minutes(), x.seconds(), x.timezone())).union(ts).map(lambda x:x.to_iso8601()).distinct().count().sub(ts.count()) */
 
-    	suite.T().Log("About to run line #40: ts.Map(func(x r.Term) interface{} { return r.Time(x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds(), x.Timezone())}).Union(ts).Map(func(x r.Term) interface{} { return x.ToISO8601()}).Distinct().Count().Sub(ts.Count())")
+		suite.T().Log("About to run line #40: ts.Map(func(x r.Term) interface{} { return r.Time(x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds(), x.Timezone())}).Union(ts).Map(func(x r.Term) interface{} { return x.ToISO8601()}).Distinct().Count().Sub(ts.Count())")
 
-        runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return r.Time(x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds(), x.Timezone())}).Union(ts).Map(func(x r.Term) interface{} { return x.ToISO8601()}).Distinct().Count().Sub(ts.Count()), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, ts.Map(func(x r.Term) interface{} { return r.Time(x.Year(), x.Month(), x.Day(), x.Hours(), x.Minutes(), x.Seconds(), x.Timezone())}).Union(ts).Map(func(x r.Term) interface{} { return x.ToISO8601()}).Distinct().Count().Sub(ts.Count()), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #40")
-    }
+		})
+		suite.T().Log("Finished running line #40")
+	}
 
-    {
-        // times/portions.yaml line #44
-        /* [[2, 211], [2, 211], [2, 211], [5, 97]] */
-        var expected_ []interface{} = []interface{}{[]interface{}{2, 211}, []interface{}{2, 211}, []interface{}{2, 211}, []interface{}{5, 97}}
-        /* ts.map([r.row.day_of_week(), r.row.day_of_year()]) */
+	{
+		// times/portions.yaml line #44
+		/* [[2, 211], [2, 211], [2, 211], [5, 97]] */
+		var expected_ []interface{} = []interface{}{[]interface{}{2, 211}, []interface{}{2, 211}, []interface{}{2, 211}, []interface{}{5, 97}}
+		/* ts.map([r.row.day_of_week(), r.row.day_of_year()]) */
 
-    	suite.T().Log("About to run line #44: ts.Map([]interface{}{r.Row.DayOfWeek(), r.Row.DayOfYear()})")
+		suite.T().Log("About to run line #44: ts.Map([]interface{}{r.Row.DayOfWeek(), r.Row.DayOfYear()})")
 
-        runAndAssert(suite.Suite, expected_, ts.Map([]interface{}{r.Row.DayOfWeek(), r.Row.DayOfYear()}), suite.session, r.RunOpts{
+		runAndAssert(suite.Suite, expected_, ts.Map([]interface{}{r.Row.DayOfWeek(), r.Row.DayOfYear()}), suite.session, r.RunOpts{
 			GeometryFormat: "raw",
-    	})
-        suite.T().Log("Finished running line #44")
-    }
+		})
+		suite.T().Log("Finished running line #44")
+	}
 }
