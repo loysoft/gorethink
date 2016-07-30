@@ -25,19 +25,12 @@ func maybeRun(query interface{}, session *r.Session, opts r.RunOpts) interface{}
 
 		switch cursor.Type() {
 		case "Cursor":
-			if cursor.IsSingleValue() {
-				var result interface{}
-				if err := cursor.One(&result); err != nil {
-					return err
-				}
-				return result
-			} else {
-				var results []interface{}
-				if err := cursor.All(&results); err != nil {
-					return err
-				}
-				return results
+			results, err := cursor.Interface()
+			if err != nil {
+				return err
 			}
+
+			return results
 		default:
 			// If this is a changefeed then return the cursor without attempting
 			// to read any documents

@@ -20,7 +20,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
  - Added root version of `Max`
  - Added root version of `MaxIndex`
  - Added `ReadMode` to `RunOpts`
- - Added the `IsSingleValue` function to the `Cursor`
+ - Added the `Interface` function to the `Cursor` which returns a queries result set as an `interface{}`
 
 ### Changed
 

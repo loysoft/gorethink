@@ -420,6 +420,41 @@ func (c *Cursor) One(result interface{}) error {
 	return nil
 }
 
+// Interface retrieves all documents from the result set and returns the data
+// as an interface{} and closes the cursor.
+//
+// If the query returns multiple documents then a slice will be returned,
+// otherwise a single value will be returned.
+func (c *Cursor) Interface() (interface{}, error) {
+	if c == nil {
+		return nil, errNilCursor
+	}
+
+	var results []interface{}
+	var result interface{}
+	for c.Next(&result) {
+		results = append(results, result)
+	}
+
+	if err := c.Err(); err != nil {
+		return nil, err
+	}
+
+	c.mu.RLock()
+	isSingleValue := c.isSingleValue
+	c.mu.Unlock()
+
+	if isSingleValue {
+		if len(results) == 0 {
+			return nil, nil
+		}
+
+		return results[0], nil
+	}
+
+	return results, nil
+}
+
 // Listen listens for rows from the database and sends the result onto the given
 // channel. The type that the row is scanned into is determined by the element
 // type of the channel.
@@ -486,23 +521,6 @@ func (c *Cursor) IsNil() bool {
 	return true
 }
 
-// IsSingleValue returns true if the response is both an atom response and
-// contains a single value and not an array of values (for example if a
-// query returns an integer or string then the function returns true)
-//
-// Please note that this function is currently used for testing the driver and
-// may change
-func (c *Cursor) IsSingleValue() bool {
-	if c == nil {
-		return false
-	}
-
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-
-	return c.isSingleValue
-}
-
 // fetchMore fetches more rows from the database.
 //
 // If wait is true then it will wait for the database to reply otherwise it
@@ -564,12 +582,6 @@ func (c *Cursor) extendLocked(response *Response) {
 	c.isAtom = response.Type == p.Response_SUCCESS_ATOM
 
 	putResponse(response)
-
-	// If both c.buffer is empty and this is the only loaded response then
-	// attempt to load the response into the buffer
-	if len(c.buffer) == 0 && len(c.responses) == 1 {
-		c.bufferNextResponse()
-	}
 }
 
 // seekCursor takes care of loading more data if needed and applying pending skips

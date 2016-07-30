@@ -13,7 +13,7 @@ import p "gopkg.in/dancannon/gorethink.v2/ql2"
 //     })
 func Map(args ...interface{}) Term {
 	if len(args) > 0 {
-		args = append(args[:len(args)-1], funcWrapArgs(args[len(args)-1:])...)
+		args = append(args[:len(args)-1], funcWrap(args[len(args)-1]))
 	}
 
 	return constructRootTerm("Map", p.Term_MAP, args, map[string]interface{}{})
@@ -28,7 +28,11 @@ func Map(args ...interface{}) Term {
 //         return row.Mul(2)
 //     })
 func (t Term) Map(args ...interface{}) Term {
-	return constructMethodTerm(t, "Map", p.Term_MAP, funcWrapArgs(args), map[string]interface{}{})
+	if len(args) > 0 {
+		args = append(args[:len(args)-1], funcWrap(args[len(args)-1]))
+	}
+
+	return constructMethodTerm(t, "Map", p.Term_MAP, args, map[string]interface{}{})
 }
 
 // WithFields takes a sequence of objects and a list of fields. If any objects in the

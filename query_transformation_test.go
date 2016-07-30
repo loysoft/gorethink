@@ -1,8 +1,6 @@
 package gorethink
 
-import (
-	test "gopkg.in/check.v1"
-)
+import test "gopkg.in/check.v1"
 
 func (s *RethinkSuite) TestTransformationMapImplicit(c *test.C) {
 	query := Expr(arr).Map(Row.Add(1))
@@ -20,21 +18,6 @@ func (s *RethinkSuite) TestTransformationMapImplicit(c *test.C) {
 func (s *RethinkSuite) TestTransformationMapFunc(c *test.C) {
 	query := Expr(arr).Map(func(row Term) interface{} {
 		return row.Add(1)
-	})
-
-	var response []interface{}
-	res, err := query.Run(session)
-	c.Assert(err, test.IsNil)
-
-	err = res.All(&response)
-
-	c.Assert(err, test.IsNil)
-	c.Assert(response, jsonEquals, []interface{}{2, 3, 4, 5, 6, 7, 8, 9, 10})
-}
-
-func (s *RethinkSuite) TestTransformationMapImplicitFunc(c *test.C) {
-	query := Expr(arr).Map(func(row interface{}) interface{} {
-		return Row.Add(1)
 	})
 
 	var response []interface{}
