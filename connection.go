@@ -59,13 +59,18 @@ func NewConnection(address string, opts *ConnectOpts) (*Connection, error) {
 		keepAlivePeriod = opts.KeepAlivePeriod
 	}
 
-	// Connect to Server
-	nd := net.Dialer{Timeout: c.opts.Timeout, KeepAlive: keepAlivePeriod}
-	if c.opts.TLSConfig == nil {
-		c.Conn, err = nd.Dial("tcp", address)
+	if (c.opts.ConnectionDial == nil) {
+		// Connect to Server
+		nd := net.Dialer{Timeout: c.opts.Timeout, KeepAlive: keepAlivePeriod}
+		if c.opts.TLSConfig == nil {
+			c.Conn, err = nd.Dial("tcp", address)
+		} else {
+			c.Conn, err = tls.DialWithDialer(&nd, "tcp", address, c.opts.TLSConfig)
+		}
 	} else {
-		c.Conn, err = tls.DialWithDialer(&nd, "tcp", address, c.opts.TLSConfig)
+		c.Conn, err = (*c.opts.ConnectionDial)(address, c.opts.Timeout, keepAlivePeriod, c.opts.TLSConfig)
 	}
+
 	if err != nil {
 		return nil, RQLConnectionError{rqlError(err.Error())}
 	}

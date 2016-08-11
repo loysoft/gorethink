@@ -2,6 +2,7 @@ package gorethink
 
 import (
 	"crypto/tls"
+	"net"
 	"sync"
 	"time"
 
@@ -18,6 +19,8 @@ type Session struct {
 	cluster *Cluster
 	closed  bool
 }
+
+type ConnectionDial func(Address string, Timeout time.Duration, KeepAlive time.Duration, TLSConfig *tls.Config) (net.Conn, error)
 
 // ConnectOpts is used to specify optional arguments when connecting to a cluster.
 type ConnectOpts struct {
@@ -55,6 +58,9 @@ type ConnectOpts struct {
 	// TLSConfig holds the TLS configuration and can be used when connecting
 	// to a RethinkDB server protected by SSL
 	TLSConfig *tls.Config `gorethink:"tlsconfig,omitempty"`
+	// ConnectionDial is used to override default sequence for creating network connection.
+	// Usefull feature for use in highly restricted environments such as Google App Engine.
+	ConnectionDial *ConnectionDial
 	// HandshakeVersion is used to specify which handshake version should be
 	// used, this currently defaults to v1 which is used by RethinkDB 2.3 and
 	// later. If you are using an older version then you can set the handshake
